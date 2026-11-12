@@ -19,8 +19,9 @@ jobs:
           got="sha512-$(openssl dgst -sha512 -binary ml.tgz | base64 -w0)"
           [ "$got" = "$want" ] || { echo "INTEGRITY MISMATCH"; exit 1; }
           mkdir -p x echomap/web/vendor/maplibre
-          tar -xzf ml.tgz -C x package/dist/maplibre-gl.js package/dist/maplibre-gl.css package/LICENSE.txt
-          cp x/package/dist/maplibre-gl.js x/package/dist/maplibre-gl.css echomap/web/vendor/maplibre/
+          tar -xzf ml.tgz -C x
+          ls x/package/dist
+          cp x/package/dist/*.css echomap/web/vendor/maplibre/ && for f in x/package/dist/maplibre-gl*.js x/package/dist/maplibre-gl*.mjs; do [ -f "$f" ] && case "$f" in *dev*|*.map) ;; *) cp "$f" echomap/web/vendor/maplibre/ ;; esac; done
           cp x/package/LICENSE.txt echomap/web/vendor/maplibre/LICENSE.txt
           echo "maplibre-gl 6.18.0 $want" > echomap/web/vendor/maplibre/VERSION.txt
           ls -la echomap/web/vendor/maplibre
@@ -29,4 +30,4 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add echomap/web/vendor/maplibre
-          git diff --cached --quiet && echo "no changes" || (git commit -m "Vendor maplibre-gl 6.18.0 (integrity-checked)" && git push)
+          git diff --cached --quiet && echo "no changes" || (git commit -m "Vendor maplibre-gl 6.18.0 (integrity-checked)" && git pull --rebase && git push)
