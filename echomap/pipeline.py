@@ -350,6 +350,11 @@ class Case:
         if cap.wants("references"):
             with h.timed("references", "Reverse sound search (fingerprints + embeddings) against the reference library"):
                 self.result["references"] = references.search_events(records, sed, x8)
+            from .models import vehicle_head
+            nveh = vehicle_head.annotate(records, sed)
+            cap.add("vehicle_type", "Vehicle type (car / bus / truck / tram / motorcycle / bicycle)",
+                    "executed" if vehicle_head.head() else "unavailable",
+                    f"{nveh} vehicle event(s) classified" if vehicle_head.head() else "Vehicle-type head not bundled.")
             cap.add("references", "Acoustic signature database / reverse sound search",
                     "executed" if self.result["references"].get("available") else "unavailable",
                     self.result["references"].get("reason", ""))

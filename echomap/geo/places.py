@@ -77,6 +77,16 @@ def tram_hypothesis(records: list[dict], references: dict | None) -> dict | None
             if c and (best is None or c > best["c"]):
                 best = {"c": c, "record": e["record"],
                         "basis": f"{m['tier']} ({m['similarity']}) to the tram recording '{m['title'][:60]}'"}
+    # (a2) the trained vehicle-type head says "tram" (MELAUDIS; confidence scaled by its measured tram precision)
+    from ..models.vehicle_head import tram_precision
+    prec = tram_precision() or 0.5
+    for r in records:
+        vt = (r.get("evidence") or {}).get("vehicle_type")
+        if vt and vt["top"] == "tram" and vt["p"] >= 0.6:
+            c = round(min(0.6, 0.6 * prec * vt["p"]), 3)
+            if best is None or c > best["c"]:
+                best = {"c": c, "record": r["id"],
+                        "basis": f"vehicle-type model says tram (p = {vt['p']}; tram precision on held-out sites {prec:.2f}; trained in Melbourne)"}
     rail = [r for r in records if r["label"] in RAIL_LABELS and r["confidence"] >= 0.3]
     if rail:
         bells = [r for r in records if r["label"] in BELL_LABELS and r["confidence"] >= 0.2]
