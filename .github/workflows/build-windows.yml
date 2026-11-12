@@ -83,6 +83,16 @@ jobs:
           if ($s.state -ne "complete") { throw "context state $($s.state): $($s.error)" }
           $r = Invoke-RestMethod -Uri ($url + "api/result") -Headers $h
           "Inventory records: $($r.result.inventory.Count); geo: $($r.result.geo.summary)" | Tee-Object -Append $env:GITHUB_STEP_SUMMARY
+          $sp = Invoke-WebRequest -UseBasicParsing -Uri ($url + "api/spectrogram?t0=0&t1=120&fmin=0&fmax=16000&scale=linear&w=800&h=300") -Headers $h
+          $meta = $sp.Headers["X-Meta"] | ConvertFrom-Json
+          if ($sp.RawContentLength -ne 800*300 -or $meta.width -ne 800) { throw "spectrogram API returned $($sp.RawContentLength) bytes" }
+          $nonzero = ($sp.Content | Where-Object { $_ -gt 0 }).Count
+          "Spectrogram API: 800x300 bytes, n_fft $($meta.n_fft), non-zero pixels $nonzero" | Tee-Object -Append $env:GITHUB_STEP_SUMMARY
+          if ($nonzero -lt 10000) { throw "spectrogram is (nearly) empty" }
+          if (-not $r.result.geo.candidates -or $r.result.geo.candidates.Count -lt 1) { throw "no geo candidates for the soundscape" }
+          $rep = Invoke-WebRequest -UseBasicParsing -Uri ($url + "api/report") -Headers $h
+          if ($rep.Content -notmatch "Full processing history") { throw "report incomplete" }
+          "Report HTML: $([math]::Round($rep.RawContentLength/1KB)) KB" | Tee-Object -Append $env:GITHUB_STEP_SUMMARY
           $edge = "${env:ProgramFiles(x86)}\Microsoft\Edge\Application\msedge.exe"
           New-Item -ItemType Directory -Force screenshots | Out-Null
           foreach ($tab in @("analysis","inventory","geo","report")) {
