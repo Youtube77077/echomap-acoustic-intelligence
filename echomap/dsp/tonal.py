@@ -358,6 +358,9 @@ def avas_like(tracks: list[dict], min_dur: float = 1.5, min_corr: float = 0.85) 
             t0, t1 = max(a["start"], b["start"]), min(a["end"], b["end"])
             if t1 - t0 < min_dur or abs(a["f_median"] - b["f_median"]) < 0.05 * a["f_median"]:
                 continue
+            ratio = max(a["f_median"], b["f_median"]) / min(a["f_median"], b["f_median"])
+            if any(abs(ratio - p_ / q_) < 0.02 * ratio for q_ in range(1, 7) for p_ in range(q_ + 1, 7 * q_) if p_ <= 6):
+                continue  # small-integer ratio: partials of one harmonic source (voice, bird, siren, engine)
 
             def seg(t):
                 n = len(t["contour"])

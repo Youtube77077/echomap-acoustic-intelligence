@@ -303,4 +303,5 @@ def add_avas(inv: Inventory, segments: list[dict], profile_fn) -> None:
                 corroborated_by=[f"{r['id']} {r['label']}" for r in veh], evidence={"avas": s},
                 signature="Sustained tones 160 Hz-5 kHz with common frequency drift",
                 limitations=("Pattern-based. Any device with co-varying tones (some machinery, music) can match. AVAS only "
-                             "sounds below ~20 km/h, so its absence says nothing about EVs at higher speeds."))
+                             "sounds below ~20 km/h, so its absence says nothing about EVs at higher speeds. AVAS designs whose tones "
+                             "form small-integer ratios (e.g. 2:1, 3:2) are deliberately excluded to avoid matching voices, birds and engines."))

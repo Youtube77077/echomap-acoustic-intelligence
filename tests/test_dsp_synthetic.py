@@ -153,7 +153,7 @@ def _codrift(f1, f2, dur=5.0, drift_pct_s=2.0):
 
 
 def test_avas_like_detects_codrifting_tones():
-    tr = tonal.tone_tracks(_codrift(520, 1300), SR)
+    tr = tonal.tone_tracks(_codrift(520, 1381), SR)  # non-harmonic ratio 2.656
     assert tonal.avas_like(tr), "co-drifting AVAS-style tones not detected"
 
 
@@ -164,3 +164,7 @@ def test_avas_like_ignores_static_tones_and_sirens():
     f = 900 + 400 * np.sin(2 * np.pi * t / 4.0)
     wail = (0.3 * np.sin(2 * np.pi * np.cumsum(f) / SR)).astype(np.float32)
     assert not tonal.avas_like(tonal.tone_tracks(wail, SR))
+
+
+def test_avas_like_ignores_harmonic_partials():
+    assert not tonal.avas_like(tonal.tone_tracks(_codrift(500, 1000), SR))
