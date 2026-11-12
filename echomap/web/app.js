@@ -70,6 +70,7 @@ function startPolling(target) {
 async function loadResult() {
   const r = await api("result");
   S.result = r.result; S.inventory = r.result.inventory || []; S.meta = r.meta;
+  if (r.meta) $("#fileInfo").innerHTML = `<b>${esc(r.meta.file_name)}</b> · ${esc(r.meta.container)} · ${esc(r.meta.primary_audio?.codec)} ${r.meta.primary_audio?.sample_rate} Hz · SHA-256 <span class="mono">${esc((r.sha256 || "").slice(0, 16))}…</span>`;
   S.duration = r.result.analysis_copy?.duration_s || S.duration; S.sr = r.result.analysis_copy?.sample_rate || 32000;
   $("#audio").src = "/audio?t=" + encodeURIComponent(TOKEN) + "&n=" + Date.now();
   $("#btnPlay").disabled = false; $("#btnContext").disabled = false;
@@ -142,8 +143,10 @@ function drawWave() {
   ctx.clearRect(0, 0, c.width, c.height);
   const w = S.result?.signal?.waveform; if (!w) return;
   const n = w.min.length, H = c.height, mid = H / 2;
+  const peak = Math.max(1e-4, ...w.max.map(Math.abs), ...w.min.map(Math.abs)), g = 0.95 / peak;  // auto-scale to peak
   ctx.fillStyle = "#3d6fd8";
-  for (let x = 0; x < c.width; x++) { const i = Math.floor(x / c.width * n); ctx.fillRect(x, mid - w.max[i] * mid, 1, Math.max(1, (w.max[i] - w.min[i]) * mid)); }
+  for (let x = 0; x < c.width; x++) { const i = Math.floor(x / c.width * n); ctx.fillRect(x, mid - w.max[i] * g * mid, 1, Math.max(1, (w.max[i] - w.min[i]) * g * mid)); }
+  ctx.fillStyle = "rgba(255,255,255,.5)"; ctx.font = `${9 * devicePixelRatio}px Consolas`; ctx.fillText(`peak ${(20 * Math.log10(peak)).toFixed(1)} dBFS (display normalised)`, 4, 10 * devicePixelRatio);
   const x0 = S.view.t0 / S.duration * c.width, x1 = S.view.t1 / S.duration * c.width;
   ctx.fillStyle = "rgba(255,179,64,.15)"; ctx.fillRect(x0, 0, x1 - x0, H); ctx.strokeStyle = "#ffb340"; ctx.strokeRect(x0, 0.5, x1 - x0, H - 1);
   ctx.fillStyle = "#fff"; ctx.fillRect(audio.currentTime / S.duration * c.width, 0, 2, H);
