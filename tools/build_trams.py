@@ -27,7 +27,11 @@ from echomap.geo.gazetteer import _cities  # noqa: E402
 from echomap.geo.grid import haversine_km  # noqa: E402
 from echomap.geo.topo import country_at  # noqa: E402
 
-OVERPASS = ["https://overpass-api.de/api/interpreter"]
+OVERPASS = ["https://overpass-api.de/api/interpreter", "https://overpass.private.coffee/api/interpreter",
+            "https://maps.mail.ru/osm/tools/overpass/api/interpreter", "https://overpass.kumi.systems/api/interpreter"]
+# GitHub runners have no IPv6 route: force IPv4 so hosts with AAAA records stay reachable
+import urllib3.util.connection as _uc  # noqa: E402
+_uc.HAS_IPV6 = False
 UA = {"User-Agent": "EchoMap-dataset-builder/1.0 (one-off OSM extract for an offline acoustic analysis tool)"}
 # tiles (south, west, north, east): small enough for the public Overpass server
 LON = [-180, -100, -60, -10, 0, 5, 10, 15, 20, 30, 40, 60, 100, 125, 180]
@@ -37,7 +41,7 @@ CELL = 0.02  # degrees, ~2 km
 
 def fetch_tile(s: float, w: float, n: float, e: float) -> list[tuple[float, float]]:
     q = f'[out:json][timeout:600][maxsize:1073741824];way["railway"="tram"]({s},{w},{n},{e});out center;'
-    for attempt in range(6):
+    for attempt in range(8):
         url = OVERPASS[attempt % len(OVERPASS)]
         try:
             r = requests.post(url, data={"data": q}, headers=UA, timeout=700)
@@ -47,7 +51,7 @@ def fetch_tile(s: float, w: float, n: float, e: float) -> list[tuple[float, floa
             print("overpass status", r.status_code, url, r.text[:200])
         except Exception as e:  # noqa: BLE001
             print("overpass error", url, e)
-        time.sleep(30 * (attempt + 1))
+        time.sleep(10 * (attempt + 1))
     raise SystemExit(f"Overpass failed for tile {s},{w},{n},{e}")
 
 
