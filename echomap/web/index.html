@@ -14,7 +14,8 @@
     <button class="tab active" data-tab="analysis">1 · Analysis</button>
     <button class="tab" data-tab="inventory">2 · Detection inventory <span id="invCount" class="pill">0</span></button>
     <button class="tab" data-tab="geo">3 · Geographic intelligence</button>
-    <button class="tab" data-tab="report">4 · Forensic report</button>
+    <button class="tab" data-tab="intel">4 · Intelligence</button>
+    <button class="tab" data-tab="report">5 · Forensic report</button>
   </nav>
   <div class="topright"><button id="btnModels" class="ghost" title="Models and settings">⚙ Models & settings</button></div>
 </header>
@@ -25,6 +26,9 @@
   <div class="toolbar">
     <button id="btnOpen" class="primary">Import audio / video…</button>
     <div id="fileInfo" class="fileinfo muted">No recording loaded. Supports MP3, WAV, FLAC, OGG, M4A, AAC, MP4, MOV, MKV, WEBM (≤ 5 min).</div>
+    <label class="muted" title="Which analyses run. Every skipped step is listed under Intelligence → Capabilities.">Mode
+      <select id="selMode"><option value="quick">Quick</option><option value="standard">Standard</option>
+      <option value="deep" selected>Deep</option><option value="experimental">Experimental</option></select></label>
     <button id="btnAnalyse" class="primary" disabled>Start analysis</button>
     <button id="btnContext" class="ghost" disabled>Recording context…</button>
   </div>
@@ -34,7 +38,14 @@
   <div class="player card">
     <button id="btnPlay" class="round" disabled>▶</button>
     <span id="timeNow" class="mono">00:00.000</span><span class="muted">/</span><span id="timeDur" class="mono">00:00.000</span>
-    <label class="muted">Loop selection <input type="checkbox" id="chkLoop"></label>
+    <button id="btnReplay" class="ghost" title="Replay the selected event">⟲ Replay</button>
+    <button id="btnFull" class="ghost" title="Return to the full recording">Full</button>
+    <label class="muted">Loop <input type="checkbox" id="chkLoop"></label>
+    <label class="muted" title="Seconds of context played before and after an event">Context
+      <select id="selCtx"><option value="0">0 s</option><option value="1" selected>1 s</option><option value="2">2 s</option><option value="5">5 s</option></select></label>
+    <label class="muted">Speed <select id="selSpeed"><option>0.5</option><option>0.75</option><option selected>1</option><option>1.5</option><option>2</option></select></label>
+    <label class="muted" title="Band-pass filter to the selected event's frequency band (filtering, not source separation)">
+      <input type="checkbox" id="chkBand"> Event band only</label>
     <span class="sep"></span>
     <label>Scale <select id="selScale"><option value="linear">Linear</option><option value="log">Log-frequency</option><option value="mel">Mel</option></select></label>
     <label>Freq <input id="fMin" type="number" value="0" step="100" class="num"> – <input id="fMax" type="number" value="16000" step="500" class="num"> Hz</label>
@@ -80,28 +91,85 @@
 
 <!-- ======================= TAB 3: GEO ======================= -->
 <section id="tab-geo" class="tabpane">
+  <div class="toolbar">
+    <button class="ghost geov active" data-v="clue">Clue map (2D)</button>
+    <button class="ghost geov" data-v="map3d">3D map</button>
+    <button class="ghost geov" data-v="globe">Globe (offline)</button>
+    <span id="geoStatus" class="muted"></span>
+  </div>
   <div class="geo-layout">
     <div class="card globe-card">
-      <div class="rowflex">
-        <button id="btn3d" class="ghost active">3D globe</button><button id="btn2d" class="ghost">2D map</button>
-        <label><input type="checkbox" id="lyrHeat" checked> Plausibility</label>
-        <label><input type="checkbox" id="lyrCand" checked> Candidates</label>
-        <label><input type="checkbox" id="lyrBorders" checked> Borders</label>
-        <label><input type="checkbox" id="lyrGrat" checked> Graticule</label>
-        <label><input type="checkbox" id="lyrEvid" checked> Evidence markers</label>
-        <button id="btnGeoReset" class="ghost">Reset view</button>
+      <div id="v-clue" class="geoview">
+        <div class="rowflex">
+          <label><input type="checkbox" id="clAgree" checked> Agreement (where clues overlap)</label>
+          <label><input type="checkbox" id="clProb"> Combined probability</label>
+          <label><input type="checkbox" id="clCand" checked> Candidate areas</label>
+          <label><input type="checkbox" id="clLow"> Low-confidence clues</label>
+          <label><input type="checkbox" id="clLabels" checked> Labels</label>
+          <button id="clReset" class="ghost">Reset view</button>
+        </div>
+        <canvas id="clueCanvas"></canvas>
+        <div id="clueHover" class="muted small mono">Click anywhere to see which clues cover that point · drag to pan · wheel to zoom</div>
       </div>
-      <canvas id="globe"></canvas>
-      <div id="geoHover" class="muted small mono">Drag to rotate or pan · wheel to zoom</div>
+      <div id="v-map3d" class="geoview hidden">
+        <div class="rowflex">
+          <label><input type="checkbox" id="m3Terrain" checked> Terrain</label>
+          <label><input type="checkbox" id="m3Build" checked> 3D buildings</label>
+          <label><input type="checkbox" id="m3Sat"> Satellite imagery</label>
+          <label><input type="checkbox" id="m3Clues" checked> Clue regions</label>
+          <label><input type="checkbox" id="m3Low"> Low-confidence clues</label>
+          <label><input type="checkbox" id="m3Prob" checked> Combined probability</label>
+          <button id="m3Globe" class="ghost">Return to globe</button>
+          <button id="m3Lead" class="ghost">Leading candidate</button>
+        </div>
+        <div id="map3d"></div>
+        <div id="m3Note" class="muted small"></div>
+      </div>
+      <div id="v-globe" class="geoview hidden">
+        <div class="rowflex">
+          <button id="btn3d" class="ghost active">3D globe</button><button id="btn2d" class="ghost">2D map</button>
+          <label><input type="checkbox" id="lyrHeat" checked> Plausibility</label>
+          <label><input type="checkbox" id="lyrCand" checked> Candidates</label>
+          <label><input type="checkbox" id="lyrBorders" checked> Borders</label>
+          <label><input type="checkbox" id="lyrGrat" checked> Graticule</label>
+          <label><input type="checkbox" id="lyrEvid" checked> Evidence markers</label>
+          <button id="btnGeoReset" class="ghost">Reset view</button>
+        </div>
+        <canvas id="globe"></canvas>
+        <div id="geoHover" class="muted small mono">Drag to rotate or pan · wheel to zoom</div>
+      </div>
     </div>
     <div class="card geo-side">
+      <div id="pointInfo" class="hidden"></div>
       <div id="geoSummary" class="muted">Geographic analysis runs after the recording-context step.</div>
+      <h4>Clues on the map</h4>
+      <div id="clueList" class="muted small">No clues yet.</div>
+      <h4>Unlocated evidence</h4>
+      <div id="unlocList" class="muted small">-</div>
+      <h4>Candidate areas</h4>
       <div id="geoCands"></div>
     </div>
   </div>
 </section>
 
-<!-- ======================= TAB 4: REPORT ======================= -->
+<!-- ======================= TAB 4: INTELLIGENCE ======================= -->
+<section id="tab-intel" class="tabpane">
+  <div class="intel-grid">
+    <div class="card"><h3>Search the recording</h3>
+      <div class="rowflex"><input id="txtQ" class="search wide" placeholder="e.g. a church bell ringing, a helicopter overhead">
+      <button id="txtGo" class="primary">Search</button></div>
+      <div id="txtRes" class="small"></div></div>
+    <div class="card"><h3>Unknown-sound discovery</h3><div id="unkList" class="small muted">-</div></div>
+    <div class="card"><h3>Event relationships</h3><div id="relList" class="small muted">-</div></div>
+    <div class="card"><h3>Reference matches (signature database)</h3><div id="refList" class="small muted">-</div></div>
+    <div class="card"><h3>Bells and Dove's Guide</h3><div id="bellList" class="small muted">-</div></div>
+    <div class="card"><h3>Direction cues</h3><div id="dirList" class="small muted">-</div></div>
+    <div class="card"><h3>Forensic integrity</h3><div id="intList" class="small muted">-</div></div>
+    <div class="card"><h3>Capabilities: what ran, what did not, and why</h3><div id="capList" class="small muted">-</div></div>
+  </div>
+</section>
+
+<!-- ======================= TAB 5: REPORT ======================= -->
 <section id="tab-report" class="tabpane">
   <div class="toolbar">
     <button id="expHtml" class="primary" disabled>Export HTML</button>
@@ -155,6 +223,8 @@
       <label><input type="checkbox" id="setGbif"> GBIF species occurrence by country (sends species names)</label>
       <label><input type="checkbox" id="setOsm"> OpenStreetMap infrastructure check (sends a candidate bounding box)</label>
       <label><input type="checkbox" id="setWx"> Open-Meteo historical weather (sends candidate coordinates and date)</label>
+      <label><input type="checkbox" id="setMaps"> Online 3D map tiles (OpenFreeMap basemap and buildings, AWS Terrain Tiles,
+        EOX Sentinel-2 imagery; requests reveal which map areas you view)</label>
     </fieldset>
     <fieldset><legend>Listing threshold</legend>
       <label>Minimum model score listed as an event <input type="number" id="setThr" min="0.05" max="0.9" step="0.05" class="num"> (all scores are still saved in case data)</label>
@@ -167,5 +237,6 @@
 <script src="/static/vendor/d3.min.js"></script>
 <script src="/static/vendor/topojson-client.min.js"></script>
 <script src="/static/app.js"></script>
+<script src="/static/app2.js"></script>
 </body>
 </html>

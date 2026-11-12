@@ -97,3 +97,52 @@ def map_png(geo: dict, width: int = 1400, bbox=None) -> str:
     d.text((8, height - 18), "Natural Earth boundaries; circles are geodesic uncertainty radii; heuristic relative plausibility",
            fill=(200, 210, 225, 255))
     return png_b64(img)
+
+
+CLUE_RGB = [(79, 140, 255), (255, 179, 64), (46, 211, 183), (255, 107, 154), (199, 125, 255), (123, 216, 143), (245, 225, 60),
+            (255, 138, 76), (77, 208, 225), (229, 115, 115)]
+
+
+def clue_map_png(geo: dict, width: int = 1400) -> str | None:
+    """Equirectangular clue map: each locatable clue's footprint as a coloured region with a white edge."""
+    import base64 as b64
+    fps = [f for f in geo.get("footprints", []) if f.get("used")]
+    if not fps:
+        return None
+    H = width // 2
+    img = Image.new("RGB", (width, H), (14, 20, 32))
+    d = ImageDraw.Draw(img, "RGBA")
+
+    def px(lon, lat):
+        return ((lon + 180) / 360 * width, (90 - lat) / 180 * H)
+    for f in world_countries():
+        for poly in f["polygons"]:
+            if len(poly[0]) >= 3:
+                d.polygon([px(lo, la) for lo, la in poly[0]], fill=(38, 48, 63, 255), outline=(70, 84, 104, 255))
+    cw = width / 720
+    count = np.zeros(720 * 360, np.uint8)
+    for i, f in enumerate(fps):
+        bits = np.unpackbits(np.frombuffer(b64.b64decode(f["bits"]), np.uint8))[:720 * 360]
+        count += bits
+        col = CLUE_RGB[i % len(CLUE_RGB)]
+        grid = bits.reshape(360, 720)
+        rows, cols = np.nonzero(grid)
+        for r, c in zip(rows, cols):
+            d.rectangle([c * cw, r * cw, (c + 1) * cw, (r + 1) * cw], fill=col + (70,))
+        edge = grid & ~(np.roll(grid, 1, 0) & np.roll(grid, -1, 0) & np.roll(grid, 1, 1) & np.roll(grid, -1, 1))
+        for r, c in zip(*np.nonzero(edge)):
+            d.rectangle([c * cw, r * cw, (c + 1) * cw, (r + 1) * cw], fill=(255, 255, 255, 140))
+    mx = int(count.max())
+    if mx >= 2:
+        for r, c in zip(*np.nonzero(count.reshape(360, 720) >= mx)):
+            d.rectangle([c * cw, r * cw, (c + 1) * cw, (r + 1) * cw], outline=(255, 90, 60, 255))
+    y = 6
+    for i, f in enumerate(fps[:12]):
+        col = CLUE_RGB[i % len(CLUE_RGB)]
+        d.rectangle([8, y, 20, y + 12], fill=col + (255,), outline=(255, 255, 255, 255))
+        d.text((26, y), f["label"][:70], fill=(230, 235, 245, 255))
+        y += 16
+    if mx >= 2:
+        d.text((8, H - 18), f"Red cells: area where the most clues overlap ({mx} of {len(fps)}). Footprints are approximate 0.5° cells.",
+               fill=(255, 200, 190, 255))
+    return png_b64(img)

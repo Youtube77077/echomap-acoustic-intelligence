@@ -9,6 +9,8 @@ from __future__ import annotations
 import io
 import json
 import mimetypes
+mimetypes.add_type("text/javascript", ".mjs")
+mimetypes.add_type("text/css", ".css")
 import secrets
 import threading
 import wave

@@ -167,6 +167,46 @@ def render(case) -> str:
                              for p in geo["species_profiles"]]))
         if geo.get("online"):
             out.append("<h3>Online lookups (opt-in)</h3>" + _j(geo["online"]))
+    # clue map + unlocated evidence
+    if geo:
+        cm = images.clue_map_png(geo)
+        out.append("<h2>Clue map: geographic footprint of each clue</h2>")
+        if cm:
+            out.append(f"<img src='{cm}' alt='clue map'>")
+        out.append(_tbl(["Clue", "Group", "Used", "Confidence", "Area km²", "Main countries", "Source", "Precision"],
+                        [[E(f["label"]), E(f["group"]), "yes" if f["used"] else "no (low confidence)", f["confidence"],
+                          f"{f['area_km2']:,}", E(", ".join(c["name"] for c in f["countries"][:5])), E(f.get("source") or ""),
+                          E(f.get("precision") or "")] for f in geo.get("footprints", [])]))
+        out.append("<h3>Unlocated evidence (not placeable on a map)</h3>" +
+                   _tbl(["ID", "Detection", "Category", "Reason"], [[E(u["record"]), E(u["label"]), E(u["category"]), E(u["reason"])]
+                                                                     for u in geo.get("unlocated", [])]))
+    # intelligence sections
+    if r.get("integrity"):
+        it = r["integrity"]
+        out.append("<h2>Forensic integrity checks</h2>" + ("<ul>" + "".join(f"<li>{E(f)}</li>" for f in it["summary_flags"]) + "</ul>"
+                   if it["summary_flags"] else "<p>No integrity flags raised.</p>") + _j({k: v for k, v in it.items() if k != "summary_flags"}))
+    if r.get("bells"):
+        out.append("<h2>Bell analysis and Dove's Guide matching</h2>" + _j(r["bells"]))
+    if r.get("references"):
+        out.append("<h2>Reference recording matches</h2>" + _j(r["references"]))
+    if r.get("relations"):
+        rel = r["relations"]
+        out.append("<h2>Event relationships</h2>" + _tbl(["Pattern", "Explanation", "Records", "Status"],
+                   [[E(h["pattern"]), E(h["explanation"]), E(", ".join(h["records"])), E(h["status"])] for h in rel["hypotheses"]]) +
+                   _tbl(["Repeated sound", "Count", "Mean interval (s)", "Regular"],
+                        [[E(p["label"]), p["count"], p["mean_interval_s"], "yes" if p["regular"] else "no"] for p in rel["repetitions"]]))
+    if r.get("discovery"):
+        out.append("<h2>Unknown-sound discovery</h2>" + _tbl(["Time", "Family", "Novelty", "Description", "Closest labels", "Disagreements"],
+                   [[fmt_t(u["start"]), E(u.get("family", "")), u["novelty"], E(u["description"]),
+                     E(", ".join(f"{l['label']} {l['score']}" for l in u["closest_model_labels"][:3])), E("; ".join(u["disagreements"]))]
+                    for u in r["discovery"]["events"]]))
+    if r.get("spatial"):
+        out.append("<h2>Direction cues</h2>" + _j(r["spatial"]))
+    if r.get("capabilities"):
+        cap = r["capabilities"]
+        out.append(f"<h2>Capabilities executed in this analysis (mode: {E(cap['mode_title'])})</h2>" +
+                   _tbl(["Capability", "Status", "Class", "Reason"], [[E(i["name"]), E(i["status"]), E(i.get("class_title", "")),
+                                                                         E(i.get("reason", ""))] for i in cap["items"]]))
     # 18 time
     t = r.get("time", {})
     out.append("<h2>18. Recording-time findings</h2>")

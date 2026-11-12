@@ -71,3 +71,22 @@ fieldset{border:1px solid var(--line);border-radius:6px;margin:8px 0} fieldset l
 menu{display:flex;justify-content:flex-end;gap:8px;padding:0}
 .mtable{width:100%;border-collapse:collapse;font-size:12px} .mtable td,.mtable th{border-bottom:1px solid var(--line);padding:4px;text-align:left;vertical-align:top}
 .ok{color:var(--ok)} .no{color:var(--bad)}
+
+#clueCanvas{flex:1;width:100%;min-height:420px;background:#0e1420;border-radius:6px;cursor:crosshair}
+#map3d{flex:1;width:100%;min-height:420px;border-radius:6px;background:#0e1420}
+.geoview{display:flex;flex-direction:column;flex:1;min-height:0}
+.geoview.hidden{display:none}
+.clue{display:grid;grid-template-columns:18px 14px 1fr;gap:6px;align-items:start;padding:4px 2px;border-bottom:1px solid #1e2a42}
+.clue .sw{width:14px;height:14px;border-radius:3px;border:1.5px solid #fff;margin-top:2px}
+.clue.low .sw{border-style:dashed}
+.badge{font-size:10px;padding:0 5px;border-radius:8px;border:1px solid var(--line);color:var(--muted);margin-left:4px}
+#pointInfo{background:#1a2338;border:1px solid var(--accent);border-radius:6px;padding:8px;margin-bottom:8px}
+.intel-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.intel-grid .card{max-height:420px;overflow:auto}
+.intel-grid h3{margin:0 0 6px;font-size:14px}
+.cap-row{display:grid;grid-template-columns:150px 1fr;gap:6px;border-bottom:1px solid #1e2a42;padding:3px 0}
+.st-executed{color:var(--ok)} .st-partial{color:var(--poss)} .st-not_executed,.st-not_applicable{color:var(--muted)}
+.st-unavailable,.st-requires_hardware,.st-unsupported,.st-unsupported_by_recording{color:var(--bad)}
+.tierb{font-size:10px;padding:0 6px;border-radius:8px;border:1px solid var(--accent);color:var(--accent)}
+
+.round.mini{width:22px;height:22px;font-size:10px;padding:0}
