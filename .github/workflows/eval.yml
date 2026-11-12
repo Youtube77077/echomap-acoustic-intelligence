@@ -1,0 +1,49 @@
+name: eval
+# Cloud evaluations; results are committed to docs/eval/*.json. Nothing runs on the user's PC.
+on:
+  workflow_dispatch:
+    inputs:
+      which:
+        description: "geo | lang | misc | all"
+        default: "all"
+permissions:
+  contents: write
+jobs:
+  eval:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        task: [geo, lang, misc]
+    env:
+      GH_TOKEN: ${{ github.token }}
+      LOCALAPPDATA: /home/runner/appdata
+    steps:
+      - uses: actions/checkout@v4
+        if: inputs.which == 'all' || inputs.which == matrix.task
+      - uses: actions/setup-python@v5
+        if: inputs.which == 'all' || inputs.which == matrix.task
+        with:
+          python-version: "3.14"
+          cache: pip
+          cache-dependency-path: requirements*.txt
+      - name: Run ${{ matrix.task }}
+        if: inputs.which == 'all' || inputs.which == matrix.task
+        run: |
+          set -o pipefail
+          pip install -r requirements.txt
+          python tools/fetch_models.py /home/runner/models
+          mkdir -p /home/runner/refs && gh release download references-v1 -p "references-v1-clips.zip" -D /home/runner/refs && (cd /home/runner/refs && unzip -q -o references-v1-clips.zip) || echo "no reference clips"
+          case "${{ matrix.task }}" in
+            geo)  python -u tools/eval_geo.py /home/runner/models /home/runner/geo docs/eval/geo.json 6 ;;
+            lang) python -u tools/eval_lang.py /home/runner/models docs/eval/language.json 15 ;;
+            misc) python -u tools/eval_misc.py /home/runner/models /home/runner/refs/clips docs/eval/signals_bells_unknown.json ;;
+          esac
+      - name: Commit results
+        if: always() && (inputs.which == 'all' || inputs.which == matrix.task)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/eval || true
+          git diff --cached --quiet && echo "no results" || (git commit -m "Evaluation results: ${{ matrix.task }}" && for i in 1 2 3; do git pull --rebase && git push && break; sleep 5; done)
