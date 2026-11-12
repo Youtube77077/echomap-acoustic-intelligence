@@ -41,6 +41,9 @@ def main():
     dest.mkdir(parents=True, exist_ok=True)
     s = requests.Session()
     s.headers["User-Agent"] = "EchoMap-CI"
+    tag = os.environ.get("ECHOMAP_MODELS_TAG", "models-v1")
+    # primary source: this repository's private release (mirrors the official files + CI conversions)
+    subprocess.run(["gh", "release", "download", tag, "--dir", str(dest), "--clobber"], check=False)
     for url, name, algo, want in OFFICIAL:
         p = dest / name
         if not p.exists() or digest(p, algo) != want:
@@ -53,8 +56,6 @@ def main():
         if got != want:
             sys.exit(f"CHECKSUM MISMATCH {name}: {got} != {want}")
         print(f"ok {name}")
-    tag = os.environ.get("ECHOMAP_MODELS_TAG", "models-v1")
-    subprocess.run(["gh", "release", "download", tag, "--dir", str(dest), "--clobber"], check=True)
     sums = (dest / "SHA256SUMS.txt").read_text().split("\n")
     for line in sums:
         if line.strip():

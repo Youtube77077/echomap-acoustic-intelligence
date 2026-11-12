@@ -1,4 +1,4 @@
-"""Build EchoMap's compact datasets from the approved raw sources in tools/raw/.
+"""Build EchoMap's compact datasets from the approved raw sources in data-sources/.
 
 Run once:  python tools/build_data.py
 Outputs (committed): echomap/data/{countries.json, land_grid.npy, coastal_grid.npy, grid_meta.json,
@@ -20,7 +20,7 @@ import shapely
 from shapely.geometry import MultiPolygon, Polygon
 
 ROOT = Path(__file__).resolve().parents[1]
-RAW = ROOT / "tools" / "raw"
+RAW = ROOT / "data-sources"
 OUT = ROOT / "echomap" / "data"
 OUT.mkdir(parents=True, exist_ok=True)
 sys.path.insert(0, str(ROOT))

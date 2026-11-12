@@ -18,7 +18,7 @@ jobs:
     timeout-minutes: 40
     env:
       GH_TOKEN: ${{ github.token }}
-      LOCALAPPDATA: ${{ runner.temp }}/appdata
+      LOCALAPPDATA: /home/runner/appdata
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -30,21 +30,21 @@ jobs:
       - name: Cache models
         uses: actions/cache@v4
         with:
-          path: ${{ runner.temp }}/appdata/EchoMap/models
+          path: /home/runner/appdata/EchoMap/models
           key: models-v1-birdnet31-geo304
       - run: python tools/fetch_models.py "$LOCALAPPDATA/EchoMap/models"
       - name: Cache test audio
         uses: actions/cache@v4
         with:
-          path: ${{ runner.temp }}/audio
+          path: /home/runner/audio
           key: audio-${{ hashFiles('tests/test_audio_manifest.json') }}
-      - run: python tools/fetch_test_audio.py "${{ runner.temp }}/audio"
+      - run: python tools/fetch_test_audio.py "/home/runner/audio"
       - name: Run cases
         run: |
           CLIPS="${{ inputs.clips }}"
           if [ "$CLIPS" = "all" ]; then CLIPS=$(python -c "import json;print(' '.join(c['file'] for c in json.load(open('tests/test_audio_manifest.json'))['clips']))"); fi
           for c in $CLIPS; do
             echo "::group::$c"
-            ECHOMAP_STACKDUMP=60 python tools/run_case.py "${{ runner.temp }}/audio/$c" ${{ inputs.args }}
+            ECHOMAP_STACKDUMP=60 python tools/run_case.py "/home/runner/audio/$c" ${{ inputs.args }}
             echo "::endgroup::"
           done

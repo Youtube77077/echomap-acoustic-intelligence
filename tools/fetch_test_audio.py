@@ -5,6 +5,7 @@ Recordings are never committed to git.
 """
 import hashlib
 import json
+import subprocess
 import sys
 from pathlib import Path
 
@@ -18,6 +19,8 @@ def main():
     dest.mkdir(parents=True, exist_ok=True)
     s = requests.Session()
     s.headers["User-Agent"] = "EchoMap-CI"
+    subprocess.run(["gh", "release", "download", "test-audio-v1", "--dir", str(dest), "--pattern", "*.wav",
+                    "--skip-existing"], check=False)
     for item in json.loads(MANIFEST.read_text(encoding="utf-8"))["clips"]:
         p = dest / item["file"]
         if not p.exists():
