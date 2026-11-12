@@ -31,6 +31,7 @@ class AppState:
         self.case = None
         self.token = secrets.token_urlsafe(24)
         self.window = None          # pywebview window (set by app.py)
+        self.file_dialog = None     # fallback native open dialog when no pywebview window
         self._wav_cache = None
 
     def wav_bytes(self) -> bytes:
@@ -183,6 +184,8 @@ def make_handler(state: AppState):
                     res = state.window.create_file_dialog(webview.FileDialog.OPEN, allow_multiple=False,
                                                           file_types=(f"Audio/video ({exts})", "All files (*.*)"))
                     p = res[0] if res else None
+                elif not p and state.file_dialog is not None:
+                    p = state.file_dialog()
                 if not p:
                     return self._json({"cancelled": True})
                 c = Case(p, s)
