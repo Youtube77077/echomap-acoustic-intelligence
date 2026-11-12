@@ -1,3 +1,7 @@
+# EchoMap v1.0.6
+
+- Fixed: models were reported missing when the model zip was extracted next to EchoMap.exe. EchoMap now finds the model pack automatically (next to the exe at any nesting, in %LOCALAPPDATA%\EchoMap\models, or in Downloads/Desktop).
+
 # EchoMap v1.0.5
 
 - Fixed: Import failed with "not a valid file filter".
@@ -6,7 +10,7 @@
 # EchoMap v1.0.4
 
 Downloads:
-- `EchoMap-v1.0.5-win64.zip`: the application.
+- `EchoMap-v1.0.6-win64.zip`: the application.
 - `EchoMap-models-v2.zip`: same model pack as v1.0.2 (no change). Extract into `EchoMap\models`.
 
 ## New

@@ -8,7 +8,7 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
 APP_NAME = "EchoMap"
-APP_VERSION = "1.0.5"
+APP_VERSION = "1.0.6"
 MAX_DURATION_S = 300.0  # five minutes
 SUPPORTED_EXT = {".mp3", ".wav", ".flac", ".ogg", ".m4a", ".aac", ".mp4", ".mov", ".mkv", ".webm"}
 VIDEO_EXT = {".mp4", ".mov", ".mkv", ".webm"}
@@ -54,7 +54,37 @@ class Settings:
                         setattr(s, k, v)
             except (OSError, ValueError):
                 pass
+        found = find_models_dir(s.models_dir)
+        if found:
+            s.models_dir = found
         return s
+
+
+MARKER = "efficientat_mn10_as.onnx"
+
+
+def find_models_dir(current: str | None = None) -> str | None:
+    """Locate the extracted model pack: the configured folder, next to EchoMap.exe (any nesting up to 3 levels,
+    e.g. models\\EchoMap-models-v2\\), %LOCALAPPDATA%\\EchoMap\\models, or the user's Downloads/Desktop."""
+    import sys
+    roots = []
+    if current:
+        roots.append(Path(current))
+    exe = Path(sys.executable).resolve().parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parents[1]
+    roots += [exe / "models", exe, app_home() / "models", Path.home() / "Downloads", Path.home() / "Desktop"]
+    for r in roots:
+        if (r / MARKER).exists():
+            return str(r)
+        if not r.is_dir():
+            continue
+        for depth in ("*", "*/*", "*/*/*"):
+            try:
+                hit = next(iter(r.glob(f"{depth}/{MARKER}")), None)
+            except OSError:
+                hit = None
+            if hit:
+                return str(hit.parent)
+    return None
 
     def save(self) -> None:
         p = app_home() / "config.json"
