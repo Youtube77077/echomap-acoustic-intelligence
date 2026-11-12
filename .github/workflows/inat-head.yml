@@ -1,0 +1,79 @@
+name: inat-head
+# Animal-species head from iNatSounds 2024 (~137k training recordings, 5,569 species; non-commercial research terms,
+# approved by the user for personal use). Recordings are streamed and never stored: only embeddings (release
+# inat-emb-v1, private) and the trained head (echomap/data/inat_head.npz) are kept. Runs on GitHub's machines only.
+on:
+  push:
+    branches: ["claude/**"]
+    paths: [".github/workflows/inat-head.yml"]
+  workflow_dispatch:
+    inputs:
+      stage:
+        description: "all = embed + train; train = retrain from the embeddings already in release inat-emb-v1"
+        default: "all"
+permissions:
+  contents: write
+jobs:
+  embed:
+    if: github.event_name == 'push' || inputs.stage == 'all'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 340
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {split: train, shard: 0, n: 8, k: 2}
+          - {split: train, shard: 1, n: 8, k: 2}
+          - {split: train, shard: 2, n: 8, k: 2}
+          - {split: train, shard: 3, n: 8, k: 2}
+          - {split: train, shard: 4, n: 8, k: 2}
+          - {split: train, shard: 5, n: 8, k: 2}
+          - {split: train, shard: 6, n: 8, k: 2}
+          - {split: train, shard: 7, n: 8, k: 2}
+          - {split: val, shard: 0, n: 2, k: 1}
+          - {split: val, shard: 1, n: 2, k: 1}
+    env:
+      GH_TOKEN: ${{ github.token }}
+      LOCALAPPDATA: /home/runner/appdata
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          cache: pip
+          cache-dependency-path: requirements*.txt
+      - run: pip install -r requirements.txt && sudo apt-get install -y pigz
+      - name: Cache models
+        uses: actions/cache@v4
+        with:
+          path: /home/runner/appdata/EchoMap/models
+          key: models-v1-birdnet31-geo304-asr1
+      - run: python tools/fetch_models.py "$LOCALAPPDATA/EchoMap/models"
+      - name: Embed ${{ matrix.split }} shard ${{ matrix.shard }}/${{ matrix.n }}
+        run: python -u tools/inat_embed.py "$LOCALAPPDATA/EchoMap/models" ${{ matrix.split }} ${{ matrix.shard }} ${{ matrix.n }} ${{ matrix.split }}_${{ matrix.shard }}.npz ${{ matrix.k }}
+      - name: Upload embeddings (private release, not recordings)
+        run: |
+          gh release view inat-emb-v1 >/dev/null 2>&1 || gh release create inat-emb-v1 --prerelease --title "iNatSounds embeddings (EchoMap animal head)" --notes "Embeddings only (EfficientAT 960-d, BirdNET+ 1280-d) of iNatSounds 2024 recordings, for training EchoMap's animal-species head. No audio. iNatSounds terms: non-commercial research/education." || true
+          for i in 1 2 3; do gh release upload inat-emb-v1 ${{ matrix.split }}_${{ matrix.shard }}.npz ${{ matrix.split }}_${{ matrix.shard }}.categories.json --clobber 2>/dev/null && break || gh release upload inat-emb-v1 ${{ matrix.split }}_${{ matrix.shard }}.npz --clobber && break; sleep 10; done
+  train:
+    needs: embed
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - run: pip install numpy==2.5.4
+      - run: mkdir -p emb && gh release download inat-emb-v1 -D emb --clobber && ls -la emb
+      - run: python -u tools/train_inat_head.py emb
+      - name: Commit head and evaluation
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add echomap/data/inat_head.npz docs/eval/inat_head.json
+          git commit -m "Animal-species head trained on iNatSounds (see docs/eval/inat_head.json)" || exit 0
+          for i in 1 2 3; do git pull --rebase origin ${{ github.ref_name }} && git push origin HEAD:${{ github.ref_name }} && break; sleep 5; done

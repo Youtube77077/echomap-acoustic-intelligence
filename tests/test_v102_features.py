@@ -149,4 +149,4 @@ def test_asr_transcribes_when_pack_installed():
     if not md or not asr.available(md):
         pytest.skip("speech-to-text pack not installed")
     r = asr.transcribe(np.zeros(16000 * 3, np.float32), md, "en")
-    assert r["quality"] in ("likely spurious", "uncertain")  # silence must never come out as a 'clear' transcript
+    assert r["quality"] in ("no speech", "likely spurious", "uncertain")  # silence must never come out as a 'clear' transcript
