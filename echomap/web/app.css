@@ -120,3 +120,15 @@ a{color:#1f66e5}
 .cand.r1{border-color:#1f66e5!important}
 .cap-row{border-bottom:1px solid #e3eaf3!important}
 ::-webkit-scrollbar{width:10px;height:10px} ::-webkit-scrollbar-thumb{background:#c9d6ea;border-radius:5px} ::-webkit-scrollbar-track{background:#f4f7fb}
+
+/* v1.0.8 findings summary */
+.findings{margin:8px 0}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px}
+.fbox{background:#fff;border:1px solid var(--line,#d8e0ea);border-radius:8px;padding:8px 12px;min-width:0}
+.fbox h3{margin:0 0 6px;font-size:14px;color:#0f3d99}
+.fbox ul{margin:0;padding-left:18px}
+.fbox p{margin:4px 0}
+.fwhere{border-left:4px solid #1f66e5}
+.big{font-size:16px}
+.fspeech,.fsounds{max-height:260px;overflow:auto}
+.veh{color:#0f3d99;font-size:12px}

@@ -90,16 +90,27 @@ class Case:
         return registry.status(self.settings.models_dir)
 
     # ------------------------------------------------------------------ stage A
-    def analyse(self):
+    DEFAULT_CONTEXT = {"date": {"mode": "unknown"}, "location": {"mode": "unknown"}}
+
+    def analyse(self, auto_geo: bool = True):
+        """Stage A, then (v1.0.8) the geographic step automatically with 'unknown' context, so every analysis ends
+        with a location estimate (or an explicit 'no reliable estimate'). The context dialog only refines it."""
         try:
             self._analyse()
-            self.state = "analysed"
         except Exception as e:  # noqa: BLE001
             self.error = f"{type(e).__name__}: {e}"
             self.history.log("error", self.error, traceback=traceback.format_exc()[-2000:])
             self.state = "error"
-        finally:
             runtime.release_all()
+            return
+        if not auto_geo:
+            self.state = "analysed"
+            runtime.release_all()
+            return
+        self.contextualise(dict(self.DEFAULT_CONTEXT))
+        if self.state == "error":   # keep the acoustic results usable even if the geo step failed
+            self.history.log("geo.auto_failed", "Automatic geographic step failed; acoustic results kept", error=self.error)
+            self.state = "analysed"
 
     def _analyse(self):
         s, h, md = self.settings, self.history, self.settings.models_dir
@@ -258,17 +269,32 @@ class Case:
             def hint(t0, t1):
                 best = max(langs, key=lambda L: min(t1, L[1]) - max(t0, L[0]), default=None)
                 return best[2] if best and min(t1, best[1]) - max(t0, best[0]) > 0 else None
-            with h.timed("asr", "Whisper-base transcription of all speech candidates (low threshold; faint speech enhanced)"):
-                trs = asr.run_all(x16, sed, sidx, md, hint)
-            self.result["transcripts"] = {"segments": trs, "method": asr.__doc__.strip(),
-                                          "counts": {q: sum(1 for t in trs if t["quality"] == q)
+            from .capabilities import ASR_BUDGET, ASR_THRESHOLD
+            thr = ASR_THRESHOLD.get(cap.mode, 0.06)
+            fixed, per_s = ASR_BUDGET.get(cap.mode, (45.0, 2.0))
+            budget = fixed + per_s * dur
+            with h.timed("asr", f"Whisper-base transcription of speech candidates (speech score >= {thr}; faint speech "
+                                f"enhanced; budget {budget:.0f} s)"):
+                trs, stats = asr.run_all(x16, sed, sidx, md, hint, thr=thr, budget_s=budget,
+                                         progress=lambda f: self._p("asr", 0.78 + 0.04 * f, "Transcribing speech"))
+            shown = [t for t in trs if t["quality"] != "no speech"]
+            self.result["transcripts"] = {"segments": shown, "method": asr.__doc__.strip(), "stats": stats,
+                                          "no_speech_segments": [{k: t[k] for k in ("start", "end", "no_speech_prob")}
+                                                                 for t in trs if t["quality"] == "no speech"],
+                                          "counts": {q: sum(1 for t in shown if t["quality"] == q)
                                                      for q in ("clear", "uncertain", "likely spurious")}}
+            trs = shown
+            sp.add_asr_languages(inv, trs)
             for tr in trs:
                 for r in inv.records:
                     if r["category"] == "language" and r["start"] < tr["end"] and r["end"] > tr["start"]:
                         r.setdefault("transcripts", []).append({k: tr[k] for k in ("start", "end", "text", "quality", "language")})
-            cap.add("asr", "Speech transcription (all speech, incl. faint background)", "executed" if trs else "partial",
-                    "" if trs else "No speech candidates found, even at a low threshold.", segments=len(trs))
+            note = "" if trs else "No speech found (Whisper reported no speech in every candidate)."
+            if stats["skipped_for_time"]:
+                note = (f"{len(stats['skipped_for_time'])} of {stats['candidates']} speech segment(s) not transcribed: "
+                        f"time budget of {budget:.0f} s reached (the clearest speech was transcribed first).")
+            cap.add("asr", "Speech transcription", "executed" if trs and not stats["skipped_for_time"] else "partial",
+                    note, segments=len(trs), threshold=thr)
         self._p("specialists", 0.82, "Engine, siren, bell, signal and wind analysis")
         try:
           with h.timed("detect.specialists", "Engine harmonics, sirens, bells, periodic signals, wind, mains, reverb"):
@@ -347,14 +373,14 @@ class Case:
         if self._bell:
             self._bell["bell_record"] = self._bell.pop("bell_record_obj")["id"]
         x8 = media.resample(x, sr, 8000)
+        from .models import vehicle_head   # cheap (one matrix product per event): runs in every mode
+        nveh = vehicle_head.annotate(records, sed)
+        cap.add("vehicle_type", "Vehicle type (car / bus / truck / tram / motorcycle / bicycle)",
+                "executed" if vehicle_head.head() else "unavailable",
+                f"{nveh} vehicle event(s) classified" if vehicle_head.head() else "Vehicle-type head not bundled.")
         if cap.wants("references"):
             with h.timed("references", "Reverse sound search (fingerprints + embeddings) against the reference library"):
                 self.result["references"] = references.search_events(records, sed, x8)
-            from .models import vehicle_head
-            nveh = vehicle_head.annotate(records, sed)
-            cap.add("vehicle_type", "Vehicle type (car / bus / truck / tram / motorcycle / bicycle)",
-                    "executed" if vehicle_head.head() else "unavailable",
-                    f"{nveh} vehicle event(s) classified" if vehicle_head.head() else "Vehicle-type head not bundled.")
             cap.add("references", "Acoustic signature database / reverse sound search",
                     "executed" if self.result["references"].get("available") else "unavailable",
                     self.result["references"].get("reason", ""))
@@ -379,7 +405,7 @@ class Case:
         self.result["inventory_summary"] = inv.summary()
         self.result["acoustic_weather"] = weather.acoustic_observations(records, wind)
         h.log("inventory.final", "Detection inventory finalised", records=len(records))
-        self._p("done", 1.0, "Analysis complete. Provide context for geographic analysis.")
+        self._p("geo", 0.9, "Analysis complete. Estimating location")
         self.save()
 
     @staticmethod
@@ -406,7 +432,7 @@ class Case:
         self.result["context"] = ctx
         h.log("context", "User context recorded", **{k: v for k, v in (ctx or {}).items()})
         records = self.result["inventory"]
-        self._p("geo", 0.1, "Geographic inference")
+        self._p("geo", 0.92, "Estimating location")
         eng = GeoEngine(s.models_dir, h)
         with h.timed("geo.fusion", "Evidence fusion on 0.5° land grid"):
             extra = dict(getattr(self, "_bell", None) or {})
@@ -474,7 +500,7 @@ class Case:
                                                                 best["uncertainty_radius_km"], sorted(wanted), h)
                 except Exception as e:  # noqa: BLE001
                     online["osm"] = {"error": str(e)}
-        self._p("time", 0.6, "Temporal analysis")
+        self._p("time", 0.95, "Temporal analysis")
         with h.timed("time.analyse", "Separate time sources and seasonal compatibility"):
             self.result["time"] = timeinfo.analyse(self.meta, ctx, records, geo["species_profiles"])
         dctx = (ctx or {}).get("date") or {}
@@ -494,7 +520,9 @@ class Case:
                          footprints=len(geo.get("footprints", [])))
             self.result["capabilities"] = self.cap.to_json()
         self.result["geo"] = geo
-        self._p("report", 0.85, "Writing report")
+        from .detect import findings
+        self.result["findings"] = findings.build(self.result)
+        self._p("report", 0.97, "Writing report")
         from .report import html as rhtml
         with h.timed("report.html", "Self-contained HTML report"):
             p = self.dir / "report.html"

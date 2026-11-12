@@ -64,7 +64,10 @@ def enhance(x16k: np.ndarray, sr: int = 16000) -> np.ndarray:
     return np.clip(y * (0.1 / rms), -1, 1).astype(np.float32)
 
 
-def transcribe(x16k: np.ndarray, md: str, lang: str | None = None, max_tokens: int = 220) -> dict:
+NO_SPEECH_SKIP = 0.8   # Whisper's own no-speech probability above which decoding is skipped (saves most of the time)
+
+
+def transcribe(x16k: np.ndarray, md: str, lang: str | None = None, max_tokens: int | None = None) -> dict:
     md = str(md)
     t = _table(md)
     ids = t["ids"]
@@ -76,14 +79,26 @@ def transcribe(x16k: np.ndarray, md: str, lang: str | None = None, max_tokens: i
     def step(seq):
         return sd.run(None, {"input_ids": np.array([seq], np.int64), "encoder_hidden_states": enc})[0][0].astype(np.float64)
 
+    dur = len(x16k) / 16000
+    if max_tokens is None:   # read speech is ~3-4 tokens/s; more than ~7/s is a hallucination loop
+        max_tokens = int(min(220, 12 + 7 * dur))
     first = step([ids["sot"]])
     pf = np.exp(first - first.max())
     pf /= pf.sum()
     no_speech = float(pf[ids["nospeech"]])
+    codes = list(t["lang_to_id"].keys())
+    lang_ids = np.array([t["lang_to_id"][c] for c in codes])
+    ll = first[lang_ids]
+    lp = np.exp(ll - ll.max())
+    lp /= lp.sum()
+    order = np.argsort(-lp)[:3]
+    lang_probs = [{"code": codes[i].strip("<|>"), "prob": round(float(lp[i]), 4)} for i in order]
     if lang is None or f"<|{lang}|>" not in t["lang_to_id"]:
-        lang_ids = np.array(list(t["lang_to_id"].values()))
-        k = int(lang_ids[np.argmax(first[lang_ids])])
-        lang = next(c for c, v in t["lang_to_id"].items() if v == k).strip("<|>")
+        lang = lang_probs[0]["code"]
+    if no_speech >= NO_SPEECH_SKIP:
+        return {"text": "", "language": lang, "language_probs": lang_probs, "no_speech_prob": round(no_speech, 3),
+                "avg_logprob": None, "compression_ratio": 0.0, "n_tokens": 0, "quality": "no speech",
+                "note": f"Skipped: Whisper's no-speech probability {no_speech:.2f} >= {NO_SPEECH_SKIP}."}
     seq = [ids["sot"], t["lang_to_id"][f"<|{lang}|>"], ids["transcribe"], ids["notimestamps"]]
     sup = np.array(t["suppress_tokens"], int)
     logps = []
@@ -113,7 +128,8 @@ def transcribe(x16k: np.ndarray, md: str, lang: str | None = None, max_tokens: i
         quality = "clear"
     else:
         quality = "uncertain"
-    return {"text": text, "language": lang, "no_speech_prob": round(no_speech, 3), "avg_logprob": round(avg, 3),
+    return {"text": text, "language": lang, "language_probs": lang_probs, "no_speech_prob": round(no_speech, 3),
+            "avg_logprob": round(avg, 3),
             "compression_ratio": round(comp, 2), "n_tokens": len(logps), "quality": quality}
 
 
@@ -143,17 +159,33 @@ def speech_candidates(sed: dict, speech_idx: list[int], thr: float = 0.06, min_l
     return out
 
 
-def run_all(x16k: np.ndarray, sed: dict, speech_idx: list[int], md: str, lang_hint=None) -> list[dict]:
-    res = []
-    for t0, t1, score in speech_candidates(sed, speech_idx):
+def run_all(x16k: np.ndarray, sed: dict, speech_idx: list[int], md: str, lang_hint=None, thr: float = 0.06,
+            budget_s: float | None = None, progress=None) -> tuple[list[dict], dict]:
+    """Transcribe speech candidates, clearest first, within a wall-clock budget. Returns (segments, stats)."""
+    import time
+    t_start = time.time()
+    jobs = []
+    for t0, t1, score in speech_candidates(sed, speech_idx, thr=thr):
         t = t0
         while t < t1 - 0.3:
             e = min(t1, t + 28.0)
-            seg = x16k[int(t * 16000):int(e * 16000)]
-            level = float(20 * np.log10(np.sqrt(np.mean(seg ** 2)) + 1e-12)) if len(seg) else -120
-            faint = score < 0.3 or level < -40
-            r = transcribe(enhance(seg) if faint else seg, md, lang_hint(t, e) if lang_hint else None)
-            res.append({"start": round(t, 2), "end": round(e, 2), "speech_score": round(score, 3), "level_dbfs": round(level, 1),
-                        "enhanced": faint, **r})
+            jobs.append((t, e, score))
             t = e
-    return res
+    order = sorted(range(len(jobs)), key=lambda i: -jobs[i][2])   # strongest speech first, so the budget is spent well
+    res, skipped = [], []
+    for n, i in enumerate(order):
+        t, e, score = jobs[i]
+        if budget_s is not None and time.time() - t_start > budget_s:
+            skipped.append({"start": round(t, 2), "end": round(e, 2), "speech_score": round(score, 3)})
+            continue
+        seg = x16k[int(t * 16000):int(e * 16000)]
+        level = float(20 * np.log10(np.sqrt(np.mean(seg ** 2)) + 1e-12)) if len(seg) else -120
+        faint = score < 0.3 or level < -40
+        r = transcribe(enhance(seg) if faint else seg, md, lang_hint(t, e) if lang_hint else None)
+        res.append({"start": round(t, 2), "end": round(e, 2), "speech_score": round(score, 3), "level_dbfs": round(level, 1),
+                    "enhanced": faint, **r})
+        if progress:
+            progress((n + 1) / len(order))
+    res.sort(key=lambda r: r["start"])
+    return res, {"candidates": len(jobs), "transcribed": len(res), "skipped_for_time": skipped,
+                 "threshold": thr, "budget_s": budget_s, "elapsed_s": round(time.time() - t_start, 2)}

@@ -72,7 +72,7 @@ def test_end_to_end_pipeline_and_report(tmp_path):
     s = config.Settings(models_dir=MODELS, cases_dir=str(tmp_path))
     c = Case(str(Path(AUDIO) / "esc50_church_bells.wav"), s)
     c.prepare()
-    c.analyse()
+    c.analyse(auto_geo=False)
     assert c.state == "analysed", c.error
     assert c.result["inventory"], "empty inventory"
     assert all(r["start"] <= r["end"] for r in c.result["inventory"])

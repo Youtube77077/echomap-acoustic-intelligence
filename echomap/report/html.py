@@ -56,6 +56,23 @@ def render(case) -> str:
     out.append("<div class='warn'><b>Reading this report:</b> model scores are <b>not calibrated probabilities</b>. "
                "Species, vehicles and languages are <b>model predictions</b> unless marked as measurements. Geographic "
                "scores are heuristic relative plausibilities. Nothing here identifies people.</div>")
+    # summary (v1.0.8): plain-language findings first
+    f = r.get("findings") or {}
+    if f:
+        w = f.get("where") or {}
+        out.append("<h2>Summary</h2>")
+        rows = [("Where", f"<b>{E(w.get('headline', '-'))}</b>" + (f"<br><span class='muted'>{E(w.get('detail'))}</span>" if w.get("detail") else "")
+                 + (f"<br>Likely places: {E(' · '.join(w['places']))}" if w.get("places") else "")
+                 + (f"<br>Also possible: {E(' · '.join(w['alternatives']))}" if w.get("alternatives") else "")
+                 + (f"<br><span class='muted'>Based on: {E('; '.join(w['clues']))}</span>" if w.get("clues") else "")),
+                ("Language", E(", ".join(f"{l['name']} ({l['code']}) {round(100 * l['confidence'])}%" for l in f.get("languages", [])) or "none identified")),
+                ("What was said", "<br>".join(f"[{fmt_t(l['start'])}] <i>{E(l.get('language') or '')}, {E(l['quality'])}</i>: {E(l['text'])}"
+                                              for l in (f.get("speech") or {}).get("lines", [])) or "no intelligible speech"),
+                ("What the sounds are", "<br>".join(f"{E(x['text'])} <span class='muted'>({E(x['when'])}, {round(100 * x['confidence'])}% {E(x['tier'])})</span>"
+                                                    for x in f.get("sounds", [])) or "-")]
+        if f.get("facts"):
+            rows.append(("Signal", E(" · ".join(f["facts"]))))
+        out.append(_kv(rows))
     # 1-3
     out.append("<h2>1-3. File information, integrity and technical metadata</h2>")
     out.append(_kv([("File name", E(meta.get("file_name", ""))), ("SHA-256 (original)", f"<code>{E(case.sha256 or '')}</code>"),

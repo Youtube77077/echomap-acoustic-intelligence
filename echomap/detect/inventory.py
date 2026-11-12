@@ -139,7 +139,11 @@ class Inventory:
         for g in groups:
             g = sorted(g, key=lambda e: (-(e["name"] not in GENERIC), -e["depth"] * 0.05 - e["score"]))
             specific = [e for e in g if e["name"] not in GENERIC]
-            primary = max(specific or g, key=lambda e: e["score"] + 0.05 * e["depth"])
+            top = max(g, key=lambda e: e["score"])
+            # a more specific child label only wins when the model is reasonably sure of it as well (v1.0.8: a
+            # 0.19 "Speech synthesizer" no longer replaces a 0.74 "Speech")
+            specific = [e for e in specific if e["score"] >= 0.5 * top["score"]]
+            primary = max(specific or [top], key=lambda e: e["score"] + 0.05 * e["depth"])
             t0 = min(e["start"] for e in g)
             t1 = max(e["end"] for e in g)
             cands = sorted(({"label": e["name"], "score": round(e["score"], 4)} for e in g if e is not primary),

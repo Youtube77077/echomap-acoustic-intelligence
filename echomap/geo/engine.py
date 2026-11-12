@@ -18,6 +18,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from functools import lru_cache
+
 import numpy as np
 
 from . import places
@@ -151,6 +153,30 @@ def context_weeks(ctx: dict) -> tuple[list[int] | None, str]:
     except (ValueError, TypeError):
         pass
     return None, "date unknown, so species ranges use the maximum over the whole year"
+
+
+@lru_cache(maxsize=1)
+def _population_cells() -> dict:
+    """Summed city population per 0.5° cell, spread to the 8 neighbouring cells (suburbs, smaller towns)."""
+    from .gazetteer import _cities
+    rows, lat, lon = _cities()
+    pop = np.array([r[6] or 0 for r in rows], np.float64)
+    ki = np.floor(lat / 0.5).astype(np.int64)
+    kj = np.floor(lon / 0.5).astype(np.int64)
+    cells: dict = {}
+    for i, j, p in zip(ki, kj, pop):
+        for di in (-1, 0, 1):
+            for dj in (-1, 0, 1):
+                k = (int(i + di), int(j + dj))
+                cells[k] = cells.get(k, 0.0) + p * (1.0 if di == dj == 0 else 0.25)
+    return cells
+
+
+def population_likelihood(pts: "Points") -> np.ndarray:
+    cells = _population_cells()
+    v = np.array([cells.get((int(np.floor(a / 0.5)), int(np.floor(b / 0.5))), 0.0) for a, b in zip(pts.lat, pts.lon)])
+    ref = 500_000.0   # a cell with a city of ~500k (or several towns) counts as fully populated
+    return np.clip(np.maximum(v / ref, 0.03), 0, 1).astype(np.float32)
 
 
 def _llr(L: np.ndarray, c: float, weights: np.ndarray, mean: float | None = None) -> np.ndarray:
@@ -313,6 +339,17 @@ class GeoEngine:
                           "precision": "city level; every city with this name is kept, weighted by size and language",
                           "note": (f"Heard '{m['segments'][0]['text'][:80]}'" + (f" after the cue '{m['cue']}'" if m["cue"] else "") +
                                    "; mentioning a place does not prove being there")})
+        # --- where people are (v1.0.8). Speech, place names and transit sounds are made where people live, so these
+        # clues get a population prior: without it a large, thinly populated country with a high language share
+        # (Suriname for Dutch) outranks the densely populated core area (the Netherlands / Flanders).
+        human = {"language", "place_names", "transport_infrastructure", "reference_recordings"}
+        if any(it["group"] in human for it in items):
+            items.append({"group": "population", "label": "People live here (speech / transport clues)", "record": None,
+                          "c": 0.6, "L": population_likelihood(pts), "used": True,
+                          "source": "GeoNames cities ≥ 15,000 inhabitants, summed per 0.5° cell (smoothed)",
+                          "precision": "0.5° cells (~55 km)",
+                          "note": "Human-made sounds are most likely where people live; thinly populated areas are "
+                                  "down-weighted, never excluded"})
         # --- user context (prior, not evidence)
         loc = (ctx or {}).get("location") or {}
         mode = loc.get("mode", "unknown")

@@ -23,7 +23,7 @@ function rasterContours(raster, blur = 1.3, thr = 0.35) {
 // shared clue state for 2D and 3D views
 const GROUP_NAMES = {language: "Language", electrical_grid: "Electrical hum", biogeography: "Wildlife", bells: "Bells",
   cultural: "Sirens / culture", environment: "Water / coast", transport_infrastructure: "Trams / transport",
-  place_names: "Spoken place names", reference_recordings: "Reference matches", user_context: "Your context"};
+  place_names: "Spoken place names", reference_recordings: "Reference matches", population: "Population", user_context: "Your context"};
 const Clues = {
   geo: null, layers: [], visible: new Set(), showLow: false, groupOff: new Set(), opacity: {}, ghost: new Set(),
   set(g) {

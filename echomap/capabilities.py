@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 MODES = {
-    "quick": {"title": "Quick", "steps": {"integrity", "dsp", "sed", "scene"}},
+    "quick": {"title": "Quick", "steps": {"integrity", "dsp", "sed", "scene", "langid", "geo"}},
     "standard": {"title": "Standard", "steps": {"integrity", "dsp", "sed", "scene", "birdnet", "langid", "specialists",
                                                 "direction", "geo"}},
     "deep": {"title": "Deep", "steps": {"integrity", "dsp", "sed", "scene", "birdnet", "langid", "specialists", "direction",
@@ -11,6 +11,12 @@ MODES = {
                                                         "direction", "geo", "bells", "references", "relations", "discovery",
                                                         "avas"}},
 }
+
+# speech-transcription threshold per mode (AudioSet speech score). Quick transcribes clear speech only, Deep also
+# attempts faint background speech (more segments, more time).
+ASR_THRESHOLD = {"quick": 0.3, "standard": 0.15, "deep": 0.06, "experimental": 0.06}
+# total wall-clock budget for transcription, as a multiple of the recording length (plus a fixed minimum)
+ASR_BUDGET = {"quick": (20.0, 0.5), "standard": (30.0, 1.0), "deep": (45.0, 2.0), "experimental": (45.0, 2.0)}
 
 # capability class per feature (shown in the UI and report)
 CLASSES = {

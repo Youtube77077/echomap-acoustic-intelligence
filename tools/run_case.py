@@ -11,7 +11,7 @@ from echomap.geo.gazetteer import search_city
 f = sys.argv[1]
 s = config.Settings.load()
 c = Case(f, s)
-t = time.time(); c.prepare(); c.analyse(); ta = time.time() - t
+t = time.time(); c.prepare(); c.analyse(auto_geo=False); ta = time.time() - t
 if c.state == "error":
     print("ERROR", c.error); print(c.history.steps[-1].get("params", {}).get("traceback", "")); sys.exit(1)
 ctx = {"date": {"mode": "unknown"}, "location": {"mode": "unknown"}}

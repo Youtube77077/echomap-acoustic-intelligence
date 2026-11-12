@@ -59,4 +59,13 @@ if len(sys.argv) > 3:
     Path(sys.argv[3]).write_text(json.dumps({"mode": mode, "file": Path(f).name, "audio_s": dur, "analysis_s": ta,
                                              "total_s": tt, "state": c.state, "error": c.error,
                                              "transcripts": len(tr), "languages": langs[:8],
-                                             "geo_status": g.get("status"), "geo_summary": g.get("summary")}))
+                                             "geo_status": g.get("status"), "geo_summary": g.get("summary"),
+                                             "geo_top": [c.get("name") for c in (g.get("candidates") or [])[:3]],
+                                             "transcript_text": " ".join(t["text"] for t in tr if t["quality"] == "clear"),
+                                             "clear_transcripts": sum(1 for t in tr if t["quality"] == "clear"),
+                                             "vehicle_typed": sum(1 for x in r.get("inventory", [])
+                                                                  if (x.get("evidence") or {}).get("vehicle_type")),
+                                             "findings": r.get("findings"), "asr_stats": (r.get("transcripts") or {}).get("stats"),
+                                             "speech_label_records": [x["label"] for x in r.get("inventory", [])
+                                                                      if x["category"] == "language"]}, ensure_ascii=False))
+print("FINDINGS:", json.dumps(r.get("findings"), ensure_ascii=False)[:3000])

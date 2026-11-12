@@ -73,7 +73,7 @@ def evaluate(path, truth, models, cases_dir, date):
     c.prepare()
     if (c.meta.get("duration_s") or 0) > 300:
         return {"skipped": "longer than 5 min"}
-    c.analyse()
+    c.analyse(auto_geo=False)
     if c.state != "analysed":
         return {"error": c.error}
     ctx = {"date": {"mode": "exact", "value": date} if date else {"mode": "unknown"}, "location": {"mode": "unknown"}}

@@ -30,10 +30,11 @@
       <select id="selMode"><option value="quick">Quick</option><option value="standard">Standard</option>
       <option value="deep" selected>Deep</option><option value="experimental">Experimental</option></select></label>
     <button id="btnAnalyse" class="primary" disabled>Start analysis</button>
-    <button id="btnContext" class="ghost" disabled>Recording context…</button>
+    <button id="btnContext" class="ghost" disabled title="Optional: add what you know (date, country, city) and re-run the location estimate">Refine location…</button>
   </div>
   <div id="progressWrap" class="progress hidden"><div id="progressBar"></div><span id="progressText"></span></div>
   <div id="prepPanel" class="card hidden"></div>
+  <div id="findings" class="card findings hidden"></div>
 
   <div class="player card">
     <button id="btnPlay" class="round" disabled>▶</button>
@@ -154,7 +155,7 @@
     </div>
     <div class="card geo-side">
       <div id="pointInfo" class="hidden"></div>
-      <div id="geoSummary" class="muted">Geographic analysis runs after the recording-context step.</div>
+      <div id="geoSummary" class="muted">The location estimate appears here when the analysis finishes.</div>
       <h4>Likely places</h4>
       <div id="placeList" class="muted small">-</div>
       <h4>Clues on the map</h4>

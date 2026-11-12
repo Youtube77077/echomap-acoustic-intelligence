@@ -75,6 +75,49 @@ def add_languages(inv: Inventory, regions, x16k: np.ndarray, langid_fn) -> list[
     return recs
 
 
+def add_asr_languages(inv: Inventory, transcripts: list[dict]) -> list[dict]:
+    """Language records from the speech-to-text model's own language token, for transcribed speech that the
+    language-ID step did not cover (Quick mode, or speech below the LID speech threshold, e.g. under traffic)."""
+    from ..models.langid import LANG_NAMES
+    usable = [t for t in transcripts if t["quality"] in ("clear", "uncertain") and t.get("language_probs")]
+    usable = [t for t in usable if not inv.find_overlapping(t["start"], t["end"],
+                                                            lambda r: bool(r.get("language_code")), 0.3)]
+    groups: list[list[dict]] = []
+    for t in sorted(usable, key=lambda t: t["start"]):
+        if groups and t["language"] == groups[-1][-1]["language"] and t["start"] - groups[-1][-1]["end"] <= 5:
+            groups[-1].append(t)
+        else:
+            groups.append([t])
+    recs = []
+    for g in groups:
+        agg: dict[str, float] = {}
+        wsum = 0.0
+        for t in g:
+            w = (t["end"] - t["start"]) * (1.0 if t["quality"] == "clear" else 0.6)
+            wsum += w
+            for d in t["language_probs"]:
+                agg[d["code"]] = agg.get(d["code"], 0.0) + w * d["prob"]
+        ranked = sorted(((c, v / wsum) for c, v in agg.items()), key=lambda kv: -kv[1])
+        code, prob = ranked[0]
+        name = LANG_NAMES.get(code, code)
+        clear = sum(1 for t in g if t["quality"] == "clear")
+        conf = round(prob * (1.0 if clear else 0.75), 4)
+        t0, t1 = g[0]["start"], g[-1]["end"]
+        speech_rec = inv.find_overlapping(t0, t1, lambda r: r["category"] == "language" and not r.get("language_code"), 0.3)
+        rec = inv.add(
+            category="language", label=f"Spoken language: {name}", specific=f"{name} ({code}), from the transcription",
+            language_code=code, language_name=name,
+            candidates=[{"label": f"{LANG_NAMES.get(c, c)} ({c})", "score": round(v, 4)} for c, v in ranked[1:4]],
+            start=t0, end=t1, confidence=conf, tier=tier_for(conf, clear > 0), model="Whisper base speech-to-text "
+            "(language token)", corroborated_by=[f"{r['id']} {r['label']}" for r in speech_rec],
+            evidence={"transcript_segments": [{k: t[k] for k in ("start", "end", "quality", "language_probs")} for t in g]},
+            limitations="Language read from the speech-to-text model's language token. Related languages can be "
+                        "confused (e.g. Dutch / Afrikaans / German), especially on short or noisy speech.",
+            signature="Transcribed speech")
+        recs.append(rec)
+    return recs
+
+
 # ----------------------------------------------------------------------------- vehicles / engines
 def add_engine_analysis(inv: Inventory, x4k: np.ndarray, f0_fn) -> list[dict]:
     new = []
@@ -270,8 +313,10 @@ def add_reverb(inv: Inventory, rt: dict, duration: float) -> None:
 
 def add_unclassified(inv: Inventory, segments: list[dict], profile_fn, sed: dict | None = None, labels=None) -> None:
     for s in segments:
+        # model detections of any length explain a segment; long measurement records (reverb, mains, wind) do not
         if any(overlap(s["start"], s["end"], r["start"], r["end"]) > 0.5 * (s["end"] - s["start"])
-               for r in inv.records if r["end"] - r["start"] < inv.duration * 0.9):
+               for r in inv.records if r.get("kind") == "model" or r["category"] == "language"
+               or r["end"] - r["start"] < inv.duration * 0.9):
             continue
         hint = None
         if sed is not None and labels is not None:

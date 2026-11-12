@@ -26,7 +26,7 @@ def run_case(path, models, mode, tmp):
     s = config.Settings(models_dir=models, cases_dir=str(tmp), analysis_mode=mode)
     c = Case(str(path), s)
     c.prepare()
-    c.analyse()
+    c.analyse(auto_geo=False)
     return c
 
 

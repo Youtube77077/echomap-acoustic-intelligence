@@ -63,7 +63,8 @@ function startPolling(target) {
     if (s.state === "error") { clearInterval(S.poll); $("#progressText").textContent = "Error: " + s.error; $("#btnOpen").disabled = false; }
     if (s.state === target || (target === "analysed" && s.state === "complete")) {
       clearInterval(S.poll); $("#btnOpen").disabled = false; await loadResult();
-      if (target === "analysed") openContext(); else { $("#progressWrap").classList.add("hidden"); }
+      $("#progressWrap").classList.add("hidden");
+      if (s.state === "analysed" && target === "analysed") $("#progressText").textContent = "Analysis complete (location step unavailable).";
     }
   }, 600);
 }
@@ -79,10 +80,44 @@ async function loadResult() {
   $("#fMin").value = 0; $("#fMax").value = S.view.fmax;
   assignColors(); fillCatFilters(); renderTimeline(); renderInventory(); drawWave(); requestSpec();
   $("#invCount").textContent = S.inventory.length;
+  renderFindings(r.result.findings);
   if (r.result.geo) { Geo.render(r.result.geo); }
   if (r.result.report_html) loadReport();
 }
+// plain-language summary (v1.0.8): where, language, what was said, what each sound is
+function renderFindings(f) {
+  const el = $("#findings");
+  if (!f) { el.classList.add("hidden"); el.innerHTML = ""; return; }
+  const w = f.where || {}, pct = x => Math.round((x || 0) * 100) + "%";
+  const sp = f.speech || {};
+  const langs = f.languages?.length
+    ? `<ul>${f.languages.map(l => `<li><b>${esc(l.name)}</b> (${esc(l.code)}) · ${pct(l.confidence)} <span class="muted small">${esc(l.source)}</span></li>`).join("")}</ul>`
+    : `<p class="muted">No spoken language identified.</p>`;
+  const lines = sp.lines?.length
+    ? sp.lines.map(l => `<p class="small"><span class="mono muted">${fmtT(l.start).slice(0, 8)}</span> <span class="badge">${esc(l.language || "")} · ${esc(l.quality)}</span> ${esc(l.text)}</p>`).join("")
+    : `<p class="muted">${esc(sp.not_run_reason || "No intelligible speech found.")}</p>`;
+  const sounds = f.sounds?.length
+    ? `<ul class="small">${f.sounds.map(x => `<li><a href="#" data-id="${esc(x.id)}" class="fsnd"><b>${esc(x.text)}</b></a> <span class="muted">· ${esc(x.category)} · ${esc(x.when)} · ${pct(x.confidence)} ${esc(x.tier)}</span></li>`).join("")}</ul>`
+    : `<p class="muted">No sound classified above the listing threshold.</p>`;
+  el.innerHTML = `<div class="fgrid">
+    <div class="fbox fwhere"><h3>Where</h3><p class="big">${esc(w.headline || "-")}</p>
+      ${w.detail ? `<p class="muted small">${esc(w.detail)}</p>` : ""}
+      ${w.places?.length ? `<div class="small"><b>Likely places:</b> ${w.places.map(esc).join(" · ")}</div>` : ""}
+      ${w.alternatives?.length ? `<div class="small"><b>Also possible:</b> ${w.alternatives.map(esc).join(" · ")}</div>` : ""}
+      ${w.clues?.length ? `<div class="small muted">Based on: ${w.clues.map(esc).join("; ")}</div>` : ""}
+      <button class="ghost small" id="fOpenMap">Open the map</button></div>
+    <div class="fbox"><h3>Language</h3>${langs}</div>
+    <div class="fbox fspeech"><h3>What was said <span class="muted small">${sp.segments || 0} segment(s), ${sp.clear || 0} clear</span></h3>${lines}
+      ${sp.note ? `<p class="muted small">${esc(sp.note)}</p>` : ""}</div>
+    <div class="fbox fsounds"><h3>What the sounds are</h3>${sounds}
+      ${f.facts?.length ? `<div class="small muted">${f.facts.map(esc).join(" · ")}</div>` : ""}</div>
+  </div>`;
+  el.classList.remove("hidden");
+  $("#fOpenMap").onclick = () => $('.tab[data-tab="geo"]').click();
+  $$("#findings .fsnd").forEach(a => a.onclick = e => { e.preventDefault(); const d = S.inventory.find(x => x.id === a.dataset.id); if (d) playSegment(d); });
+}
 function resetResultViews() {
+  renderFindings(null);
   S.inventory = []; S.result = null; renderTimeline(); renderInventory(); $("#invCount").textContent = "0";
   $("#reportFrame").srcdoc = ""; ["#expHtml", "#expPdf", "#expJson"].forEach(s => $(s).disabled = true);
   Geo.render(null);
@@ -251,7 +286,7 @@ function renderTimeline() {
   $("#timeline").innerHTML = `<div class="tl-row muted" style="cursor:default"><span>Time</span><span></span><span>Category</span><span>Detection</span><span>Conf.</span><span>Tier</span></div>` +
     (l.length ? `<div class="tl-row" style="cursor:default"><span class="mono">${fmtT(0)}</span><span></span><span class="muted">-</span><span>Recording begins</span><span></span><span></span></div>` : "") +
     l.map(d => `<div class="tl-row" data-id="${d.id}"><span class="mono">${fmtT(d.start)}–${fmtT(d.end).slice(3)}</span><span class="dot" style="background:${catColor(d.category)}"></span>
-      <span>${esc(d.category_title)}</span><span>${esc(d.id)} · ${esc(d.label)}${d.specific ? ` <span class="muted">· ${esc(d.specific)}</span>` : ""}</span>
+      <span>${esc(d.category_title)}</span><span>${esc(d.id)} · ${esc(d.label)}${d.specific ? ` <span class="muted">· ${esc(d.specific)}</span>` : ""}${vehText(d)}</span>
       <span><div class="confbar" title="${d.confidence.toFixed(2)}"><i style="width:${d.confidence * 100}%"></i></div></span><span class="tier ${d.tier}">${d.tier}</span></div>`).join("");
   $$("#timeline .tl-row[data-id]").forEach(r => r.onclick = () => selectEvent(S.inventory.find(d => d.id === r.dataset.id)));
   drawOverlay();
@@ -260,6 +295,12 @@ function renderTimeline() {
 
 // ---------------------------------------------------------------- inventory
 function kv(obj) { return `<div class="kv">${Object.entries(obj).filter(([k, v]) => v !== undefined && v !== null && v !== "").map(([k, v]) => `<div>${esc(k)}</div><div>${typeof v === "object" ? esc(JSON.stringify(v)) : esc(v)}</div>`).join("")}</div>`; }
+// vehicle-type estimate (car / bus / truck / tram / motorcycle) attached by the vehicle head
+function vehText(d) {
+  const v = d.evidence?.vehicle_type; if (!v?.top) return "";
+  const alt = Object.entries(v.probs || {}).slice(1, 3).map(([k, p]) => `${k} ${Math.round(p * 100)}%`).join(", ");
+  return `<br><span class="veh">Vehicle type: most likely <b>${esc(v.top)}</b> (${Math.round(v.p * 100)}%${alt ? "; " + esc(alt) : ""})</span>`;
+}
 function renderInventory() {
   const q = $("#invSearch").value.toLowerCase(), tiers = new Set($$(".tierf:checked").map(c => c.value)), sort = $("#invSort").value;
   const key = {start: d => d.start, category: d => d.category, confidence: d => -d.confidence, duration: d => -d.duration}[sort];
@@ -271,7 +312,7 @@ function renderInventory() {
   const order = Object.keys(summ).length ? Object.keys(summ) : Object.keys(cats);
   $("#inventory").innerHTML = order.filter(k => cats[k]).map(k => `<details class="cat" id="cat-${k}" open><summary><span class="dot" style="background:${catColor(k)}"></span>${esc(summ[k]?.title || k)}
       <span class="count">${cats[k].length} detection(s) · ${["confirmed","probable","possible","unclassified"].map(t => `${cats[k].filter(d => d.tier === t).length} ${t}`).join(" · ")}</span></summary>
-    ${cats[k].map(d => `<details class="det" data-id="${d.id}"><summary><span class="mono">${d.id}</span><span><b>${esc(d.label)}</b>${d.specific ? `<br><span class="muted">${esc(d.specific)}</span>` : ""}</span>
+    ${cats[k].map(d => `<details class="det" data-id="${d.id}"><summary><span class="mono">${d.id}</span><span><b>${esc(d.label)}</b>${d.specific ? `<br><span class="muted">${esc(d.specific)}</span>` : ""}${vehText(d)}</span>
       <span class="mono">${fmtT(d.start)} → ${fmtT(d.end)}</span><span>${d.duration.toFixed(2)} s · ${d.confidence.toFixed(2)}<div class="confbar"><i style="width:${d.confidence * 100}%"></i></div></span>
       <span class="tier ${d.tier}">${d.tier}</span><span class="muted small">${esc((d.model || "").split(" (")[0])}</span><button class="round play" title="Play this segment">▶</button></summary>
       <div class="body">
@@ -352,10 +393,11 @@ const Globe = (() => {
 const Geo = {
   render(g) {
     Globe.set(g);
-    if (!g) { $("#geoSummary").textContent = "Geographic analysis runs after the recording-context step."; $("#geoCands").innerHTML = ""; return; }
+    if (!g) { $("#geoSummary").textContent = "The location estimate appears here when the analysis finishes."; $("#geoCands").innerHTML = ""; return; }
+    const fw = S.result?.findings?.where;
     const ev = c => `<ul class="ev">${c.supporting.map(e => `<li class="sup">+${e.contribution_nats} ${esc(e.label)} <span class="muted">(${esc(e.group)}; ${esc(e.detail)})</span></li>`).join("")}
       ${c.contradicting.map(e => `<li class="con">${e.contribution_nats} ${esc(e.label)} <span class="muted">(${esc(e.group)}; ${esc(e.detail)})</span></li>`).join("")}</ul>`;
-    $("#geoSummary").innerHTML = `<p><b>${esc(g.summary || "")}</b></p>
+    $("#geoSummary").innerHTML = `${fw ? `<p class="big"><b>${esc(fw.headline)}</b></p>` : ""}<p class="small">${esc(g.summary || "")}</p>
       ${g.status === "estimate" ? `<p class="muted small">Effective area ≈ ${(g.effective_area_km2 || 0).toLocaleString()} km² of ${(g.land_area_km2 || 0).toLocaleString()} km² land · ${esc(g.week_basis)}</p>` : ""}
       <details><summary>How this was calculated</summary><pre class="ev">${esc(g.method)}</pre><ul>${(g.independence_notes || []).map(n => `<li class="small">${esc(n)}</li>`).join("")}</ul></details>
       <details><summary>Evidence items (${(g.evidence_items || []).length})</summary><pre class="ev">${esc(JSON.stringify(g.evidence_items, null, 1))}</pre></details>`;
