@@ -208,6 +208,7 @@ class Case:
         with h.timed("detect.specialists", "Engine harmonics, sirens, bells, periodic signals, wind, mains, reverb"):
             sp.add_engine_analysis(inv, x4, tonal.engine_f0_track)
             sp.add_sirens(inv, x32, tonal.siren_pattern)
+            sp.add_siren_scan(inv, tonal.siren_scan(x32, 32000), profile)
             sp.add_bell_counts(inv, on["times_s"])
             sp.add_periodic(inv, patterns, profile)
             sp.add_avas(inv, tonal.avas_like(tracks), profile)

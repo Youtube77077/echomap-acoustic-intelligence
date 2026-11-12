@@ -386,3 +386,63 @@ def avas_like(tracks: list[dict], min_dur: float = 1.5, min_corr: float = 0.85) 
                 out.append({"start": round(t0, 2), "end": round(t1, 2), "f_hz": sorted([a["f_median"], b["f_median"]]),
                             "relative_drift": round(drift, 3), "drift_pct_per_s": round(slope, 2), "co_drift_corr": round(corr, 3)})
     return out
+
+
+
+def classify_contour(f: np.ndarray, hop_s: float) -> dict:
+    """Classify a dominant-pitch contour (Hz per frame) into siren-like patterns."""
+    lo, hi = np.percentile(f, 10), np.percentile(f, 90)
+    if hi / max(lo, 1) < 1.08:
+        return {"pattern": "steady tone", "f_hz": round(float(np.median(f)), 1)}
+    mid = (lo + hi) / 2
+    frac_mid = float(np.mean((f > lo + 0.25 * (hi - lo)) & (f < hi - 0.25 * (hi - lo))))
+    crossings = np.where(np.diff(np.sign(f - mid)) != 0)[0]
+    if len(crossings) < 2:
+        return {"pattern": "single sweep", "f_range_hz": [round(float(lo), 1), round(float(hi), 1)]}
+    cycle = 2 * float(np.median(np.diff(crossings))) * hop_s
+    res = {"f_range_hz": [round(float(lo), 1), round(float(hi), 1)], "cycle_s": round(cycle, 3),
+           "fraction_time_in_transition": round(frac_mid, 3)}
+    if frac_mid < 0.15:
+        res["pattern"] = "two-tone alternation (hi-lo)"
+        res["interval_ratio"] = round(float(hi / lo), 3)
+    elif cycle < 0.8:
+        res["pattern"] = "fast sweep (yelp-like)"
+    else:
+        res["pattern"] = "slow sweep (wail-like)"
+    return res
+
+
+def siren_scan(x: np.ndarray, sr: int, win_s: float = 4.0, hop_win_s: float = 2.0) -> list[dict]:
+    """Scan the whole recording for siren-like tonal patterns (300-2000 Hz dominant pitch that is
+    strongly tonal and periodically alternating or sweeping). Independent of any ML model."""
+    hop = int(0.01 * sr)
+    n_fft = 4096 if sr >= 32000 else 2048
+    p = stft_power(x, n_fft, hop)
+    freqs = np.linspace(0, sr / 2, p.shape[0])
+    m = (freqs >= 300) & (freqs <= 2000)
+    band = p[m]
+    k = np.argmax(band, axis=0)
+    f = freqs[m][k]
+    prom = 10 * np.log10(band[k, np.arange(band.shape[1])] / (np.median(band, axis=0) + 1e-14) + 1e-14)
+    f = np.convolve(f, np.ones(5) / 5, mode="same")
+    w, hw = int(win_s / 0.01), int(hop_win_s / 0.01)
+    hits = []
+    for a in range(0, max(1, len(f) - w + 1), hw):
+        seg_f, seg_p = f[a:a + w], prom[a:a + w]
+        if len(seg_f) < w // 2 or np.mean(seg_p >= 15) < 0.7:
+            continue
+        c = classify_contour(seg_f, 0.01)
+        if c["pattern"] in ("two-tone alternation (hi-lo)", "slow sweep (wail-like)", "fast sweep (yelp-like)"):
+            if c["pattern"].startswith("two-tone") and not (1.1 <= c.get("interval_ratio", 1) <= 1.6):
+                continue
+            if c["pattern"].startswith("slow") and not (1.0 <= c["cycle_s"] <= 10):
+                continue
+            hits.append({"start": round(a * 0.01, 2), "end": round(min(len(f), a + w) * 0.01, 2),
+                         "tonal_fraction": round(float(np.mean(seg_p >= 15)), 2), **c})
+    merged = []
+    for h in hits:
+        if merged and h["pattern"] == merged[-1]["pattern"] and h["start"] <= merged[-1]["end"]:
+            merged[-1]["end"] = h["end"]
+        else:
+            merged.append(dict(h))
+    return merged

@@ -168,3 +168,14 @@ def test_avas_like_ignores_static_tones_and_sirens():
 
 def test_avas_like_ignores_harmonic_partials():
     assert not tonal.avas_like(tonal.tone_tracks(_codrift(500, 1000), SR))
+
+
+
+def test_siren_scan_finds_wail_and_hilo_not_noise():
+    t_ = np.arange(10 * SR) / SR
+    f = 900 + 400 * np.sin(2 * np.pi * t_ / 4.0)
+    wail = (0.3 * np.sin(2 * np.pi * np.cumsum(f) / SR)).astype(np.float32) + rng.normal(0, 0.005, len(t_)).astype(np.float32)
+    assert any("slow sweep" in h["pattern"] for h in tonal.siren_scan(wail, SR))
+    hilo = np.concatenate([tone(440 if i % 2 == 0 else 587, 0.6) for i in range(16)])
+    assert any("two-tone" in h["pattern"] for h in tonal.siren_scan(hilo, SR))
+    assert not tonal.siren_scan(rng.normal(0, 0.05, 10 * SR).astype(np.float32), SR)

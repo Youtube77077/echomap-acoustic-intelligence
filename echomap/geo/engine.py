@@ -110,11 +110,14 @@ class GeoEngine:
             # evaluate on a 1-degree lattice for the global grid (4x fewer model calls), then map back;
             # species ranges are smooth at this scale
             if len(pts.lat) > 20000:
-                kl = np.floor(pts.lat).astype(np.int32) * 1000 + np.floor(pts.lon).astype(np.int32) + 500
+                step = 2.0  # degrees; species ranges are smooth at this scale and the geomodel output layer is large
+                la_i = np.floor(pts.lat / step).astype(np.int32)
+                lo_i = np.floor(pts.lon / step).astype(np.int32)
+                kl = la_i * 1000 + lo_i + 500
                 uk, inv_idx = np.unique(kl, return_inverse=True)
                 lat_i = np.floor_divide(uk, 1000)
-                qlat = lat_i.astype(np.float32) + 0.5
-                qlon = (uk - lat_i * 1000 - 500).astype(np.float32) + 0.5
+                qlat = (lat_i.astype(np.float32) + 0.5) * step
+                qlon = ((uk - lat_i * 1000 - 500).astype(np.float32) + 0.5) * step
             else:
                 qlat, qlon, inv_idx = pts.lat, pts.lon, None
             occ = None
@@ -147,6 +150,12 @@ class GeoEngine:
                 keys = [k for k in best if k in gidx]
                 if keys:
                     idxs = [gidx[k] for k in keys]
+                    # warm the cache for every detected species at once (profiles reuse it)
+                    all_sp = sorted({gidx[r["scientific_name"].lower()] for r in records
+                                     if r.get("scientific_name") and r["scientific_name"].lower() in gidx})
+                    self.occurrence(pts, weeks, all_sp)
+                    if weeks:
+                        self.occurrence(pts, None, all_sp) if len(pts.lat) > 20000 else None
                     occ = self.occurrence(pts, weeks, idxs)
                     for j, k in enumerate(keys):
                         r = best[k]
@@ -194,7 +203,7 @@ class GeoEngine:
                 L = np.where(pts.iso == "GB", 1.0, 0.08).astype(np.float32)
                 items.append({"group": "cultural", "label": "Change ringing (English-style bells)", "record": r["id"],
                               "c": r["confidence"], "L": L, "note": "Change-ringing towers concentrated in England"})
-            pat = r.get("evidence", {}).get("siren_pattern", {}).get("pattern", "")
+            pat = (r.get("evidence", {}).get("siren_pattern") or {}).get("pattern", "")
             if "two-tone" in pat:
                 eu = np.array([countries().get(i, {}).get("continent") == "EU" for i in pts.iso])
                 items.append({"group": "cultural", "label": "Two-tone emergency siren", "record": r["id"],

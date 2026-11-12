@@ -305,3 +305,29 @@ def add_avas(inv: Inventory, segments: list[dict], profile_fn) -> None:
                 limitations=("Pattern-based. Any device with co-varying tones (some machinery, music) can match. AVAS only "
                              "sounds below ~20 km/h, so its absence says nothing about EVs at higher speeds. AVAS designs whose tones "
                              "form small-integer ratios (e.g. 2:1, 3:2) are deliberately excluded to avoid matching voices, birds and engines."))
+
+
+
+def add_siren_scan(inv: Inventory, hits: list[dict], profile_fn) -> None:
+    """Siren-like patterns found by the DSP scanner. Merged into an existing AudioSet siren record when
+    one overlaps; otherwise listed as a separate measurement-based detection."""
+    for h in hits:
+        existing = inv.find_overlapping(h["start"], h["end"], lambda r: bool(set(r.get("_audioset_names", [])) & {
+            "Siren", "Police car (siren)", "Ambulance (siren)", "Fire engine, fire truck (siren)", "Emergency vehicle",
+            "Civil defense siren", "Alarm"}), 0.3)
+        if existing:
+            for r in existing:
+                r["evidence"]["siren_scan"] = h
+                r["corroborated_by"].append("Siren-pattern scanner (EchoMap DSP)")
+                r["tier"] = tier_for(r["confidence"], True)
+            continue
+        conf = 0.55 if h["tonal_fraction"] >= 0.85 else 0.4
+        rec = inv.add(category="bells_alarms", label="Siren-like tonal pattern", specific=f"Pitch pattern: {h['pattern']}",
+                      start=h["start"], end=h["end"], confidence=conf, tier=tier_for(conf, False), kind="measurement",
+                      model="Siren-pattern scanner (EchoMap DSP)", frequency=profile_fn(h["start"], h["end"], 250.0, 3000.0),
+                      evidence={"siren_scan": h, "siren_pattern": h}, signature=f"Strongly tonal {h['f_range_hz']} Hz, {h['pattern']}",
+                      limitations=("Measured pitch pattern without an AudioSet siren detection. Musical glides, some "
+                                   "alarms and whistles can produce similar contours."))
+        if "two-tone" in h["pattern"]:
+            rec["geographic_relevance"] = ("Weak regional cue: two-tone (hi-lo) emergency sirens are common in much of "
+                                           "Europe; many countries use several patterns.")
