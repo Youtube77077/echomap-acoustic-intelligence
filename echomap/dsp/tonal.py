@@ -88,12 +88,15 @@ def tone_tracks(x: np.ndarray, sr: int, f_lo: float = 250.0, f_hi: float = 8000.
     freqs = np.linspace(0, sr / 2, p.shape[0])
     a, b = np.searchsorted(freqs, f_lo), np.searchsorted(freqs, min(f_hi, sr / 2 - 1))
     sub = db[a:b]
-    # local background: median over +-15 bins
-    from numpy.lib.stride_tricks import sliding_window_view as swv
-    w = 31
-    pad = np.pad(sub, ((w // 2, w // 2), (0, 0)), mode="edge")
-    bg = np.median(swv(pad, w, axis=0), axis=-1)
-    prom = sub - bg
+    # local background: mean level (dB) over +-15 bins excluding +-2 around the bin (cumulative sums, O(N))
+    w, ex = 15, 2
+    pad = np.pad(sub, ((w, w), (0, 0)), mode="edge").astype(np.float64)
+    cs = np.vstack([np.zeros((1, pad.shape[1])), np.cumsum(pad, axis=0)])
+    k = np.arange(sub.shape[0]) + w
+    tot = cs[k + w + 1] - cs[k - w]
+    inner = cs[k + ex + 1] - cs[k - ex]
+    bg = (tot - inner) / (2 * w + 1 - (2 * ex + 1))
+    prom = (sub - bg).astype(np.float32)
     active: list[dict] = []
     done: list[dict] = []
     df = freqs[1]
@@ -142,7 +145,8 @@ def tone_tracks(x: np.ndarray, sr: int, f_lo: float = 250.0, f_hi: float = 8000.
 
 def periodic_tone_patterns(tracks: list[dict], tol_f: float = 0.04, max_cv: float = 0.12, min_count: int = 4):
     """Find repeating short tones (beeps) with stable pitch and regular period."""
-    short = [t for t in tracks if t["duration"] <= 0.6]
+    short = sorted([t for t in tracks if t["duration"] <= 0.6], key=lambda r: -r["level_db"])[:1500]
+    short.sort(key=lambda r: r["start"])
     used = set()
     patterns = []
     for i, t in enumerate(short):
@@ -179,30 +183,32 @@ def periodic_tone_patterns(tracks: list[dict], tol_f: float = 0.04, max_cv: floa
     return patterns
 
 
-def click_trains(onset_times: list[float], min_count: int = 5, max_cv: float = 0.1):
-    """Regularly spaced transients (e.g. ticking pedestrian signals, clocks, turn indicators)."""
-    t = np.array(onset_times)
+def click_trains(onset_times: list[float], min_count: int = 5, max_cv: float = 0.1, max_len: int = 400):
+    """Regularly spaced transients (e.g. ticking pedestrian signals, clocks, turn indicators).
+
+    Greedy left-to-right scan, O(n * max_len): a train is extended while its interval CV stays below max_cv.
+    """
+    t = np.asarray(onset_times, dtype=float)
     out = []
-    if len(t) < min_count:
-        return out
+    n = len(t)
     i = 0
-    while i < len(t) - min_count + 1:
-        best = None
-        for j in range(i + min_count, len(t) + 1):
-            iv = np.diff(t[i:j])
-            cv = iv.std() / (iv.mean() + 1e-9)
-            if cv <= max_cv and 0.08 <= iv.mean() <= 3.0:
-                best = (j, iv.mean(), cv)
-            elif best:
-                break
-        if best:
-            j, per, cv = best
-            out.append({"kind": "click_train", "start": round(float(t[i]), 3), "end": round(float(t[j - 1]), 3),
-                        "period_s": round(float(per), 3), "rate_hz": round(float(1 / per), 3),
-                        "period_cv": round(float(cv), 3), "count": int(j - i)})
-            i = j
-        else:
+    while i <= n - min_count:
+        iv = np.diff(t[i:i + min_count])
+        m = iv.mean()
+        if not (0.08 <= m <= 3.0) or iv.std() / (m + 1e-9) > max_cv:
             i += 1
+            continue
+        j = i + min_count
+        while j < n and j - i < max_len:
+            iv2 = np.diff(t[i:j + 1])
+            if iv2.std() / (iv2.mean() + 1e-9) > max_cv:
+                break
+            j += 1
+        iv = np.diff(t[i:j])
+        out.append({"kind": "click_train", "start": round(float(t[i]), 3), "end": round(float(t[j - 1]), 3),
+                    "period_s": round(float(iv.mean()), 3), "rate_hz": round(float(1 / iv.mean()), 3),
+                    "period_cv": round(float(iv.std() / iv.mean()), 3), "count": int(j - i)})
+        i = j
     return out
 
 

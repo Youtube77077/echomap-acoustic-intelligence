@@ -29,10 +29,12 @@ def pick_peaks(env: np.ndarray, period: float, k: float = 3.0, min_gap_s: float 
     thr = med + k * mad * 1.4826
     cand = np.where((env > thr) & (env >= np.roll(env, 1)) & (env >= np.roll(env, -1)))[0]
     gap = max(1, int(min_gap_s / period))
+    blocked = np.zeros(n + 2 * gap + 2, bool)
     keep = []
     for i in cand[np.argsort(-env[cand])]:
-        if all(abs(i - j) >= gap for j in keep):
+        if not blocked[i + gap]:
             keep.append(i)
+            blocked[i + 1:i + 2 * gap] = True
     keep = np.array(sorted(keep), int)
     return keep, (env[keep] - thr[keep]) if len(keep) else np.zeros(0)
 
