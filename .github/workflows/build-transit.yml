@@ -1,0 +1,39 @@
+name: build-transit
+# Builds the city transit sound library (trams, metros, trains, buses, announcements) from Wikimedia Commons
+# on GitHub's runner, publishes the raw clips as a release asset and commits the compact index.
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 110
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TRANSIT_BUDGET_MIN: "75"
+      TRANSIT_CAP_PER_CITY_KIND: "3"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          cache: pip
+          cache-dependency-path: requirements*.txt
+      - run: pip install -r requirements.txt
+      - uses: actions/cache@v4
+        with:
+          path: /home/runner/models
+          key: models-v1-birdnet31-geo304-asr1
+      - run: python tools/fetch_models.py /home/runner/models
+      - run: python -u tools/build_transit_refs.py /home/runner/models /home/runner/transit
+      - name: Publish raw clips (provenance) and commit index
+        run: |
+          cd /home/runner/transit && zip -q -r transit-refs-v1-clips.zip clips manifest.json coverage.json && cd -
+          gh release delete transit-refs-v1 -y 2>/dev/null || true
+          gh release create transit-refs-v1 /home/runner/transit/transit-refs-v1-clips.zip /home/runner/transit/coverage.json /home/runner/transit/manifest.json \
+            --title "City transit sound library v1 (raw clips)" --notes "Openly licensed Wikimedia Commons recordings of trams, metros, trains, buses and announcements, with the city each was recorded in. Per-file licence, author and source in manifest.json; per-city coverage in coverage.json." --prerelease --target ${{ github.sha }}
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add echomap/data/transit_refs.json.gz
+          git diff --cached --quiet && echo "no changes" || (git commit -m "City transit sound library (build-transit workflow)" && for i in 1 2 3; do git pull --rebase && git push && break; sleep 5; done)

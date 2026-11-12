@@ -408,10 +408,15 @@ class Case:
             refgeo = []
             for e in (self.result.get("references") or {}).get("events", []):
                 for m in e["matches"]:
-                    if m.get("lat") is not None and m["tier"] == "strong acoustic similarity" and \
-                            m["category"] in ("crossing signal", "level crossing", "announcement", "bells", "siren"):
+                    transit = ("crossing signal", "level crossing", "announcement", "bells", "siren", "tram", "metro", "train", "bus")
+                    if m.get("lat") is not None and m["tier"] == "strong acoustic similarity" and m["category"] in transit:
                         refgeo.append({**m, "record": e["record"]})
-            extra["reference_geo"] = refgeo[:5]
+            # near-exact fingerprint matches (the same jingle / announcement recording) are much stronger
+            for m in (self.result.get("references") or {}).get("fingerprint_matches", []):
+                if m.get("lat") is not None:
+                    refgeo.append({**m, "similarity": 1.0, "record": None, "exact": True})
+            refgeo.sort(key=lambda m: (not m.get("exact"), -m.get("similarity", 0)))
+            extra["reference_geo"] = refgeo[:6]
             # v1.0.3 point clues: tram hypothesis and spoken place names
             from .geo import places
             extra["tram"] = places.tram_hypothesis(records, self.result.get("references"))

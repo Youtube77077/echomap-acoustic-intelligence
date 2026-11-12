@@ -57,21 +57,28 @@ def fingerprint(x8k: np.ndarray, fan: int = 5) -> list[tuple[int, int]]:
     return out
 
 
+TRANSIT = DATA.parent / "transit_refs.json.gz"
+
+
 @lru_cache(maxsize=1)
 def library() -> dict:
-    if not DATA.exists():
+    """General reference library plus the city transit library (v1.0.3), loaded once."""
+    refs, meta = [], {}
+    for path in (DATA, TRANSIT):
+        if path.exists():
+            with gzip.open(path, "rt", encoding="utf-8") as f:
+                d = json.load(f)
+            refs += d["refs"]
+            meta[path.name] = d.get("meta", {})
+    if not refs:
         return {"refs": [], "E": np.zeros((0, 960), np.float32), "fp": {}, "meta": {}}
-    with gzip.open(DATA, "rt", encoding="utf-8") as f:
-        d = json.load(f)
-    refs = d["refs"]
-    E = np.array([np.frombuffer(base64.b64decode(r.pop("embedding")), np.float16).astype(np.float32) for r in refs]) \
-        if refs else np.zeros((0, 960), np.float32)
+    E = np.array([np.frombuffer(base64.b64decode(r.pop("embedding")), np.float16).astype(np.float32) for r in refs])
     E /= np.linalg.norm(E, axis=1, keepdims=True) + 1e-9
     fp: dict[int, list[tuple[int, int]]] = {}
     for i, r in enumerate(refs):
         for h, t in r.pop("fingerprint", []):
             fp.setdefault(h, []).append((i, t))
-    return {"refs": refs, "E": E, "fp": fp, "meta": d.get("meta", {})}
+    return {"refs": refs, "E": E, "fp": fp, "meta": meta}
 
 
 def tier(sim: float) -> str | None:
@@ -96,7 +103,8 @@ def search_embedding(emb: np.ndarray | None, k: int = 5) -> list[dict]:
             r = lib["refs"][i]
             out.append({"ref_id": r["id"], "title": r["title"], "category": r["category"], "similarity": round(float(sims[i]), 3),
                         "tier": t, "source": r.get("source_url"), "license": r.get("license"), "artist": r.get("artist"),
-                        "lat": r.get("lat"), "lon": r.get("lon"), "why": f"cosine similarity of AudioSet embeddings = {sims[i]:.3f}"})
+                        "lat": r.get("lat"), "lon": r.get("lon"), "city": r.get("city"), "country": r.get("country"),
+                        "location_basis": r.get("location_basis"), "why": f"cosine similarity of AudioSet embeddings = {sims[i]:.3f}"})
     return out
 
 
@@ -120,6 +128,7 @@ def search_fingerprint(x8k: np.ndarray) -> list[dict]:
             out.append({"ref_id": r["id"], "title": r["title"], "category": r["category"], "aligned_hits": n,
                         "offset_s": round(off * 128 / FP_SR, 2), "tier": "near-exact fingerprint match",
                         "source": r.get("source_url"), "license": r.get("license"), "lat": r.get("lat"), "lon": r.get("lon"),
+                        "city": r.get("city"), "country": r.get("country"),
                         "why": f"{n} spectral-landmark pairs aligned at one time offset (same recording content)"})
     return out
 

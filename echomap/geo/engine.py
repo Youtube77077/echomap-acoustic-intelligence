@@ -357,11 +357,26 @@ class GeoEngine:
                           "note": "Rings whose bell nominals match the recording within ~25 cents"})
         for rm in (extra.get("reference_geo") or []):
             d = haversine_km(rm["lat"], rm["lon"], pts.lat, pts.lon)
-            L = np.maximum(np.exp(-0.5 * (d / 150.0) ** 2), 0.1).astype(np.float32)
-            items.append({"group": "reference_recordings", "label": f"Reference match: {rm['title'][:60]}",
-                          "record": rm.get("record"), "c": float(min(0.35, 0.35 * rm["similarity"])), "L": L, "fp": L >= 0.5,
-                          "source": f"Reference library ({rm.get('license')})", "precision": "150 km kernel around the reference",
-                          "note": f"{rm['tier']} ({rm['similarity']}) to a geotagged recording; resemblance is not location proof"})
+            city = rm.get("city")
+            if rm.get("exact"):     # the same announcement / jingle recording: strong, city-level
+                sig, c, fl = places.kernel_sigma(12.0, pts), 0.7, 0.05
+            elif city:              # resembles a city transit recording: weak, city-level
+                sig, c, fl = places.kernel_sigma(15.0, pts), float(min(0.35, 0.35 * rm["similarity"])), 0.1
+            else:
+                sig, c, fl = 150.0, float(min(0.35, 0.35 * rm["similarity"])), 0.1
+            L = np.maximum(np.exp(-0.5 * (d / sig) ** 2), fl).astype(np.float32)
+            where = f" ({city})" if city else ""
+            if rm.get("exact"):
+                note = f"{rm['tier']}: the same recorded content (e.g. an announcement jingle) as a recording from {city or 'this place'}"
+            else:
+                note = (f"{rm['tier']} ({rm['similarity']}) to a recording made in {city or 'a geotagged place'}; "
+                        "resemblance is not location proof")
+            items.append({"group": "reference_recordings", "label": f"Reference match{where}: {rm['title'][:50]}",
+                          "record": rm.get("record"), "c": c, "L": L, "fp": L >= 0.5,
+                          "points": [{"name": city or rm["title"][:30], "cc": rm.get("country") or "", "lat": rm["lat"],
+                                      "lon": rm["lon"], "r": 12.0 if city else 50.0}],
+                          "source": f"Reference library ({rm.get('license')})",
+                          "precision": "city-level kernel" if city else "150 km kernel around the reference", "note": note})
         for it in items:
             if "fp" not in it:
                 it["fp"] = it["L"] >= 0.3 * float(it["L"].max())
