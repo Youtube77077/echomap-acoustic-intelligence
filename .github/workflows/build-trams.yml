@@ -1,0 +1,23 @@
+name: build-trams
+# Builds echomap/data/tram_networks.json.gz from OpenStreetMap (Overpass) on GitHub's runner and commits it.
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - run: pip install numpy==2.5.4 requests==2.34.2
+      - run: python -u tools/build_trams.py
+      - name: Commit dataset
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add echomap/data/tram_networks.json.gz
+          git diff --cached --quiet && echo "no changes" || (git commit -m "Tram network dataset from OpenStreetMap (build-trams workflow)" && for i in 1 2 3; do git pull --rebase && git push && break; sleep 5; done)
