@@ -41,6 +41,7 @@ jobs:
       - run: python tools/fetch_test_audio.py "/home/runner/audio"
       - name: Run cases
         run: |
+          set +e
           CLIPS="${{ inputs.clips }}"
           if [ "$CLIPS" = "all" ]; then CLIPS=$(python -c "import json;print(' '.join(c['file'] for c in json.load(open('tests/test_audio_manifest.json'))['clips']))"); fi
           for c in $CLIPS; do

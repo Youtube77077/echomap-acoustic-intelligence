@@ -96,6 +96,22 @@ class GeoEngine:
     def __init__(self, models_dir: str, history=None):
         self.models_dir = models_dir
         self.history = history
+        self._occ_cache: dict = {}
+
+    def occurrence(self, pts: "Points", weeks, idxs: list[int]) -> np.ndarray:
+        """Geomodel occurrence (max over the given weeks) for species indices at points, cached per point set."""
+        from ..models import birdnet as bnm
+        key = (len(pts.lat), float(pts.lat[0]) if len(pts.lat) else 0.0, tuple(weeks or [-1]))
+        cache = self._occ_cache.setdefault(key, {})
+        todo = [i for i in idxs if i not in cache]
+        if todo:
+            occ = None
+            for wk in (weeks or [-1]):
+                o = bnm.geo_occurrence(self.models_dir, pts.lat, pts.lon, wk, todo)
+                occ = o if occ is None else np.maximum(occ, o)
+            for j, i in enumerate(todo):
+                cache[i] = occ[:, j]
+        return np.stack([cache[i] for i in idxs], axis=1)
 
     # ------------------------------------------------------------------ evidence builders
     def evidence_items(self, pts: Points, records: list[dict], mains: dict, ctx: dict, weeks) -> list[dict]:
@@ -115,10 +131,7 @@ class GeoEngine:
                 keys = [k for k in best if k in gidx]
                 if keys:
                     idxs = [gidx[k] for k in keys]
-                    occ = None
-                    for wk in (weeks or [-1]):
-                        o = bnm.geo_occurrence(self.models_dir, pts.lat, pts.lon, wk, idxs)
-                        occ = o if occ is None else np.maximum(occ, o)
+                    occ = self.occurrence(pts, weeks, idxs)
                     for j, k in enumerate(keys):
                         r = best[k]
                         L = np.maximum(occ[:, j], OUT_OF_RANGE_FLOOR)
@@ -386,7 +399,7 @@ class GeoEngine:
             k = sci.lower()
             info = {"scientific_name": sci, "common_name": r["common_name"], "taxon_class": r.get("taxon_class")}
             if k in gidx:
-                occ = bnm.geo_occurrence(self.models_dir, pts.lat, pts.lon, -1, [gidx[k]])[:, 0]
+                occ = self.occurrence(pts, None, [gidx[k]])[:, 0]
                 m = occ >= 0.25
                 ctry = {}
                 for i in pts.iso[m]:

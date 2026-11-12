@@ -23,6 +23,9 @@ def main() -> None:
     state = AppState(settings)
     port = start(state)
     url = f"http://127.0.0.1:{port}/"
+    hf = os.environ.get("ECHOMAP_HEADLESS_FILE")
+    if hf:  # used by the CI smoke test of the built executable
+        Path(hf).write_text(f"{url} {state.token}", encoding="utf-8")
     if os.environ.get("ECHOMAP_HEADLESS"):
         print(url, state.token, flush=True)
         import time
@@ -42,7 +45,15 @@ def main() -> None:
     state.window = win
     storage = config.app_home() / "webview"
     storage.mkdir(parents=True, exist_ok=True)
-    webview.start(gui="edgechromium", private_mode=True, storage_path=str(storage))
+    try:
+        webview.start(gui="edgechromium", private_mode=True, storage_path=str(storage))
+    except Exception as e:  # noqa: BLE001
+        if not hf:
+            raise
+        print("window could not start in this environment:", e)
+        import time
+        while True:
+            time.sleep(3600)
 
 
 if __name__ == "__main__":

@@ -65,7 +65,7 @@ def geo_occurrence(models_dir: str | Path, lats: np.ndarray, lons: np.ndarray, w
     sess = session(Path(models_dir) / "geomodel_v3.0.4_fp16.onnx")
     lats = np.asarray(lats, np.float32)
     lons = np.asarray(lons, np.float32)
-    weeks = [week] if week and week > 0 else list(range(1, 49, 2))
+    weeks = [week] if week and week > 0 else [4 * m - 2 for m in range(1, 13)]  # mid-month weeks
     res = np.zeros((len(lats), len(species_idx)), np.float32)
     for w in weeks:
         for b in range(0, len(lats), batch):
