@@ -1,0 +1,10 @@
+# Runtime dependencies (pinned). Approved in DEPENDENCY_APPROVAL.md.
+numpy==2.5.4
+scipy==1.18.1
+onnxruntime==1.31.1
+av==19.0.2
+pillow==12.3.0
+pymupdf==2.0
+shapely==2.2.0
+requests==2.34.2
+pywebview==6.2.1; sys_platform == "win32"

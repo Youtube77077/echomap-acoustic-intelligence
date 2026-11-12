@@ -1,5 +1,7 @@
 """Headless analysis of one file (development / testing). Usage: python tools/run_case.py <file> [country] [city] [date]"""
-import json, sys, time
+import faulthandler, json, os, sys, time
+if os.environ.get("ECHOMAP_STACKDUMP"):
+    faulthandler.dump_traceback_later(int(os.environ["ECHOMAP_STACKDUMP"]), repeat=True)
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from echomap import config
@@ -24,6 +26,8 @@ t = time.time(); c.contextualise(ctx); tg = time.time() - t
 if c.state == "error":
     print("ERROR", c.error); print(c.history.steps[-1].get("params", {}).get("traceback", "")); sys.exit(1)
 r = c.result
+for st in c.history.steps:
+    print(f"  [{st.get('duration_s', '')}s] {st['step']}: {st['detail']}")
 print(f"analysis {ta:.1f}s, geo {tg:.1f}s, records {len(r['inventory'])}, dir {c.dir}")
 for x in r["inventory"]:
     print(f"  {x['id']} {x['start']:7.2f}-{x['end']:7.2f} {x['tier']:12s} {x['confidence']:.2f} [{x['category']}] {x['label']} | {x.get('specific') or ''}")

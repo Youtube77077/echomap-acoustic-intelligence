@@ -1,0 +1,50 @@
+name: analyze
+# Cloud development runner: analyses labelled test clips on GitHub's machines (never the user's PC)
+# and prints the processing history with timings. Optional stack dumps help locate slow code.
+on:
+  workflow_dispatch:
+    inputs:
+      clips:
+        description: "Space-separated clip files from tests/test_audio_manifest.json (or 'all')"
+        default: "esc50_siren.wav"
+      args:
+        description: "Extra args for run_case.py: country city date (use - for unknown)"
+        default: ""
+permissions:
+  contents: read
+jobs:
+  analyze:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    env:
+      GH_TOKEN: ${{ github.token }}
+      LOCALAPPDATA: ${{ runner.temp }}/appdata
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - run: pip install -r requirements.txt
+      - name: Cache models
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/appdata/EchoMap/models
+          key: models-v1-birdnet31-geo304
+      - run: python tools/fetch_models.py "$LOCALAPPDATA/EchoMap/models"
+      - name: Cache test audio
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/audio
+          key: audio-${{ hashFiles('tests/test_audio_manifest.json') }}
+      - run: python tools/fetch_test_audio.py "${{ runner.temp }}/audio"
+      - name: Run cases
+        run: |
+          CLIPS="${{ inputs.clips }}"
+          if [ "$CLIPS" = "all" ]; then CLIPS=$(python -c "import json;print(' '.join(c['file'] for c in json.load(open('tests/test_audio_manifest.json'))['clips']))"); fi
+          for c in $CLIPS; do
+            echo "::group::$c"
+            ECHOMAP_STACKDUMP=60 python tools/run_case.py "${{ runner.temp }}/audio/$c" ${{ inputs.args }}
+            echo "::endgroup::"
+          done

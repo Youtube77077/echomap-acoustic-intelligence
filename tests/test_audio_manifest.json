@@ -1,0 +1,196 @@
+{
+ "note": "Labelled test clips fetched by CI; never committed.",
+ "clips": [
+  {
+   "file": "soundscape.wav",
+   "url": "https://raw.githubusercontent.com/birdnet-team/birdnet-V3.0-dev/main/example/soundscape.wav",
+   "sha256": "df312b45bc82ce4c638c3e9e09d748702ea14a91ec29e4e8e0676d3e3e015fd7",
+   "source": "BirdNET V3.0-dev example (MIT repo)",
+   "truth": {
+    "category": "birds_wildlife",
+    "note": "North American bird soundscape (publisher example)"
+   },
+   "licence": "see birdnet-V3.0-dev repository"
+  },
+  {
+   "file": "esc50_chirping_birds.wav",
+   "url": "https://raw.githubusercontent.com/karolpiczak/ESC-50/master/audio/1-100038-A-14.wav",
+   "sha256": "2faa39d8e59e8f292dfbdbe72bd8a00294f9535714b3c19b39904c2c17e14675",
+   "source": "ESC-50 (Piczak 2015)",
+   "truth": {
+    "esc50_class": "chirping_birds",
+    "audioset_expected": "Bird",
+    "category": "birds_wildlife"
+   },
+   "licence": "CC BY-NC 3.0 (ESC-50)"
+  },
+  {
+   "file": "esc50_thunderstorm.wav",
+   "url": "https://raw.githubusercontent.com/karolpiczak/ESC-50/master/audio/1-101296-A-19.wav",
+   "sha256": "b0323e17979ff3d840ce3f9b7f13bf800a69a48f62632162b964efc9bfe4ef10",
+   "source": "ESC-50 (Piczak 2015)",
+   "truth": {
+    "esc50_class": "thunderstorm",
+    "audioset_expected": "Thunder",
+    "category": "weather"
+   },
+   "licence": "CC BY-NC 3.0 (ESC-50)"
+  },
+  {
+   "file": "esc50_airplane.wav",
+   "url": "https://raw.githubusercontent.com/karolpiczak/ESC-50/master/audio/1-11687-A-47.wav",
+   "sha256": "e622a52d904f2ec8f39c78e6f2487b84a14a927d1f9852e67a4c3c8e5dcf9419",
+   "source": "ESC-50 (Piczak 2015)",
+   "truth": {
+    "esc50_class": "airplane",
+    "audioset_expected": "Aircraft",
+    "category": "vehicles"
+   },
+   "licence": "CC BY-NC 3.0 (ESC-50)"
+  },
+  {
+   "file": "esc50_train.wav",
+   "url": "https://raw.githubusercontent.com/karolpiczak/ESC-50/master/audio/1-119125-A-45.wav",
+   "sha256": "d78fe04767546d49b741d9d7df6173152e06dcb4224d70f350c3cb73768f265d",
+   "source": "ESC-50 (Piczak 2015)",
+   "truth": {
+    "esc50_class": "train",
+    "audioset_expected": "Train",
+    "category": "railway"
+   },
+   "licence": "CC BY-NC 3.0 (ESC-50)"
+  },
+  {
+   "file": "esc50_church_bells.wav",
+   "url": "https://raw.githubusercontent.com/karolpiczak/ESC-50/master/audio/1-13571-A-46.wav",
+   "sha256": "92baf64d0e246d513e7a94e3778459558dcc222ec7cd30b12c58092a3d903142",
+   "source": "ESC-50 (Piczak 2015)",
+   "truth": {
+    "esc50_class": "church_bells",
+    "audioset_expected": "Church bell",
+    "category": "bells_alarms"
+   },
+   "licence": "CC BY-NC 3.0 (ESC-50)"
+  },
+  {
+   "file": "esc50_wind.wav",
+   "url": "https://raw.githubusercontent.com/karolpiczak/ESC-50/master/audio/1-137296-A-16.wav",
+   "sha256": "73e2dd5e66dda29f76a54b53c3c8e33441d105fc35c1d231bfbd8f7a18442969",
+   "source": "ESC-50 (Piczak 2015)",
+   "truth": {
+    "esc50_class": "wind",
+    "audioset_expected": "Wind",
+    "category": "weather"
+   },
+   "licence": "CC BY-NC 3.0 (ESC-50)"
+  },
+  {
+   "file": "esc50_footsteps.wav",
+   "url": "https://raw.githubusercontent.com/karolpiczak/ESC-50/master/audio/1-155858-A-25.wav",
+   "sha256": "cb90f52c7fe7d0d994941b2e6de555cb36e898fb49b52cc31f08401ac464e7c6",
+   "source": "ESC-50 (Piczak 2015)",
+   "truth": {
+    "esc50_class": "footsteps",
+    "audioset_expected": "Walk, footsteps",
+    "category": "human_nonspeech"
+   },
+   "licence": "CC BY-NC 3.0 (ESC-50)"
+  },
+  {
+   "file": "esc50_car_horn.wav",
+   "url": "https://raw.githubusercontent.com/karolpiczak/ESC-50/master/audio/1-17124-A-43.wav",
+   "sha256": "9d5e01e07a386ee36c2e73f40817d132a54d91c936eccc01414280abca5a4209",
+   "source": "ESC-50 (Piczak 2015)",
+   "truth": {
+    "esc50_class": "car_horn",
+    "audioset_expected": "Vehicle horn, car horn, honking",
+    "category": "bells_alarms"
+   },
+   "licence": "CC BY-NC 3.0 (ESC-50)"
+  },
+  {
+   "file": "esc50_helicopter.wav",
+   "url": "https://raw.githubusercontent.com/karolpiczak/ESC-50/master/audio/1-172649-A-40.wav",
+   "sha256": "23ad50d792907e1caa894e6e31bb623938ae0417606b830b433da11ca2ecb2f4",
+   "source": "ESC-50 (Piczak 2015)",
+   "truth": {
+    "esc50_class": "helicopter",
+    "audioset_expected": "Helicopter",
+    "category": "vehicles"
+   },
+   "licence": "CC BY-NC 3.0 (ESC-50)"
+  },
+  {
+   "file": "esc50_rain.wav",
+   "url": "https://raw.githubusercontent.com/karolpiczak/ESC-50/master/audio/1-17367-A-10.wav",
+   "sha256": "d732acd2e0c7c40405968010f49f250740c86998fc416eff2ed5330fc8c89dea",
+   "source": "ESC-50 (Piczak 2015)",
+   "truth": {
+    "esc50_class": "rain",
+    "audioset_expected": "Rain",
+    "category": "weather"
+   },
+   "licence": "CC BY-NC 3.0 (ESC-50)"
+  },
+  {
+   "file": "esc50_engine.wav",
+   "url": "https://raw.githubusercontent.com/karolpiczak/ESC-50/master/audio/1-18527-A-44.wav",
+   "sha256": "83eb3e6065246fd87d1acbbe414aa5bfb7c2081a57c188713cdc017819ffc38f",
+   "source": "ESC-50 (Piczak 2015)",
+   "truth": {
+    "esc50_class": "engine",
+    "audioset_expected": "Engine",
+    "category": "engines_machinery"
+   },
+   "licence": "CC BY-NC 3.0 (ESC-50)"
+  },
+  {
+   "file": "esc50_clock_tick.wav",
+   "url": "https://raw.githubusercontent.com/karolpiczak/ESC-50/master/audio/1-21934-A-38.wav",
+   "sha256": "8d26e40e0e382b0d2d7f6dafcb132cfe703ee3f7f32780e878fdb5a1aaffcc28",
+   "source": "ESC-50 (Piczak 2015)",
+   "truth": {
+    "esc50_class": "clock_tick",
+    "audioset_expected": "Tick",
+    "category": "bells_alarms"
+   },
+   "licence": "CC BY-NC 3.0 (ESC-50)"
+  },
+  {
+   "file": "esc50_sea_waves.wav",
+   "url": "https://raw.githubusercontent.com/karolpiczak/ESC-50/master/audio/1-28135-A-11.wav",
+   "sha256": "4d04b84d490c4d9ab28a52c4c96d1b14c2f8b132fc4be38166197ae814920742",
+   "source": "ESC-50 (Piczak 2015)",
+   "truth": {
+    "esc50_class": "sea_waves",
+    "audioset_expected": "Waves, surf",
+    "category": "water_geological"
+   },
+   "licence": "CC BY-NC 3.0 (ESC-50)"
+  },
+  {
+   "file": "esc50_siren.wav",
+   "url": "https://raw.githubusercontent.com/karolpiczak/ESC-50/master/audio/1-31482-A-42.wav",
+   "sha256": "e4c640a001c2abe808389c90b90ba7084fb1922d58235e3ec95c18c4afb4ef5c",
+   "source": "ESC-50 (Piczak 2015)",
+   "truth": {
+    "esc50_class": "siren",
+    "audioset_expected": "Siren",
+    "category": "bells_alarms"
+   },
+   "licence": "CC BY-NC 3.0 (ESC-50)"
+  },
+  {
+   "file": "esc50_crickets.wav",
+   "url": "https://raw.githubusercontent.com/karolpiczak/ESC-50/master/audio/1-57316-A-13.wav",
+   "sha256": "2df85254c1ba9c2bcb8517c8d2b36caeaf60ab6197e2e3b7285680720ecd638c",
+   "source": "ESC-50 (Piczak 2015)",
+   "truth": {
+    "esc50_class": "crickets",
+    "audioset_expected": "Cricket",
+    "category": "birds_wildlife"
+   },
+   "licence": "CC BY-NC 3.0 (ESC-50)"
+  }
+ ]
+}
