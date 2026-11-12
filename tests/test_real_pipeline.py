@@ -36,7 +36,7 @@ def test_no_spurious_speech_label(d):
     assert "Speech synthesizer" not in d["speech_label_records"]
 
 
-@pytest.mark.skipif(os.environ.get("ECHOMAP_FILE") not in ("dutch_speech.wav", "street_dutch.wav", "long_mix.wav"),
+@pytest.mark.skipif(os.environ.get("ECHOMAP_FILE") not in ("dutch_speech.wav", "street_dutch.wav", "street_dutch.mp4", "long_mix.wav"),
                     reason="no speech in this file")
 def test_dutch_transcribed_and_identified(d):
     assert d["clear_transcripts"] >= 1, "no clear transcript"
@@ -44,7 +44,7 @@ def test_dutch_transcribed_and_identified(d):
     assert any(code == "nl" for _, code, _ in d["languages"]), d["languages"]
 
 
-@pytest.mark.skipif(os.environ.get("ECHOMAP_FILE") not in ("dutch_speech.wav", "street_dutch.wav"),
+@pytest.mark.skipif(os.environ.get("ECHOMAP_FILE") not in ("dutch_speech.wav", "street_dutch.wav", "street_dutch.mp4"),
                     reason="speech-only location check")
 def test_location_netherlands_or_belgium(d):
     assert d["geo_status"] == "estimate", d["geo_summary"]
@@ -52,6 +52,6 @@ def test_location_netherlands_or_belgium(d):
     assert "Netherlands" in top or "Belgium" in top, d["geo_top"]
 
 
-@pytest.mark.skipif(os.environ.get("ECHOMAP_FILE") != "street_dutch.wav", reason="street clip only")
+@pytest.mark.skipif(os.environ.get("ECHOMAP_FILE") not in ("street_dutch.wav", "street_dutch.mp4"), reason="street clip only")
 def test_vehicle_type_described(d):
     assert d["vehicle_typed"] >= 1

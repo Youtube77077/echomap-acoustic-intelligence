@@ -2,6 +2,7 @@
 
 - dutch_speech.wav   : ~40 s of Dutch read speech (FLEURS nl_nl test split, CC BY 4.0), 16 kHz
 - street_dutch.wav   : 60 s of ESC-50 engine / car-horn / train / footsteps clips with the Dutch speech mixed in at -12 dB
+- street_dutch.mp4   : the street mix as an MP4 video (MPEG-4 video + AAC audio)
 - long_mix.wav       : 300 s (the 5-minute maximum) of looped ESC-50 clips incl. speech, for timing
 """
 import io
@@ -30,6 +31,29 @@ def write(p: Path, x: np.ndarray, sr: int = SR):
         w.setsampwidth(2)
         w.setframerate(sr)
         w.writeframes((x * 32767).astype(np.int16).tobytes())
+
+
+def write_mp4(p: Path, x: np.ndarray, sr: int = SR):
+    """Phone-style video: MPEG-4 video (black frames) + AAC audio, to test the video path end to end."""
+    import av
+    out = av.open(str(p), "w")
+    v = out.add_stream("mpeg4", rate=5)
+    v.width, v.height, v.pix_fmt = 320, 240, "yuv420p"
+    a = out.add_stream("aac", rate=sr)
+    a.layout = "mono"
+    for _ in range(int(len(x) / sr * 5)):
+        for pk in v.encode(av.VideoFrame.from_ndarray(np.zeros((240, 320, 3), np.uint8), format="rgb24")):
+            out.mux(pk)
+    x = x.astype(np.float32)
+    for s in range(0, len(x), 1024):
+        f = av.AudioFrame.from_ndarray(x[s:s + 1024][None], format="flt", layout="mono")
+        f.sample_rate = sr
+        for pk in a.encode(f):
+            out.mux(pk)
+    for st in (v, a):
+        for pk in st.encode():
+            out.mux(pk)
+    out.close()
 
 
 def fleurs(n_seconds: float, tmp: Path) -> np.ndarray:
@@ -81,6 +105,7 @@ def main():
     loop = np.concatenate(clips + [nl])
     long = np.tile(loop, int(np.ceil(300 * SR / len(loop))))[: 300 * SR]
     write(dest / "long_mix.wav", long / (np.abs(long).max() + 1e-9) * 0.8)
+    write_mp4(dest / "street_dutch.mp4", street / (np.abs(street).max() + 1e-9) * 0.8)
     for f in sorted(dest.glob("*.wav")):
         x, sr, _ = decode_mono(f, SR)
         print(f"{f.name}: {len(x) / SR:.1f} s")

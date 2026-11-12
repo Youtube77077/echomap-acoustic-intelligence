@@ -126,6 +126,7 @@ def extract_audio_stream(src: str | Path, dst_dir: str | Path) -> dict:
     dst = dst_dir / (src.stem + "_audio_streamcopy.mka")
     with av.open(str(src), "r") as inp:
         ast = next(s for s in inp.streams if s.type == "audio")
+        index, codec = ast.index, ast.codec_context.name   # read while open (PyAV 19 refuses after close)
         with av.open(str(dst), "w", format="matroska") as out:
             ost = out.add_stream_from_template(ast)
             for pkt in inp.demux(ast):
@@ -133,8 +134,8 @@ def extract_audio_stream(src: str | Path, dst_dir: str | Path) -> dict:
                     continue
                 pkt.stream = ost
                 out.mux(pkt)
-    return {"path": str(dst), "method": "stream copy (no re-encode), audio stream index %d" % ast.index,
-            "codec": ast.codec_context.name, "container": "matroska", "sha256": sha256_file(dst),
+    return {"path": str(dst), "method": "stream copy (no re-encode), audio stream index %d" % index,
+            "codec": codec, "container": "matroska", "sha256": sha256_file(dst),
             "size_bytes": dst.stat().st_size}
 
 

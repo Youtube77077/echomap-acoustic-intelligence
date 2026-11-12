@@ -4,7 +4,7 @@ name: realaudio
 on:
   push:
     branches: ["claude/**", "v1.0.8-dev"]
-    paths: ["echomap/**", "tools/profile_case.py", "tools/make_real_audio.py", "tests/test_real_pipeline.py", ".github/workflows/realaudio.yml"]
+    paths: ["echomap/**", "tools/profile_case.py", "tools/make_real_audio.py", "tests/test_real_pipeline.py", "tests/test_video_ingest.py", ".github/workflows/realaudio.yml"]
   workflow_dispatch:
 permissions:
   contents: read
@@ -16,7 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         mode: [quick, standard, deep]
-        file: [dutch_speech.wav, street_dutch.wav, long_mix.wav]
+        file: [dutch_speech.wav, street_dutch.wav, street_dutch.mp4, long_mix.wav]
     env:
       GH_TOKEN: ${{ github.token }}
       LOCALAPPDATA: /home/runner/appdata
@@ -39,7 +39,7 @@ jobs:
         with:
           path: /home/runner/real
           key: real-audio-${{ hashFiles('tools/make_real_audio.py') }}
-      - run: test -f /home/runner/real/long_mix.wav || python tools/make_real_audio.py /home/runner/real
+      - run: test -f /home/runner/real/street_dutch.mp4 || python tools/make_real_audio.py /home/runner/real
       - name: Profile ${{ matrix.mode }} ${{ matrix.file }}
         run: ECHOMAP_STACKDUMP=150 timeout -s KILL 600 python -u tools/profile_case.py "/home/runner/real/${{ matrix.file }}" ${{ matrix.mode }} out.json
       - name: End-to-end assertions
