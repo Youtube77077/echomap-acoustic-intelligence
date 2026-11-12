@@ -42,11 +42,13 @@ def run(x32k: np.ndarray, models_dir: str | Path, hop_s: float = 0.5, progress=N
     if starts[-1] + win < T:
         starts.append(T - win)
     scores = []
+    embs = []
     batch = 16
     for b in range(0, len(starts), batch):
         chunk = np.stack([mel[:, s:s + win] for s in starts[b:b + batch]])[:, None].astype(np.float32)
-        out = sess.run(["probs"], {"mel": chunk})[0]
+        out, emb = sess.run(["probs", "embedding"], {"mel": chunk})
         scores.append(out.reshape(-1, out.shape[-1]))  # exported graph keeps a leading singleton dim
+        embs.append(emb.reshape(-1, emb.shape[-1]).astype(np.float16))
         if progress:
             progress(min(1.0, (b + batch) / len(starts)))
     sc = np.concatenate(scores).astype(np.float32)
@@ -63,4 +65,5 @@ def run(x32k: np.ndarray, models_dir: str | Path, hop_s: float = 0.5, progress=N
             cover = np.abs((st + en) / 2 - c) == np.abs((st + en) / 2 - c).min()
         frame_scores[i] = np.percentile(sc[cover], 25, axis=0)
     return {"starts": st, "ends": np.minimum(en, max(dur, WIN_S)), "scores": sc, "hop_s": hop_s, "win_s": WIN_S,
+            "embeddings": np.concatenate(embs).astype(np.float32),
             "frame_t": ft, "frame_scores": frame_scores, "padded_to_5s": dur < WIN_S}

@@ -168,9 +168,58 @@ def build_audioset():
     print("audioset classes:", len(classes))
 
 
+def build_dove():
+    """Dove's Guide (CC BY-SA 4.0): full-circle rings with coordinates, bell count, tenor nominal, per-bell nominals."""
+    import urllib.request
+    src = {"dove.csv": "https://dove.cccbr.org.uk/dove.csv", "bells.csv": "https://dove.cccbr.org.uk/bells.csv"}
+    for name, url in src.items():
+        p = RAW / f"dove_{name}"
+        if not p.exists():
+            req = urllib.request.Request(url, headers={"User-Agent": "EchoMap-data-build/1.0"})
+            p.write_bytes(urllib.request.urlopen(req, timeout=120).read())
+    rings = {}
+    with open(RAW / "dove_dove.csv", encoding="utf-8-sig") as fh:
+        for row in csv.DictReader(fh):
+            try:
+                lat, lon = float(row["Lat"]), float(row["Long"])
+            except (TypeError, ValueError):
+                lat = lon = None
+            hz = float(row["Hz"]) if row.get("Hz") else None
+            rings[row["RingID"]] = {"ring_id": row["RingID"], "tower_id": row["TowerID"], "ring_type": row["RingType"],
+                                    "place": row["Place"], "dedication": row["Dedicn"], "county": row["County"],
+                                    "country": row["Country"], "iso": row["ISO3166code"], "lat": lat, "lon": lon,
+                                    "bells": int(row["Bells"] or 0), "tenor_hz": hz, "tenor_note": row["Note"],
+                                    "unringable": bool(row.get("UR"))}
+    n_bell_rows = 0
+    noms: dict[str, list[float]] = {}
+    with open(RAW / "dove_bells.csv", encoding="utf-8-sig") as fh:
+        for row in csv.DictReader(fh):
+            n_bell_rows += 1
+            try:
+                f = float(row["Nominal (Hz)"])
+            except (TypeError, ValueError):
+                continue
+            noms.setdefault(row["Ring ID"], []).append(f)
+    with_noms = 0
+    for rid, r in rings.items():
+        if rid in noms and len(noms[rid]) >= max(1, r["bells"] - 0):
+            r["nominals"] = sorted(round(v, 1) for v in noms[rid])
+            with_noms += 1
+    meta = {"source": "Dove's Guide for Church Bell Ringers, dove.cccbr.org.uk (CC BY-SA 4.0)",
+            "rings_in_dove_csv": len(rings), "bell_rows_in_bells_csv": n_bell_rows,
+            "rings_with_coordinates": sum(1 for r in rings.values() if r["lat"] is not None),
+            "rings_with_tenor_hz": sum(1 for r in rings.values() if r["tenor_hz"]),
+            "rings_with_per_bell_nominals": with_noms,
+            "ring_types": sorted({r["ring_type"] for r in rings.values()})}
+    with gzip.open(OUT / "dove_rings.json.gz", "wt", encoding="utf-8") as g:
+        json.dump({"meta": meta, "rings": list(rings.values())}, g, ensure_ascii=False, separators=(",", ":"))
+    print("dove:", json.dumps(meta))
+
+
 if __name__ == "__main__":
     c = build_countries()
     print("countries:", len(c))
     build_grid(c)
     build_cities()
     build_audioset()
+    build_dove()

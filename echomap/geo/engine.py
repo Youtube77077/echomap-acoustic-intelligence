@@ -67,6 +67,43 @@ class Points:
         return np.array([lut.get(i, 0.0) for i in self.iso], np.float32)
 
 
+def build_footprints(pts: "Points", items: list[dict]) -> list[dict]:
+    """Encode each clue's geographic footprint as a bitset over the global 0.5° raster (720 x 360)."""
+    import base64
+    rows = np.clip(np.round((89.75 - pts.lat) / 0.5).astype(int), 0, 359)
+    cols = np.clip(np.round((pts.lon + 179.75) / 0.5).astype(int), 0, 719)
+    flat = rows * 720 + cols
+    out = []
+    for i, it in enumerate(items):
+        fp = np.asarray(it.get("fp"), bool)
+        if fp.shape != pts.lat.shape or not fp.any():
+            continue
+        bits = np.zeros(720 * 360, np.uint8)
+        bits[flat[fp]] = 1
+        area = float(pts.area_km2[fp].sum())
+        ctry: dict[str, float] = {}
+        for iso, a in zip(pts.iso[fp], pts.area_km2[fp]):
+            ctry[iso] = ctry.get(iso, 0.0) + float(a)
+        top = sorted(ctry.items(), key=lambda kv: -kv[1])[:10]
+        out.append({"id": f"F{i + 1}", "label": it["label"], "group": it["group"], "record": it["record"],
+                    "used": bool(it.get("used", True)), "confidence": round(float(it["c"]), 3),
+                    "source": it.get("source"), "precision": it.get("precision"), "note": it.get("note", ""),
+                    "area_km2": round(area), "countries": [{"iso2": k, "name": countries().get(k, {}).get("name", k),
+                                                             "area_km2": round(v)} for k, v in top],
+                    "bits": base64.b64encode(np.packbits(bits).tobytes()).decode()})
+    return out
+
+
+def unlocated_reason(r: dict) -> str:
+    if r.get("scientific_name"):
+        return "Species not in the range-model label set"
+    if r["category"] in ("vehicles", "engines_machinery", "industrial", "human_nonspeech", "music", "weather", "ambience"):
+        return "Occurs worldwide: not location-specific"
+    if r["tier"] == "unclassified":
+        return "Unidentified sound: no geographic meaning without identification"
+    return "No validated link between this sound and specific places"
+
+
 def birdnet_week(month: int, day: int | None = None) -> int:
     return (month - 1) * 4 + (min(4, (day - 1) // 7 + 1) if day else 2)
 
@@ -131,13 +168,14 @@ class GeoEngine:
         return np.stack([cache[i] for i in idxs], axis=1)
 
     # ------------------------------------------------------------------ evidence builders
-    def evidence_items(self, pts: Points, records: list[dict], mains: dict, ctx: dict, weeks) -> list[dict]:
+    def evidence_items(self, pts: Points, records: list[dict], mains: dict, ctx: dict, weeks,
+                       extra: dict | None = None, include_all: bool = False) -> list[dict]:
         items = []
         w = pts.area_km2.astype(np.float64)
         # --- biogeography (BirdNET species + geomodel)
         # Species gating: only predictions >= SPECIES_MIN_CONF are used as geographic evidence. Uncorroborated
         # predictions (no overlapping AudioSet animal activity) get half weight.
-        sp = [r for r in records if r.get("scientific_name") and r["confidence"] >= SPECIES_MIN_CONF]
+        sp = [r for r in records if r.get("scientific_name") and (include_all or r["confidence"] >= SPECIES_MIN_CONF)]
         best: dict[str, dict] = {}
         for r in sp:
             k = r["scientific_name"].lower()
@@ -163,7 +201,9 @@ class GeoEngine:
                         frac = float((occ[:, j] >= 0.25).astype(float) @ w / w.sum())
                         c_eff = r["confidence"] if r.get("corroborated_by") else 0.5 * r["confidence"]
                         items.append({"group": "biogeography", "label": f"{r['common_name']} ({r['scientific_name']})",
-                                      "record": r["id"], "c": c_eff, "L": L,
+                                      "record": r["id"], "c": c_eff, "L": L, "fp": occ[:, j] >= 0.25,
+                                      "used": r["confidence"] >= SPECIES_MIN_CONF, "source": "BirdNET+ Geomodel V3.0.4",
+                                      "precision": "2° range-model lattice (~220 km)",
                                       "note": f"range model: occurrence ≥ 0.25 over {frac*100:.1f}% of land area",
                                       "range_fraction": frac})
                 for k in best:
@@ -184,7 +224,8 @@ class GeoEngine:
                 continue
             L = np.maximum(share, LANGUAGE_FLOOR)
             items.append({"group": "language", "label": f"Language {r['language_name']} ({code})", "record": r["id"],
-                          "c": r["confidence"], "L": L,
+                          "c": r["confidence"], "L": L, "fp": share >= 0.15, "source": "Unicode CLDR territoryInfo",
+                          "precision": "country-level (language shares are national)",
                           "note": f"CLDR population share; spoken by ≥ 50% in {int((share >= 0.5).sum())} land cells' countries"})
         # --- electrical grid
         if mains.get("detected"):
@@ -195,26 +236,30 @@ class GeoEngine:
             rec = next((r for r in records if r["label"].startswith("Mains hum")), None)
             c = 0.85 if rec and rec["tier"] == "confirmed" else 0.5
             items.append({"group": "electrical_grid", "label": f"Mains hum {hz} Hz", "record": rec["id"] if rec else None,
-                          "c": c, "L": L, "note": "Nominal grid frequency per country (Japan split east/west)"})
+                          "c": c, "L": L, "fp": L >= 0.5, "source": "Mains frequency per country (Wikipedia, transcribed)",
+                          "precision": "country / grid level", "note": "Nominal grid frequency per country (Japan split east/west)"})
         # --- cultural infrastructure
         for r in records:
             names = set(r.get("evidence", {}).get("ontology_parents_detected", [])) | {r["label"]}
             if "Change ringing (campanology)" in names and r["confidence"] >= 0.2:
                 L = np.where(pts.iso == "GB", 1.0, 0.08).astype(np.float32)
-                items.append({"group": "cultural", "label": "Change ringing (English-style bells)", "record": r["id"],
-                              "c": r["confidence"], "L": L, "note": "Change-ringing towers concentrated in England"})
+                items.append({"group": "bells", "label": "Change ringing (English-style bells)", "record": r["id"],
+                              "c": r["confidence"], "L": L, "fp": L >= 0.5, "source": "Dove's Guide tower distribution",
+                              "precision": "country level", "note": "Change-ringing towers concentrated in England"})
             pat = (r.get("evidence", {}).get("siren_pattern") or {}).get("pattern", "")
             if "two-tone" in pat:
                 eu = np.array([countries().get(i, {}).get("continent") == "EU" for i in pts.iso])
                 items.append({"group": "cultural", "label": "Two-tone emergency siren", "record": r["id"],
-                              "c": min(0.6, r["confidence"]), "L": np.where(eu, 1.0, 0.45).astype(np.float32),
+                              "c": min(0.6, r["confidence"]), "L": np.where(eu, 1.0, 0.45).astype(np.float32), "fp": eu,
+                              "source": "Siren-pattern regional practice (heuristic)", "precision": "continental",
                               "note": "Weak: hi-lo sirens are common in Europe"})
         # --- physical environment
         for r in records:
             if r["label"] in ("Waves, surf", "Ocean") and r["confidence"] >= 0.2:
                 L = np.where(pts.coastal, 1.0, 0.2).astype(np.float32)
                 items.append({"group": "environment", "label": f"{r['label']} (coastal water)", "record": r["id"],
-                              "c": min(0.8, r["confidence"]), "L": L,
+                              "c": min(0.8, r["confidence"]), "L": L, "fp": pts.coastal.copy(),
+                              "source": "Natural Earth coastline (0.5° coastal cells)", "precision": "coastal strip ~55 km",
                               "note": "Coastal cells favoured. Large lakes, rivers and recordings also produce wave-like sounds."})
                 break
         # --- user context (prior, not evidence)
@@ -239,7 +284,37 @@ class GeoEngine:
             L = np.maximum(np.exp(-0.5 * (d / sig) ** 2), 1e-4)
             items.append({"group": "user_context", "label": f"User: city {c.get('name')}", "record": None, "c": 0.999,
                           "L": L.astype(np.float32), "note": f"User-provided, Gaussian σ = {sig:g} km"})
+        # --- bell towers (Dove's Guide match) and geotagged reference recordings
+        extra = extra or {}
+        bm = extra.get("bell_match") or {}
+        cands = [c for c in (bm.get("all_compatible") or []) if c.get("lat") is not None]
+        if cands:
+            top_s = max(c["score"] for c in cands)
+            L = np.zeros(len(pts.lat), np.float32)
+            for c in cands[:200]:
+                if c["score"] >= 0.3 * top_s:
+                    d = haversine_km(c["lat"], c["lon"], pts.lat, pts.lon)
+                    L = np.maximum(L, c["score"] / top_s * np.exp(-0.5 * (d / 25.0) ** 2))
+            L = np.maximum(L, 0.02)
+            items.append({"group": "bells", "label": f"Bell-ring match ({bm.get('observed_bells')} bells, "
+                                                     f"{len(cands)} compatible Dove rings)",
+                          "record": extra.get("bell_record"), "c": float(extra.get("bell_confidence", 0.4)), "L": L,
+                          "fp": L >= 0.3, "source": "Dove's Guide (CC BY-SA 4.0) + EchoMap bell-partial analysis",
+                          "precision": "tower-level points with 25 km kernels; many towers share bell notes",
+                          "note": "Rings whose bell nominals match the recording within ~25 cents"})
+        for rm in (extra.get("reference_geo") or []):
+            d = haversine_km(rm["lat"], rm["lon"], pts.lat, pts.lon)
+            L = np.maximum(np.exp(-0.5 * (d / 150.0) ** 2), 0.1).astype(np.float32)
+            items.append({"group": "reference_recordings", "label": f"Reference match: {rm['title'][:60]}",
+                          "record": rm.get("record"), "c": float(min(0.35, 0.35 * rm["similarity"])), "L": L, "fp": L >= 0.5,
+                          "source": f"Reference library ({rm.get('license')})", "precision": "150 km kernel around the reference",
+                          "note": f"{rm['tier']} ({rm['similarity']}) to a geotagged recording; resemblance is not location proof"})
         for it in items:
+            if "fp" not in it:
+                it["fp"] = it["L"] >= 0.3 * float(it["L"].max())
+            it.setdefault("used", True)
+            it.setdefault("source", it["group"])
+            it.setdefault("precision", "")
             it["llr"] = _llr(it["L"].astype(np.float64), float(np.clip(it["c"], 0, 0.999)), w)
         return items
 
@@ -354,14 +429,27 @@ class GeoEngine:
         return cands
 
     # ------------------------------------------------------------------ main
-    def run(self, records: list[dict], mains: dict, ctx: dict) -> dict:
+    def run(self, records: list[dict], mains: dict, ctx: dict, extra: dict | None = None) -> dict:
+        res = self._run(records, mains, ctx, extra)
+        res["footprints"], res["unlocated"] = self._footprints, self._unlocated
+        res["grid"] = {"res": 0.5, "lat_top": 90.0, "lon_left": -180.0, "w": 720, "h": 360,
+                       "encoding": "bitset over row-major 720x360 cells (row 0 = 90..89.5 N), base64"}
+        return res
+
+    def _run(self, records: list[dict], mains: dict, ctx: dict, extra: dict | None = None) -> dict:
         weeks, week_note = context_weeks(ctx)
         loc = (ctx or {}).get("location") or {}
         pts = Points.global_land()
-        items = self.evidence_items(pts, records, mains, ctx, weeks)
+        all_items = self.evidence_items(pts, records, mains, ctx, weeks, extra, include_all=True)
+        self._footprints = build_footprints(pts, all_items)
+        used_ids = {it["record"] for it in all_items if it["record"]}
+        self._unlocated = [{"record": r["id"], "label": r["label"], "category": r["category_title"],
+                            "specific": r.get("specific"), "confidence": r["confidence"], "tier": r["tier"],
+                            "reason": unlocated_reason(r)} for r in records if r["id"] not in used_ids]
+        items = [it for it in all_items if it["used"]]
         acoustic = [it for it in items if it["group"] != "user_context"]
         base = {"week_basis": week_note, "method": __doc__.strip(), "groups": sorted({it["group"] for it in items}),
-                "evidence_items": [{k: v for k, v in it.items() if k not in ("L", "llr")} for it in items],
+                "evidence_items": [{k: v for k, v in it.items() if k not in ("L", "llr", "fp")} for it in items],
                 "independence_notes": [
                     "Bird and wildlife species are one group (shared habitat/region): √n discount, clipped to ±6 nats.",
                     "Multiple languages are one group (same scene / speakers): √n discount, clipped.",
@@ -399,7 +487,7 @@ class GeoEngine:
             rad = 150.0 if loc.get("mode") != "city" else 60.0
             lp = Points.local(c0["lat"], c0["lon"], rad, step_km=2.0 if rad <= 60 else 4.0)
             if len(lp.lat) > 10:
-                litems = self.evidence_items(lp, records, mains, ctx, weeks)
+                litems = self.evidence_items(lp, records, mains, ctx, weeks, extra)
                 ltotal, lg = self.fuse(litems)
                 lc = self.candidates(lp, ltotal, lg, litems, max_c=3, min_cell_km=2.0 if rad <= 60 else 4.0)
                 if lc:

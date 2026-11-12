@@ -171,6 +171,25 @@ def decode_mono(path: str | Path, target_sr: int | None = None, max_seconds: flo
     return mono, sr, ch_rms
 
 
+def decode_channels(path: str | Path, target_sr: int | None = None, max_channels: int = 2):
+    """Decode up to `max_channels` channels as float32 (channels, n). Used for stereo direction estimates."""
+    with av.open(str(path), "r") as c:
+        ast = next(s for s in c.streams if s.type == "audio")
+        sr = target_sr or ast.codec_context.sample_rate
+        resampler = av.AudioResampler(format="fltp", layout=None, rate=sr)
+        chunks = []
+        for frame in c.decode(ast):
+            for rf in resampler.resample(frame):
+                chunks.append(rf.to_ndarray().astype(np.float32, copy=False))
+        for rf in resampler.resample(None):
+            chunks.append(rf.to_ndarray().astype(np.float32, copy=False))
+    if not chunks:
+        return np.zeros((1, 0), np.float32), sr
+    nch = min(max_channels, max(ch.shape[0] for ch in chunks))
+    data = np.concatenate([np.pad(ch[:nch], ((0, nch - min(nch, ch.shape[0])), (0, 0))) for ch in chunks], axis=1)
+    return data, sr
+
+
 def resample(x: np.ndarray, sr_in: int, sr_out: int) -> np.ndarray:
     """High-quality resampling via libswresample (PyAV)."""
     if sr_in == sr_out:
@@ -213,5 +232,5 @@ def safe_case_name(path: str | Path, digest: str) -> str:
     return f"{datetime.now().strftime('%Y%m%d-%H%M%S')}_{stem}_{digest[:8]}"
 
 
-__all__ = ["probe", "sha256_file", "extract_audio_stream", "decode_mono", "resample", "write_wav16",
+__all__ = ["probe", "decode_channels", "sha256_file", "extract_audio_stream", "decode_mono", "resample", "write_wav16",
            "check_duration", "IngestError", "safe_case_name", "is_lossless", "os"]

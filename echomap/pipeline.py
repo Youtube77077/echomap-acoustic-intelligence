@@ -26,6 +26,10 @@ from .ingest import media
 from .models import registry, runtime
 from .models import sed as sedm
 from .provenance import History, utcnow
+from .capabilities import CapabilityLog
+from .dsp import bells as bells_dsp, integrity, spatial
+from .detect import discovery, references, relations
+from .geo import bells_dove
 from .temporal import timeinfo, weather
 
 
@@ -43,6 +47,10 @@ def _jsonable(o):
     if isinstance(o, (np.bool_,)):
         return bool(o)
     return o
+
+
+class _SkipSpecialists(Exception):
+    pass
 
 
 class Case:
@@ -96,6 +104,9 @@ class Case:
     def _analyse(self):
         s, h, md = self.settings, self.history, self.settings.models_dir
         status = registry.status(md)
+        cap = CapabilityLog(getattr(s, "analysis_mode", "deep"))
+        self.cap = cap
+        h.log("mode", f"Analysis mode: {cap.mode}", steps=sorted(cap.steps))
         self.state = "analysing"
         case_dir = Path(s.cases_dir) / media.safe_case_name(self.src, self.sha256)
         case_dir.mkdir(parents=True, exist_ok=True)
@@ -110,8 +121,14 @@ class Case:
         self._p("decode", 0.05, "Decoding audio")
         sr_native = self.meta["primary_audio"]["sample_rate"] or 48000
         sr = min(sr_native, 48000)
-        with h.timed("decode", "Decode primary audio to float32 mono", target_sr=sr, resampler="libswresample (PyAV)"):
-            x, sr, ch_rms = media.decode_mono(self.src, sr)
+        with h.timed("decode", "Decode primary audio (up to 2 channels kept for direction cues; mono mix for analysis)",
+                     target_sr=sr, resampler="libswresample (PyAV)"):
+            xs, sr = media.decode_channels(self.src, sr, max_channels=2)
+            nch_total = self.meta["primary_audio"].get("channels") or xs.shape[0]
+            x = xs.mean(axis=0).astype(np.float32)
+            ch_rms = [float(20 * np.log10(np.sqrt(np.mean(c ** 2)) + 1e-12)) for c in xs]
+            if len(x) > int((config.MAX_DURATION_S + 1) * sr):
+                raise media.IngestError("Recording longer than 5 minutes.")
         media.check_duration(self.meta, len(x) / sr)
         peak = float(np.max(np.abs(x))) if len(x) else 0
         self.x, self.sr = x, sr
@@ -125,6 +142,13 @@ class Case:
             media.write_wav16(p, x, sr)
             self.result["analysis_copy"]["wav"] = {"path": str(p), "sha256": media.sha256_file(p)}
             h.log("decode.save", "Saved 16-bit mono analysis copy for playback", path=str(p))
+        with h.timed("integrity", "Forensic integrity checks (bandwidth, clipping, dropouts, DC, metadata)"):
+            self.result["integrity"] = integrity.run(x, sr, self.meta)
+        cap.add("integrity", "Forensic integrity checks", "executed", cls="measured",
+                flags=len(self.result["integrity"]["summary_flags"]))
+        rep = spatial.channel_report(xs, sr)
+        rep["channels_in_file"] = nch_total
+        self.result["spatial"] = rep
         x32 = media.resample(x, sr, 32000)
         x16 = media.resample(x, sr, 16000)
         x4 = media.resample(x, sr, 4000)
@@ -174,11 +198,18 @@ class Case:
             sed = sedm.run(x32, md, s.sed_hop_s,
                            progress=lambda f: self._p("sed", 0.28 + 0.2 * f, "AudioSet sound event detection"))
         labels = sedm.load_labels(md)
+        self._sed = sed
+        cap.add("sed", "AudioSet sound event detection (527 classes)", "executed", model="EfficientAT mn10_as")
         raw = inv.sed_events(sed)
         groups = inv.associate(raw)
         inv.add_sed_groups(groups, profile)
         h.log("inventory.sed", "AudioSet events associated", raw_events=len(raw), grouped_records=len(groups))
-        if status["birdnet"]["installed"]:
+        bn = None
+        if not cap.wants("birdnet"):
+            cap.skipped_by_mode("birdnet", "Wildlife species identification")
+        elif not status["birdnet"]["installed"]:
+            cap.add("birdnet", "Wildlife species identification", "unavailable", "BirdNET+ model files not found")
+        if status["birdnet"]["installed"] and cap.wants("birdnet"):
             self._p("birdnet", 0.5, "Species identification (BirdNET+)")
             from .models import birdnet as bnm
             with h.timed("model.birdnet", "BirdNET+ V3.0-preview3.1, 3 s windows, 1.5 s hop"):
@@ -194,28 +225,90 @@ class Case:
                       chunks=sum(bnm.RESCALED))
                 bnm.RESCALED.clear()
             self.result["birdnet_raw"] = {"starts": bn["starts"], "top": self._top_raw(bn["scores"], bnm.labels(md), "common")}
+            cap.add("birdnet", "Wildlife species identification", "executed", model="BirdNET+ V3.0-preview3.1")
         else:
-            h.log("model.birdnet", "skipped: model not installed")
-        if status["langid"]["installed"]:
+            h.log("model.birdnet", "skipped")
+        if not cap.wants("langid"):
+            cap.skipped_by_mode("langid", "Spoken language identification")
+        elif not status["langid"]["installed"]:
+            cap.add("langid", "Spoken language identification", "unavailable", "Language pack not installed")
+        if status["langid"]["installed"] and cap.wants("langid"):
             self._p("langid", 0.72, "Language identification")
             from .models import langid
             regions = sp.speech_regions(sed)
             with h.timed("model.langid", "Whisper-base LID-only graph on speech regions", regions=len(regions)):
                 sp.add_languages(inv, regions, x16, lambda c: langid.identify(c, md))
+            cap.add("langid", "Spoken language identification", "executed" if regions else "partial",
+                    "" if regions else "No speech region of at least 1 s with a speech score of at least 0.3, so there is "
+                                       "insufficient speech for language identification.", model="Whisper base LID")
         else:
             h.log("model.langid", "skipped: language pack not installed")
         self._p("specialists", 0.82, "Engine, siren, bell, signal and wind analysis")
-        with h.timed("detect.specialists", "Engine harmonics, sirens, bells, periodic signals, wind, mains, reverb"):
+        try:
+          with h.timed("detect.specialists", "Engine harmonics, sirens, bells, periodic signals, wind, mains, reverb"):
+            if not cap.wants("specialists"):
+                cap.skipped_by_mode("specialists", "Engine, siren, signal and bell analysis", "measured")
+                sp.add_mains(inv, mains, dur)
+                sp.add_wind(inv, wind)
+                sp.add_reverb(inv, rt, dur)
+                sp.add_unclassified(inv, segs, profile, sed, [l["name"] for l in labels])
+                raise _SkipSpecialists()
             sp.add_engine_analysis(inv, x4, tonal.engine_f0_track)
             sp.add_sirens(inv, x32, tonal.siren_pattern)
             sp.add_siren_scan(inv, tonal.siren_scan(x32, 32000), profile)
             sp.add_bell_counts(inv, on["times_s"])
             sp.add_periodic(inv, patterns, profile)
-            sp.add_avas(inv, tonal.avas_like(tracks), profile)
+            if cap.wants("avas"):
+                sp.add_avas(inv, tonal.avas_like(tracks), profile)
+                cap.add("avas", "AVAS (electric-vehicle warning sound) pattern detector", "executed", cls="measured",
+                        experimental=True)
+            else:
+                cap.skipped_by_mode("avas", "AVAS pattern detector (experimental)", "measured")
             sp.add_mains(inv, mains, dur)
             sp.add_wind(inv, wind)
             sp.add_reverb(inv, rt, dur)
             sp.add_unclassified(inv, segs, profile, sed, [l["name"] for l in labels])
+            cap.add("specialists", "Engine harmonics, sirens, bells, periodic signals, wind, mains hum, reverberation",
+                    "executed", cls="measured")
+        except _SkipSpecialists:
+            pass
+        # bells: strike analysis + Dove's Guide match
+        self._bell = None
+        bell_recs = [r for r in inv.records if set(r.get("_audioset_names", [])) &
+                     {"Church bell", "Change ringing (campanology)", "Bell"} and r["confidence"] >= 0.2]
+        if cap.wants("bells") and bell_recs:
+            with h.timed("bells", "Bell partial analysis and Dove's Guide matching"):
+                ons = [t for t in on["times_s"] if any(r["start"] - 0.2 <= t <= r["end"] + 0.2 for r in bell_recs)]
+                ana = bells_dsp.analyse_strikes(x, sr, ons)
+                m = bells_dove.match(ana) if ana.get("bells") else {"available": True, "candidates": []}
+                self.result["bells"] = {"analysis": {k: v for k, v in ana.items() if k != "strikes"}, "dove_match":
+                                        {k: v for k, v in m.items() if k != "all_compatible"}}
+                rec = max(bell_recs, key=lambda r: r["confidence"])
+                rec["evidence"]["bell_analysis"] = self.result["bells"]["analysis"]
+                if m.get("candidates"):
+                    rec["evidence"]["dove_candidates"] = m["candidates"][:10]
+                    rec["specific"] = (f"{ana['ring_size_observed']} bell(s) reconstructed, tenor nominal "
+                                       f"{ana['tenor_nominal_hz']} Hz; {m['n_compatible']} compatible Dove rings")
+                conf = min(0.6, 0.15 + 0.05 * ana.get("ring_size_observed", 0) + (0.1 if ana.get("diatonic_like") else 0))
+                self._bell = {"bell_match": m, "bell_record_obj": rec, "bell_confidence": conf}
+            cap.add("bells", "Bell partial analysis and Dove's Guide tower matching",
+                    "executed" if ana.get("bells") else "partial", ana.get("reason", ""), cls="measured",
+                    compatible_rings=m.get("n_compatible", 0))
+        elif cap.wants("bells"):
+            cap.add("bells", "Bell partial analysis and Dove's Guide tower matching", "not_applicable",
+                    "No bell detected in the recording.", cls="measured")
+        else:
+            cap.skipped_by_mode("bells", "Bell partial analysis and Dove's Guide matching", "measured")
+        # stereo direction per event
+        if cap.wants("direction"):
+            if rep.get("supported"):
+                for r in inv.records:
+                    if r["end"] - r["start"] < 0.9 * dur:
+                        r["direction"] = spatial.event_direction(xs, sr, r["start"], r["end"])
+                cap.add("direction", "Stereo direction cues (lateral angle range)", "executed", cls="measured",
+                        experimental=True)
+            else:
+                cap.add("direction", "Stereo direction cues", "unsupported_by_recording", rep.get("reason", ""), cls="measured")
         with h.timed("detect.scene", "Scene inference rules"):
             self.result["scene"] = scene_mod.infer(sed, rt, wind)
         self.result["sed_raw"] = {"frame_t": sed["frame_t"], "hop_s": sed["hop_s"], "win_s": sed["win_s"],
@@ -225,6 +318,33 @@ class Case:
         self._labels = [l["name"] for l in labels]
         records = inv.finalize()
         self.result["inventory"] = records
+        if self._bell:
+            self._bell["bell_record"] = self._bell.pop("bell_record_obj")["id"]
+        x8 = media.resample(x, sr, 8000)
+        if cap.wants("references"):
+            with h.timed("references", "Reverse sound search (fingerprints + embeddings) against the reference library"):
+                self.result["references"] = references.search_events(records, sed, x8)
+            cap.add("references", "Acoustic signature database / reverse sound search",
+                    "executed" if self.result["references"].get("available") else "unavailable",
+                    self.result["references"].get("reason", ""))
+        else:
+            cap.skipped_by_mode("references", "Acoustic signature database / reverse sound search")
+        if cap.wants("relations"):
+            with h.timed("relations", "Event relationship graph and sequence hypotheses"):
+                sers = self.result["signal"]["series"]
+                self.result["relations"] = relations.build(records, dur, sers["rms_db"], sers["hop_s"] * 2)
+            cap.add("relations", "Event relationships and sequence hypotheses", "executed", cls="measured")
+        else:
+            cap.skipped_by_mode("relations", "Event relationships", "measured")
+        if cap.wants("discovery"):
+            with h.timed("discovery", "Unknown-sound discovery (novelty, disagreement, embedding families)"):
+                self.result["discovery"] = discovery.discover(
+                    records, sed, bn, x, sr, patterns, profile, [l["name"] for l in labels],
+                    references.search_embedding, case_id=self.dir.name)
+            cap.add("discovery", "Unknown-sound discovery", "executed", experimental=True)
+        else:
+            cap.skipped_by_mode("discovery", "Unknown-sound discovery (experimental)")
+        self.result["capabilities"] = cap.to_json()
         self.result["inventory_summary"] = inv.summary()
         self.result["acoustic_weather"] = weather.acoustic_observations(records, wind)
         h.log("inventory.final", "Detection inventory finalised", records=len(records))
@@ -258,7 +378,15 @@ class Case:
         self._p("geo", 0.1, "Geographic inference")
         eng = GeoEngine(s.models_dir, h)
         with h.timed("geo.fusion", "Evidence fusion on 0.5° land grid"):
-            geo = eng.run(records, self.result["signal"]["mains"], ctx)
+            extra = dict(getattr(self, "_bell", None) or {})
+            refgeo = []
+            for e in (self.result.get("references") or {}).get("events", []):
+                for m in e["matches"]:
+                    if m.get("lat") is not None and m["tier"] == "strong acoustic similarity" and \
+                            m["category"] in ("crossing signal", "level crossing", "announcement", "bells", "siren"):
+                        refgeo.append({**m, "record": e["record"]})
+            extra["reference_geo"] = refgeo[:5]
+            geo = eng.run(records, self.result["signal"]["mains"], ctx, extra)
         best = (geo.get("local_refinement", {}).get("candidates") or geo.get("candidates") or [None])[0]
         with h.timed("geo.species", "Species distribution and seasonality profiles"):
             geo["species_profiles"] = eng.species_profiles(records, best)
@@ -304,6 +432,12 @@ class Case:
             except Exception as e:  # noqa: BLE001
                 self.result["weather_external"] = {"error": str(e)}
         geo["online"] = online
+        if getattr(self, "cap", None):
+            self.cap.items = [i for i in self.cap.items if i["id"] != "geo"]
+            self.cap.add("geo", "Probabilistic geographic inference", "executed" if geo.get("status") == "estimate" else "partial",
+                         "" if geo.get("status") == "estimate" else geo.get("summary", ""), cls="context",
+                         footprints=len(geo.get("footprints", [])))
+            self.result["capabilities"] = self.cap.to_json()
         self.result["geo"] = geo
         self._p("report", 0.85, "Writing report")
         from .report import html as rhtml

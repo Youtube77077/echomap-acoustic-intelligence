@@ -23,6 +23,8 @@ from .geo import gazetteer
 from .models import registry
 
 WEB = config.resource_root() / "web"
+# Optional online map providers (contacted only when the user enables the online 3D map in settings)
+MAP_HOSTS = "https://tiles.openfreemap.org https://s3.amazonaws.com https://tiles.maps.eox.at"
 
 
 class AppState:
@@ -94,9 +96,10 @@ def make_handler(state: AppState):
             if u.path in ("/", "/index.html"):
                 html = (WEB / "index.html").read_text(encoding="utf-8").replace("__ECHOMAP_TOKEN__", state.token)
                 return self._send(200, html.encode("utf-8"), "text/html; charset=utf-8",
-                                  {"Content-Security-Policy": "default-src 'self'; img-src 'self' data: blob:; "
+                                  {"Content-Security-Policy": "default-src 'self'; img-src 'self' data: blob: " + MAP_HOSTS + "; "
                                    "media-src 'self' blob:; style-src 'self' 'unsafe-inline'; script-src 'self'; "
-                                   "frame-src 'self' data: blob: about:; connect-src 'self'"})
+                                   "worker-src 'self' blob:; child-src blob:; frame-src 'self' data: blob: about:; "
+                                   "connect-src 'self' " + MAP_HOSTS})
             if u.path.startswith("/static/"):
                 p = (WEB / u.path[len("/static/"):]).resolve()
                 if WEB.resolve() not in p.parents or not p.is_file():
@@ -158,6 +161,11 @@ def make_handler(state: AppState):
                                   db_range=(float(q.get("dbmin", -110)), float(q.get("dbmax", -10))))
                 data = v.pop("data")
                 return self._send(200, data.tobytes(), "application/octet-stream", {"X-Meta": json.dumps(v)})
+            if path == "search_text":
+                if not c or getattr(c, "_sed", None) is None:
+                    return self._json({"error": "no analysed case"}, 404)
+                from .detect import textsearch
+                return self._json(textsearch.search(q.get("q", ""), c._sed, c._labels))
             if path == "models":
                 return self._json({"dir": state.settings.models_dir, "models": registry.status(state.settings.models_dir)})
             if path == "settings":
