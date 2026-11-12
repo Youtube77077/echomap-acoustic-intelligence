@@ -1,0 +1,47 @@
+name: convert-models
+# Converts upstream PyTorch weights to ONNX on GitHub's runner, so that PyTorch is never
+# installed on the user's PC. Every export is parity-tested against the PyTorch reference.
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag for the model pack"
+        default: "models-v1"
+permissions:
+  contents: write
+jobs:
+  convert:
+    runs-on: ubuntu-24.04
+    env:
+      EAT_COMMIT: a425fdce92572e602a1d5634799bd9f1f2efa806
+      ECHOMAP_SRC: ${{ github.workspace }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install conversion toolchain (runner only)
+        run: |
+          sudo apt-get update && sudo apt-get install -y espeak-ng
+          pip install --index-url https://download.pytorch.org/whl/cpu torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1
+          pip install transformers==4.46.3 onnx==1.17.0 onnxruntime==1.20.1 numpy==1.26.4 soundfile==0.12.1 librosa==0.10.2.post1
+      - name: Fetch EfficientAT at pinned commit
+        run: |
+          git clone https://github.com/fschmid56/EfficientAT.git eat
+          cd eat && git checkout $EAT_COMMIT
+          mkdir -p resources
+          curl -sSL -o resources/mn10_as_mAP_471.pt https://github.com/fschmid56/EfficientAT/releases/download/v0.0.1/mn10_as_mAP_471.pt
+          sha256sum resources/mn10_as_mAP_471.pt
+      - name: Export EfficientAT mn10_as
+        run: python tools/convert/export_efficientat.py "$PWD/eat" "$PWD/out"
+      - name: Export Whisper-base language-ID graph
+        run: python tools/convert/export_whisper_lid.py openai/whisper-base "$PWD/out"
+      - name: Checksums
+        run: cd out && sha256sum * | tee SHA256SUMS.txt && ls -la
+      - name: Publish model pack
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ inputs.tag }}" out/* --title "EchoMap model pack ${{ inputs.tag }}" \
+            --notes "ONNX conversions made by convert-models.yml (run ${{ github.run_id }}). See *_parity.json for PyTorch-vs-ONNX checks. EfficientAT: MIT (c) Florian Schmid. Whisper: MIT (c) OpenAI. Language-ID-only graph, which cannot transcribe." \
+            --prerelease
