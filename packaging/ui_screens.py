@@ -1,5 +1,5 @@
 """CI only: screenshot every EchoMap tab after its data has loaded (Selenium + Edge on the Windows runner).
-Usage: python packaging/ui_screens.py <app url> <out dir>
+Usage: python packaging/ui_screens.py <app url> <out dir> [examples.json]
 """
 import sys
 import time
@@ -49,5 +49,19 @@ tab("intel", 3)
 d.save_screenshot(str(out / "4-intelligence.png"))
 tab("report", 6)
 d.save_screenshot(str(out / "5-report.png"))
+# v1.0.3: worked examples rendered by the real UI (clue sets from tools/example_geo.py, injected into the Geo view)
+if len(sys.argv) > 3:
+    import json
+    ex = json.loads(Path(sys.argv[3]).read_text(encoding="utf-8"))
+    tab("geo", 2)
+    for name in ("prague-tram", "tram-announcement", "melbourne-tram"):
+        if name not in ex:
+            continue
+        d.execute_script("Geo.render(arguments[0]);", ex[name])
+        time.sleep(4)   # auto-zoom to the likely places
+        d.save_screenshot(str(out / f"6-example-{name}-zoomed.png"))
+        d.find_element(By.ID, "clReset").click()
+        time.sleep(2)
+        d.save_screenshot(str(out / f"6-example-{name}-world.png"))
 d.quit()
 print("screenshots:", sorted(p.name for p in out.glob("*.png")))

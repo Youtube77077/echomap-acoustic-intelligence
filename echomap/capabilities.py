@@ -40,6 +40,15 @@ STATIC = [
                                         "behaviour are reported."},
     {"id": "speaker_id", "name": "Speaker identification", "class": "impossible", "status": "unavailable",
      "reason": "Deliberately not implemented (privacy)."},
+    {"id": "island_grid", "name": "Small / island grid identification from hum fluctuations", "class": "model",
+     "status": "unavailable", "reason": "Small grids (islands, isolated systems) fluctuate more than large synchronous grids, "
+                                        "but EchoMap does not yet bundle verified per-grid fluctuation statistics, so the "
+                                        "measured hum variability is reported without a geographic interpretation."},
+    {"id": "train_model", "name": "Train model / operator identification", "class": "impossible", "status": "unavailable",
+     "reason": "No open labelled dataset of train-model sounds. Station names in transcribed announcements are used "
+               "as place clues instead; door chimes match only if a similar reference recording exists."},
+    {"id": "accent_id", "name": "Accent / dialect identification", "class": "model", "status": "unavailable",
+     "reason": "Not bundled. Would separate e.g. British from other English speakers; needs a new model (vetting first)."},
     {"id": "altitude", "name": "Source altitude / 3-D position", "class": "impossible", "status": "unsupported",
      "reason": "Needs a calibrated microphone array. Mono or stereo recordings cannot establish elevation or distance."},
 ]

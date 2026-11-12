@@ -20,6 +20,7 @@ from dataclasses import dataclass
 
 import numpy as np
 
+from . import places
 from .gazetteer import cities_in_region, nearest_city
 from .grid import countries, grid, haversine_km, local_grid
 
@@ -65,6 +66,22 @@ class Points:
         la, lo, idx = la[ok], lo[ok], idx[ok]
         return cls(la, lo, g.iso[idx], g.coastal[idx], g.mains[idx], np.full(len(la), step_km ** 2, np.float32))
 
+    @classmethod
+    def at(cls, lat, lon, area_km2: float = 1.0):
+        """Points at given coordinates (country, coast and mains from the global cell containing each point)."""
+        g = grid()
+        r = g.res
+        key = {(round(float(a) / r), round(float(b) / r)): i for i, (a, b) in enumerate(zip(g.lat - r / 2, g.lon - r / 2))}
+        la, lo = np.asarray(lat, np.float32), np.asarray(lon, np.float32)
+        idx = np.array([key.get((int(np.floor(a / r)), int(np.floor(b / r))), -1) for a, b in zip(la, lo)])
+        ok = idx >= 0
+        from .topo import country_at
+        iso = np.array([country_at(float(a), float(b)) or g.iso[i] for a, b, i in zip(la[ok], lo[ok], idx[ok])], dtype=object)
+        c = countries()
+        mains = np.array([str(c.get(i, {}).get("mains_hz", 50)) if i != "JP" else g.mains[j] for i, j in zip(iso, idx[ok])], dtype=object)
+        p = cls(la[ok], lo[ok], iso, g.coastal[idx[ok]], mains, np.full(int(ok.sum()), area_km2, np.float32))
+        return p, ok
+
     def language_share(self, code: str) -> np.ndarray:
         c = countries()
         lut = {k: v.get("languages", {}).get(code, 0.0) for k, v in c.items()}
@@ -89,7 +106,14 @@ def build_footprints(pts: "Points", items: list[dict]) -> list[dict]:
         for iso, a in zip(pts.iso[fp], pts.area_km2[fp]):
             ctry[iso] = ctry.get(iso, 0.0) + float(a)
         top = sorted(ctry.items(), key=lambda kv: -kv[1])[:10]
-        out.append({"id": f"F{i + 1}", "label": it["label"], "group": it["group"], "record": it["record"],
+        if it.get("shape") == "countries":
+            isos = sorted(set(pts.iso[fp].tolist()) - {""})
+            shape = {"kind": "countries", "iso": isos, "numeric": [countries().get(c, {}).get("numeric") for c in isos]}
+        elif it.get("points"):
+            shape = {"kind": "points", "points": it["points"]}
+        else:
+            shape = {"kind": "raster"}
+        out.append({"id": f"F{i + 1}", "label": it["label"], "group": it["group"], "record": it["record"], "shape": shape,
                     "used": bool(it.get("used", True)), "confidence": round(float(it["c"]), 3),
                     "source": it.get("source"), "precision": it.get("precision"), "note": it.get("note", ""),
                     "area_km2": round(area), "countries": [{"iso2": k, "name": countries().get(k, {}).get("name", k),
@@ -129,8 +153,9 @@ def context_weeks(ctx: dict) -> tuple[list[int] | None, str]:
     return None, "date unknown, so species ranges use the maximum over the whole year"
 
 
-def _llr(L: np.ndarray, c: float, weights: np.ndarray) -> np.ndarray:
-    mean = float((L * weights).sum() / weights.sum())
+def _llr(L: np.ndarray, c: float, weights: np.ndarray, mean: float | None = None) -> np.ndarray:
+    if mean is None:
+        mean = float((L * weights).sum() / weights.sum())
     mean = max(mean, 1e-9)
     return np.log(c * L + (1 - c) * mean) - np.log(mean)
 
@@ -173,7 +198,7 @@ class GeoEngine:
 
     # ------------------------------------------------------------------ evidence builders
     def evidence_items(self, pts: Points, records: list[dict], mains: dict, ctx: dict, weeks,
-                       extra: dict | None = None, include_all: bool = False) -> list[dict]:
+                       extra: dict | None = None, include_all: bool = False, means: dict | None = None) -> list[dict]:
         items = []
         w = pts.area_km2.astype(np.float64)
         # --- biogeography (BirdNET species + geomodel)
@@ -228,7 +253,7 @@ class GeoEngine:
                 continue
             L = np.maximum(share, LANGUAGE_FLOOR)
             items.append({"group": "language", "label": f"Language {r['language_name']} ({code})", "record": r["id"],
-                          "c": r["confidence"], "L": L, "fp": share >= 0.15, "source": "Unicode CLDR territoryInfo",
+                          "c": r["confidence"], "L": L, "fp": share >= 0.15, "shape": "countries", "source": "Unicode CLDR territoryInfo",
                           "precision": "country-level (language shares are national)",
                           "note": f"CLDR population share; spoken by ≥ 50% in {int((share >= 0.5).sum())} land cells' countries"})
         # --- electrical grid
@@ -240,7 +265,7 @@ class GeoEngine:
             rec = next((r for r in records if r["label"].startswith("Mains hum")), None)
             c = 0.85 if rec and rec["tier"] == "confirmed" else 0.5
             items.append({"group": "electrical_grid", "label": f"Mains hum {hz} Hz", "record": rec["id"] if rec else None,
-                          "c": c, "L": L, "fp": L >= 0.5, "source": "Mains frequency per country (Wikipedia, transcribed)",
+                          "c": c, "L": L, "fp": L >= 0.5, "shape": "countries", "source": "Mains frequency per country (Wikipedia, transcribed)",
                           "precision": "country / grid level", "note": "Nominal grid frequency per country (Japan split east/west)"})
         # --- cultural infrastructure
         for r in records:
@@ -248,13 +273,13 @@ class GeoEngine:
             if "Change ringing (campanology)" in names and r["confidence"] >= 0.2:
                 L = np.where(pts.iso == "GB", 1.0, 0.08).astype(np.float32)
                 items.append({"group": "bells", "label": "Change ringing (English-style bells)", "record": r["id"],
-                              "c": r["confidence"], "L": L, "fp": L >= 0.5, "source": "Dove's Guide tower distribution",
+                              "c": r["confidence"], "L": L, "fp": L >= 0.5, "shape": "countries", "source": "Dove's Guide tower distribution",
                               "precision": "country level", "note": "Change-ringing towers concentrated in England"})
             pat = (r.get("evidence", {}).get("siren_pattern") or {}).get("pattern", "")
             if "two-tone" in pat:
                 eu = np.array([countries().get(i, {}).get("continent") == "EU" for i in pts.iso])
                 items.append({"group": "cultural", "label": "Two-tone emergency siren", "record": r["id"],
-                              "c": min(0.6, r["confidence"]), "L": np.where(eu, 1.0, 0.45).astype(np.float32), "fp": eu,
+                              "c": min(0.6, r["confidence"]), "L": np.where(eu, 1.0, 0.45).astype(np.float32), "fp": eu, "shape": "countries",
                               "source": "Siren-pattern regional practice (heuristic)", "precision": "continental",
                               "note": "Weak: hi-lo sirens are common in Europe"})
         # --- physical environment
@@ -266,12 +291,35 @@ class GeoEngine:
                               "source": "Natural Earth coastline (0.5° coastal cells)", "precision": "coastal strip ~55 km",
                               "note": "Coastal cells favoured. Large lakes, rivers and recordings also produce wave-like sounds."})
                 break
+        # --- point-location clues (v1.0.3): tram networks and spoken place names
+        extra = extra or {}
+        th = extra.get("tram")
+        if th:
+            nets = places.tram_networks()["networks"]
+            if nets:
+                L = places.tram_likelihood(pts, nets)
+                items.append({"group": "transport_infrastructure", "label": "Tram / streetcar (hypothesis)", "record": th["record"],
+                              "c": th["c"], "L": L, "fp": L >= 0.3,
+                              "points": [{"name": n["name"], "cc": n["cc"], "lat": n["lat"], "lon": n["lon"], "r": n["extent_km"]} for n in nets],
+                              "source": "OpenStreetMap railway=tram track (ODbL), " + str(len(nets)) + " networks",
+                              "precision": "city level: kernel around each tram network",
+                              "note": th["basis"] + "; tram cities favoured, larger networks slightly more"})
+        for m in extra.get("place_mentions") or []:
+            L, cities = places.mention_likelihood(pts, m)
+            items.append({"group": "place_names", "label": f"Spoken place name: {m['name']}", "record": m.get("record"),
+                          "c": places.mention_confidence(m), "L": L, "fp": L >= 0.3,
+                          "points": [{"name": c["name"], "cc": c["cc"], "lat": c["lat"], "lon": c["lon"], "r": c["radius_km"]} for c in cities],
+                          "source": "Speech transcript + GeoNames cities (≥ 15,000 inhabitants)",
+                          "precision": "city level; every city with this name is kept, weighted by size and language",
+                          "note": (f"Heard '{m['segments'][0]['text'][:80]}'" + (f" after the cue '{m['cue']}'" if m["cue"] else "") +
+                                   "; mentioning a place does not prove being there")})
         # --- user context (prior, not evidence)
         loc = (ctx or {}).get("location") or {}
         mode = loc.get("mode", "unknown")
         if mode == "country" and loc.get("country"):
             items.append({"group": "user_context", "label": f"User: country {loc['country']}", "record": None, "c": 0.999,
-                          "L": np.where(pts.iso == loc["country"], 1.0, 0.002).astype(np.float32), "note": "User-provided"})
+                          "L": np.where(pts.iso == loc["country"], 1.0, 0.002).astype(np.float32), "note": "User-provided",
+                          "shape": "countries"})
         elif mode == "region" and loc.get("country"):
             cs = cities_in_region(loc["country"], loc.get("region", ""))
             if cs:
@@ -289,7 +337,6 @@ class GeoEngine:
             items.append({"group": "user_context", "label": f"User: city {c.get('name')}", "record": None, "c": 0.999,
                           "L": L.astype(np.float32), "note": f"User-provided, Gaussian σ = {sig:g} km"})
         # --- bell towers (Dove's Guide match) and geotagged reference recordings
-        extra = extra or {}
         bm = extra.get("bell_match") or {}
         cands = [c for c in (bm.get("all_compatible") or []) if c.get("lat") is not None]
         if cands:
@@ -304,6 +351,8 @@ class GeoEngine:
                                                      f"{len(cands)} compatible Dove rings)",
                           "record": extra.get("bell_record"), "c": float(extra.get("bell_confidence", 0.4)), "L": L,
                           "fp": L >= 0.3, "source": "Dove's Guide (CC BY-SA 4.0) + EchoMap bell-partial analysis",
+                          "points": [{"name": c.get("place") or c.get("dedication") or "tower", "cc": c.get("iso") or "",
+                                      "lat": c["lat"], "lon": c["lon"], "r": 2.0} for c in cands[:200] if c["score"] >= 0.3 * top_s],
                           "precision": "tower-level points with 25 km kernels; many towers share bell notes",
                           "note": "Rings whose bell nominals match the recording within ~25 cents"})
         for rm in (extra.get("reference_geo") or []):
@@ -319,7 +368,8 @@ class GeoEngine:
             it.setdefault("used", True)
             it.setdefault("source", it["group"])
             it.setdefault("precision", "")
-            it["llr"] = _llr(it["L"].astype(np.float64), float(np.clip(it["c"], 0, 0.999)), w)
+            it["llr"] = _llr(it["L"].astype(np.float64), float(np.clip(it["c"], 0, 0.999)), w,
+                             (means or {}).get(it["label"]))
         return items
 
     @staticmethod
@@ -434,6 +484,48 @@ class GeoEngine:
                              "moderate" if c["relative_mass"] >= 0.05 else "weaker")
         return cands
 
+    # ------------------------------------------------------------------ likely places (point clues)
+    def likely_places(self, items: list[dict], records, mains, ctx, weeks, extra, max_n: int = 10) -> dict | None:
+        """Rank concrete places (tram networks, mentioned cities, bell towers) by the full evidence evaluated AT each place."""
+        P: list[dict] = []
+        for it in items:   # merge points that are the same place (e.g. a tram network and the spoken name of its city)
+            for q in it.get("points") or []:
+                same = next((e for e in P if haversine_km(e["lat"], e["lon"], q["lat"], q["lon"]) <= max(e["r"], q.get("r", 2.0), 3.0)), None)
+                if same is None:
+                    P.append({**q, "r": q.get("r", 2.0), "kinds": {it["label"]}})
+                else:
+                    same["kinds"].add(it["label"])
+                    same["r"] = max(same["r"], q.get("r", 2.0))
+        if not P:
+            return None
+        pts, ok = Points.at([q["lat"] for q in P], [q["lon"] for q in P])
+        P = [q for q, o in zip(P, ok) if o]
+        if not P:
+            return None
+        # global means, so a place's score is on the same scale as the world map (not relative to the pool)
+        gw = self._gpts.area_km2.astype(np.float64)
+        means = {it["label"]: max(float((it["L"] * gw).sum() / gw.sum()), 1e-9) for it in items}
+        its = self.evidence_items(pts, records, mains, ctx, weeks, extra, means=means)
+        total, _ = self.fuse(its)
+        order = np.argsort(-total)
+        rel = np.exp(total - total.max())
+        share = rel / rel.sum()
+        n_close = int((total >= total.max() - 1.0).sum())
+        out = []
+        for i in order[:max_n]:
+            q = P[i]
+            sup = sorted(((float(it["llr"][i]), it["label"]) for it in its if it["llr"][i] > 0.05), reverse=True)
+            nc = nearest_city(q["lat"], q["lon"])
+            out.append({"rank": len(out) + 1, "name": q["name"], "country": countries().get(q.get("cc") or "", {}).get("name", q.get("cc", "")),
+                        "lat": round(float(q["lat"]), 4), "lon": round(float(q["lon"]), 4), "radius_km": round(float(max(q.get("r", 2.0), 2.0)), 1),
+                        "share": round(float(share[i]), 4), "score_nats": round(float(total[i]), 2),
+                        "delta_to_best_nats": round(float(total.max() - total[i]), 2), "kinds": sorted(q["kinds"]),
+                        "supporting": [{"label": l, "nats": round(v, 2)} for v, l in sup[:6]], "nearest_city": nc})
+        return {"places": out, "pool": len(P), "within_1_nat": n_close,
+                "note": ("Each place is scored with ALL evidence evaluated at that exact point. 'share' is relative among the "
+                         f"{len(P)} places considered (tram networks, mentioned cities, bell towers), not a calibrated probability."
+                         + (f" {n_close} places are within 1 nat of the best, so the ranking among them is weak." if n_close > 3 else ""))}
+
     # ------------------------------------------------------------------ main
     def run(self, records: list[dict], mains: dict, ctx: dict, extra: dict | None = None) -> dict:
         res = self._run(records, mains, ctx, extra)
@@ -446,6 +538,7 @@ class GeoEngine:
         weeks, week_note = context_weeks(ctx)
         loc = (ctx or {}).get("location") or {}
         pts = Points.global_land()
+        self._gpts = pts
         all_items = self.evidence_items(pts, records, mains, ctx, weeks, extra, include_all=True)
         self._footprints = build_footprints(pts, all_items)
         used_ids = {it["record"] for it in all_items if it["record"]}
@@ -475,6 +568,9 @@ class GeoEngine:
         land_area = float(pts.area_km2.sum())
         cands = self.candidates(pts, total, gscore, items)
         info_ratio = land_area / max(eff_area, 1.0)
+        lp = self.likely_places(items, records, mains, ctx, weeks, extra)
+        if lp:
+            base["likely_places"] = lp
         if info_ratio < MIN_INFORMATION_RATIO and loc.get("mode", "unknown") == "unknown":
             keep = np.argsort(-total)[:1500]
             return {**base, "status": "no_estimate", "effective_area_km2": round(eff_area), "land_area_km2": round(land_area),

@@ -412,6 +412,25 @@ class Case:
                             m["category"] in ("crossing signal", "level crossing", "announcement", "bells", "siren"):
                         refgeo.append({**m, "record": e["record"]})
             extra["reference_geo"] = refgeo[:5]
+            # v1.0.3 point clues: tram hypothesis and spoken place names
+            from .geo import places
+            extra["tram"] = places.tram_hypothesis(records, self.result.get("references"))
+            segs = (self.result.get("transcripts") or {}).get("segments") or []
+            mentions = places.place_mentions(segs)
+            for m in mentions:
+                t0 = m["segments"][0]["start"] or 0
+                rec = next((r for r in records if r.get("transcripts") and r["start"] - 0.5 <= t0 <= r["end"] + 0.5), None)
+                m["record"] = rec["id"] if rec else None
+            extra["place_mentions"] = mentions
+            self.result["place_mentions"] = [{k: v for k, v in m.items() if k != "rows"} for m in mentions]
+            if getattr(self, "cap", None):
+                tn = places.tram_networks()["networks"]
+                self.cap.items = [i for i in self.cap.items if i["id"] not in ("tram", "place_names")]
+                self.cap.add("tram", "Tram / streetcar clue (OSM tram networks)", "executed" if tn else "unavailable",
+                             ((extra["tram"]["basis"] if extra["tram"] else "No tram-like sound found.") if tn
+                              else "Tram network dataset not bundled."), cls="context", networks=len(tn))
+                self.cap.add("place_names", "Place names in transcribed speech", "executed" if segs else "not_executed",
+                             f"{len(mentions)} place name(s) found." if segs else "No transcript available.", cls="context")
             geo = eng.run(records, self.result["signal"]["mains"], ctx, extra)
         best = (geo.get("local_refinement", {}).get("candidates") or geo.get("candidates") or [None])[0]
         with h.timed("geo.species", "Species distribution and seasonality profiles"):

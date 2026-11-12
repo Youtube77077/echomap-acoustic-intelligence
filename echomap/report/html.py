@@ -169,10 +169,22 @@ def render(case) -> str:
             out.append("<h3>Online lookups (opt-in)</h3>" + _j(geo["online"]))
     # clue map + unlocated evidence
     if geo:
-        cm = images.clue_map_png(geo)
         out.append("<h2>Clue map: geographic footprint of each clue</h2>")
-        if cm:
-            out.append(f"<img src='{cm}' alt='clue map'>")
+        for name, uri in images.clue_map_views(geo):
+            out.append(f"<img src='{uri}' alt='clue map ({name})'>")
+        lp = geo.get("likely_places") or {}
+        if lp.get("places"):
+            out.append("<h3>Likely places (point clues: tram networks, spoken place names, bell towers)</h3>")
+            out.append(f"<p class='muted'>{E(lp.get('note', ''))}</p>")
+            out.append(_tbl(["#", "Place", "Country", "Centre (lat, lon)", "Circle radius", "Relative share", "Δ to best (nats)", "Supported by"],
+                            [[q["rank"], E(q["name"]), E(q["country"] or ""), f"{q['lat']:.4f}, {q['lon']:.4f}", f"{q['radius_km']:g} km",
+                              f"{q['share'] * 100:.1f}%", q["delta_to_best_nats"], E("; ".join(f"{s['label']} (+{s['nats']})" for s in q["supporting"]))]
+                             for q in lp["places"]]))
+        if r.get("place_mentions"):
+            out.append("<h3>Place names heard in speech</h3>")
+            out.append(_tbl(["Name", "Announcement cue", "Quality", "Heard in"],
+                            [[E(m["name"]), E(m.get("cue") or "-"), E(m["quality"]), E(" | ".join(x["text"][:120] for x in m["segments"][:3]))]
+                             for m in r["place_mentions"]]))
         out.append(_tbl(["Clue", "Group", "Used", "Confidence", "Area km²", "Main countries", "Source", "Precision"],
                         [[E(f["label"]), E(f["group"]), "yes" if f["used"] else "no (low confidence)", f["confidence"],
                           f"{f['area_km2']:,}", E(", ".join(c["name"] for c in f["countries"][:5])), E(f.get("source") or ""),

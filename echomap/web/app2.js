@@ -1,4 +1,4 @@
-/* EchoMap v1.0.2 workspace extensions: clue map (2D), 3D map (MapLibre), Intelligence tab, playback tools. */
+/* EchoMap v1.0.3 workspace extensions: clue map (2D), 3D map (MapLibre), Intelligence tab, playback tools. */
 "use strict";
 const CLUE_COLORS = ["#4f8cff", "#ffb340", "#2ed3b7", "#ff6b9a", "#c77dff", "#7bd88f", "#f5e13c", "#ff8a4c", "#4dd0e1",
   "#e57373", "#aed581", "#ba68c8", "#90caf9", "#ffd54f", "#80cbc4"];
@@ -21,17 +21,22 @@ function rasterContours(raster, blur = 1.3, thr = 0.35) {
 }
 
 // shared clue state for 2D and 3D views
+const GROUP_NAMES = {language: "Language", electrical_grid: "Electrical hum", biogeography: "Wildlife", bells: "Bells",
+  cultural: "Sirens / culture", environment: "Water / coast", transport_infrastructure: "Trams / transport",
+  place_names: "Spoken place names", reference_recordings: "Reference matches", user_context: "Your context"};
 const Clues = {
-  geo: null, layers: [], visible: new Set(), showLow: false,
+  geo: null, layers: [], visible: new Set(), showLow: false, groupOff: new Set(), opacity: {}, ghost: new Set(),
   set(g) {
-    this.geo = g; this.layers = [];
+    this.geo = g; this.layers = []; this.opacity = {}; this.ghost = new Set();
     (g?.footprints || []).forEach((f, i) => {
       const raster = decodeBits(f.bits);
       this.layers.push({...f, color: CLUE_COLORS[i % CLUE_COLORS.length], raster, contour: rasterContours(raster)});
     });
     this.visible = new Set(this.layers.filter(l => l.used).map(l => l.id));
   },
-  active() { return this.layers.filter(l => this.visible.has(l.id) && (l.used || this.showLow)); },
+  alpha(l) { return (this.opacity[l.id] ?? 1) * (this.ghost.has(l.id) ? 0.25 : 1); },
+  active() { return this.layers.filter(l => this.visible.has(l.id) && (l.used || this.showLow) && !this.groupOff.has(l.group)); },
+  places() { return this.geo?.likely_places?.places || []; },
   agreement() {
     const act = this.active().filter(l => l.used), cnt = new Uint8Array(GW * GH);
     act.forEach(l => { for (let i = 0; i < cnt.length; i++) cnt[i] += l.raster[i]; });
@@ -47,23 +52,32 @@ const Clues = {
     const ci = cellOf(lon, lat); if (ci < 0) return;
     const cover = this.layers.filter(l => l.raster[ci]), miss = this.layers.filter(l => l.used && !l.raster[ci]);
     const p = this.heatAt(lon, lat);
+    const near = this.places().filter(q => d3.geoDistance([lon, lat], [q.lon, q.lat]) * 6371 <= Math.max(q.radius_km * 2, 25));
     const row = l => `<li><span class="sw" style="display:inline-block;width:10px;height:10px;background:${l.color};border-radius:2px"></span>
       <b>${esc(l.label)}</b> <span class="badge">${l.used ? "used" : "low confidence, not used"}</span>
-      <span class="muted">conf ${l.confidence} · ${esc(l.group)} · ${esc(l.source || "")} · precision: ${esc(l.precision || "-")}</span>
+      <span class="muted">conf ${l.confidence} · ${esc(GROUP_NAMES[l.group] || l.group)} · ${esc(l.source || "")} · precision: ${esc(l.precision || "-")}</span>
       ${l.note ? `<div class="muted">${esc(l.note)}</div>` : ""}</li>`;
     $("#pointInfo").classList.remove("hidden");
-    $("#pointInfo").innerHTML = `<b>Point ${lat.toFixed(2)}, ${lon.toFixed(2)}</b>
+    $("#pointInfo").innerHTML = `<b>Point ${lat.toFixed(3)}, ${lon.toFixed(3)}</b>
+      ${near.length ? `<div class="small">Likely place here: ${near.map(q => `<b>#${q.rank} ${esc(q.name)}</b> (${(q.share * 100).toFixed(1)}%)`).join(", ")}</div>` : ""}
       <div class="small">Combined relative plausibility: ${p == null ? "outside the top area" : (p * 100).toFixed(1) + "% of the maximum"}</div>
       <div class="small"><b>${cover.length}</b> clue(s) cover this point:</div><ul class="small">${cover.map(row).join("") || "<li class='muted'>none</li>"}</ul>
       <div class="small"><b>${miss.length}</b> used clue(s) do NOT cover it (contradicting evidence):</div><ul class="small">${miss.map(row).join("") || "<li class='muted'>none</li>"}</ul>
-      <div class="muted small">Footprints are approximate areas (0.5° cells, about 55 km). Inferred regions, not measured locations.</div>`;
+      <div class="muted small">Country clues use exact borders; other areas are approximate (0.5° cells, about 55 km); places are circles. Inferred, not measured.</div>`;
   },
 };
 
 // ---------------------------------------------------------------- 2D clue map
 const ClueMap = (() => {
-  const cv = $("#clueCanvas"); let world = null, proj = null, path = null, tf = d3.zoomIdentity, feats = [];
-  d3.json("/static/vendor/countries-50m.json").then(t => { world = topojson.feature(t, t.objects.countries); feats = world.features; resize(); });
+  const cv = $("#clueCanvas"); let world = null, world10 = null, loading10 = false, proj = null, path = null, tf = d3.zoomIdentity, feats = [];
+  let byNum = new Map();
+  const index = w => { byNum = new Map(); w.features.forEach(f => { if (f.id != null) byNum.set(String(f.id).padStart(3, "0"), f); }); };
+  d3.json("/static/vendor/countries-50m.json").then(t => { world = topojson.feature(t, t.objects.countries); feats = world.features; index(world); resize(); });
+  function hiRes() {  // sharper borders once zoomed in (Natural Earth 1:10m), loaded on demand
+    if (world10 || loading10) return; loading10 = true;
+    d3.json("/static/vendor/countries-10m.json").then(t => { world10 = topojson.feature(t, t.objects.countries); feats = world10.features; index(world10); draw(); })
+      .catch(() => { /* not bundled: keep 1:50m */ });
+  }
   function resize() {
     if (!cv.clientWidth) return;
     cv.width = cv.clientWidth * devicePixelRatio; cv.height = cv.clientHeight * devicePixelRatio;
@@ -73,46 +87,81 @@ const ClueMap = (() => {
   function ringPath(ctx, rings) {
     for (const ring of rings) { ring.forEach((pt, i) => { const p = proj(gridToLonLat(pt)); if (!p) return; i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1]); }); ctx.closePath(); }
   }
+  const hex = (c, a) => c + Math.round(Math.max(0, Math.min(1, a)) * 255).toString(16).padStart(2, "0");
+  const fillA = () => +$("#clFill").value / 100;
+  function circle(ctx, lon, lat, rkm, minPx) {   // geodesic circle, never smaller than minPx on screen
+    const p = proj([lon, lat]); if (!p) return null;
+    const g = d3.geoCircle().center([lon, lat]).radius(rkm / 111.195)();
+    ctx.beginPath(); path(g);
+    const b = path.bounds(g), px = (b[1][0] - b[0][0]) * tf.k / 2;
+    if (!(px >= minPx)) { ctx.beginPath(); ctx.arc(p[0], p[1], minPx / tf.k, 0, 7); }
+    return p;
+  }
+  function shapePath(ctx, l) {
+    ctx.beginPath();
+    if (l.shape?.kind === "countries" && byNum.size) {
+      (l.shape.numeric || []).forEach(n => { const f = n && byNum.get(String(n).padStart(3, "0")); if (f) path(f); });
+    } else ringPath(ctx, l.contour.coordinates.flat());
+  }
   function draw() {
     if (!proj) return;
     const ctx = cv.getContext("2d"), k = tf.k, dpr = devicePixelRatio;
+    if (k > 5) hiRes();
     ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, cv.width, cv.height);
     ctx.setTransform(k, 0, 0, k, tf.x * dpr, tf.y * dpr);
     path = d3.geoPath(proj, ctx);
+    const w = world10 || world;
     ctx.beginPath(); path({type: "Sphere"}); ctx.fillStyle = "#0b1626"; ctx.fill();
-    if (world) { ctx.beginPath(); path(world); ctx.fillStyle = "#26303f"; ctx.fill(); ctx.strokeStyle = "#465468"; ctx.lineWidth = 0.6 / k; ctx.stroke(); }
+    if (w) { ctx.beginPath(); path(w); ctx.fillStyle = "#26303f"; ctx.fill(); ctx.strokeStyle = "#5a6a84"; ctx.lineWidth = 0.7 / k; ctx.stroke(); }
     const g = Clues.geo;
     if (g && $("#clProb").checked) {
       for (const [la, lo, v] of g.heat || []) { const p = proj([lo, la]); if (!p) continue; const s = Math.max(1.5, 3.2 * proj.scale() / 400);
         const kk = Math.round(80 + 175 * v) * 3; ctx.fillStyle = `rgba(${LUT[kk]},${LUT[kk + 1]},${LUT[kk + 2]},${0.25 + 0.6 * v})`; ctx.fillRect(p[0] - s / 2, p[1] - s / 2, s, s); }
     }
-    // clue regions: translucent fills, then smooth white outlines and labels
-    const act = Clues.active();
-    act.forEach(l => { ctx.beginPath(); ringPath(ctx, l.contour.coordinates.flat()); ctx.fillStyle = l.color + (l.used ? "40" : "22"); ctx.fill("evenodd"); });
+    const act = Clues.active(), fa = fillA();
+    // area clues (countries / smooth regions)
+    act.filter(l => l.shape?.kind !== "points").forEach(l => {
+      const a = Clues.alpha(l); if (a <= 0) return;
+      shapePath(ctx, l); ctx.fillStyle = hex(l.color, (l.used ? 0.55 : 0.3) * fa * a); ctx.fill("evenodd");
+    });
     if ($("#clAgree").checked) {
       const ag = Clues.agreement();
       if (ag.max >= 2) {
         const top = new Uint8Array(GW * GH); for (let i = 0; i < top.length; i++) top[i] = ag.cnt[i] >= ag.max ? 1 : 0;
         const c = rasterContours(top, 1.0, 0.4);
-        ctx.beginPath(); ringPath(ctx, c.coordinates.flat()); ctx.fillStyle = "rgba(255,90,60,0.28)"; ctx.fill("evenodd");
-        ctx.strokeStyle = "#ff5a3c"; ctx.lineWidth = 3 / k; ctx.stroke();
-        const lab = largestCentroid(c); if (lab) halo(ctx, `Most clues agree here (${ag.max} of ${ag.n})`, lab, 13 / k, "#ffd2c8");
+        ctx.beginPath(); ringPath(ctx, c.coordinates.flat()); ctx.fillStyle = "rgba(255,90,60,0.22)"; ctx.fill("evenodd");
+        ctx.strokeStyle = "#ff5a3c"; ctx.lineWidth = 2.5 / k; ctx.stroke();
+        const lab = largestCentroid(c); if (lab && k < 8) halo(ctx, `Most clues agree here (${ag.max} of ${ag.n})`, lab, 13 / k, "#ffd2c8");
       }
     }
-    act.forEach(l => { ctx.beginPath(); ringPath(ctx, l.contour.coordinates.flat()); ctx.setLineDash(l.used ? [] : [6 / k, 4 / k]);
-      ctx.strokeStyle = "rgba(255,255,255,0.92)"; ctx.lineWidth = (l.used ? 1.8 : 1.2) / k; ctx.stroke(); ctx.setLineDash([]); });
+    act.filter(l => l.shape?.kind !== "points").forEach(l => { const a = Clues.alpha(l); if (a <= 0) return;
+      shapePath(ctx, l); ctx.setLineDash(l.used ? [] : [6 / k, 4 / k]);
+      ctx.strokeStyle = `rgba(255,255,255,${0.92 * a})`; ctx.lineWidth = (l.used ? 1.6 : 1.1) / k; ctx.stroke(); ctx.setLineDash([]); });
+    // point clues (tram networks, mentioned cities, bell towers): small circles at their real size
+    act.filter(l => l.shape?.kind === "points").forEach(l => { const a = Clues.alpha(l); if (a <= 0) return;
+      for (const q of l.shape.points) { const p = circle(ctx, q.lon, q.lat, q.r || 3, 2.5); if (!p) continue;
+        ctx.fillStyle = hex(l.color, 0.5 * a); ctx.fill(); ctx.strokeStyle = `rgba(255,255,255,${0.8 * a})`; ctx.lineWidth = 1 / k; ctx.stroke();
+        if ($("#clLabels").checked && k >= 12) halo(ctx, q.name, [p[0] + 5 / k, p[1] + 3 / k], 10 / k, l.color, "left"); } });
     if ($("#clLabels").checked) {
-      // country names, sized by visible area
       ctx.textAlign = "center";
       for (const f of feats) { const a = path.area(f) * k * k; if (a < 2500 * dpr * dpr) continue; const c = path.centroid(f); if (!isFinite(c[0])) continue;
         ctx.font = `${Math.min(13, 8 + Math.sqrt(a) / 80) * dpr / k}px Segoe UI`; ctx.fillStyle = "rgba(220,228,240,.55)";
         ctx.fillText((f.properties.name || "").toUpperCase(), c[0], c[1]); }
-      act.forEach(l => { const c = largestCentroid(l.contour); if (c) halo(ctx, l.label.length > 38 ? l.label.slice(0, 36) + "…" : l.label, c, 11 / k, l.color); });
+      if (k < 8) act.filter(l => l.shape?.kind !== "points").forEach(l => { const c = largestCentroid(l.contour); if (c && Clues.alpha(l) > 0.3) halo(ctx, l.label.length > 38 ? l.label.slice(0, 36) + "…" : l.label, c, 11 / k, l.color); });
     }
-    if (g && $("#clCand").checked) {
-      (g.candidates || []).forEach(c => { ctx.beginPath(); path(d3.geoCircle().center([c.centre.lon, c.centre.lat]).radius(c.uncertainty_radius_km / 111.195)());
+    if (g && $("#clCand").checked) {   // estimate circles: filled, outlined, labelled with their radius
+      (g.candidates || []).forEach(c => { const p = circle(ctx, c.centre.lon, c.centre.lat, c.uncertainty_radius_km, 6); if (!p) return;
+        ctx.fillStyle = c.rank === 1 ? "rgba(255,90,60,0.10)" : "rgba(255,179,64,0.07)"; ctx.fill();
         ctx.strokeStyle = c.rank === 1 ? "#ff5a3c" : "#ffb340"; ctx.lineWidth = 2 / k; ctx.setLineDash(c.strength === "weaker" ? [5 / k, 4 / k] : []); ctx.stroke(); ctx.setLineDash([]);
-        const p = proj([c.centre.lon, c.centre.lat]); if (p) { ctx.beginPath(); ctx.arc(p[0], p[1], 4 / k, 0, 7); ctx.fillStyle = "#fff"; ctx.fill(); halo(ctx, `#${c.rank} ${c.name}`, [p[0] + 8 / k, p[1] - 8 / k], 11 / k, "#fff", "left"); } });
+        ctx.beginPath(); ctx.arc(p[0], p[1], 3.5 / k, 0, 7); ctx.fillStyle = "#fff"; ctx.fill();
+        halo(ctx, `#${c.rank} ${c.name} · ±${c.uncertainty_radius_km} km`, [p[0] + 8 / k, p[1] - 8 / k], 11 / k, "#fff", "left"); });
+    }
+    if (g && $("#clPlaces").checked) {   // likely places: circles sized to the place, strongest first on top
+      Clues.places().slice().reverse().forEach(q => { const p = circle(ctx, q.lon, q.lat, Math.max(q.radius_km, 3), 5); if (!p) return;
+        const top = q.rank === 1;
+        ctx.fillStyle = top ? "rgba(255,70,50,0.35)" : `rgba(255,170,60,${0.12 + 0.5 * q.share})`; ctx.fill();
+        ctx.strokeStyle = top ? "#ff4632" : "#ffb340"; ctx.lineWidth = (top ? 2.6 : 1.6) / k; ctx.stroke();
+        if (q.rank <= 5 || k >= 6) halo(ctx, `${q.rank}. ${q.name} ${(q.share * 100).toFixed(0)}%`, [p[0] + 7 / k, p[1] - 6 / k], (top ? 13 : 11) / k, top ? "#ffd2c8" : "#ffe2b0", "left"); });
     }
   }
   function largestCentroid(mp) {
@@ -125,33 +174,82 @@ const ClueMap = (() => {
     ctx.font = `600 ${size * devicePixelRatio}px Segoe UI`; ctx.textAlign = align; ctx.lineWidth = 3 * devicePixelRatio / tf.k;
     ctx.strokeStyle = "rgba(8,12,20,.85)"; ctx.strokeText(text, x, y); ctx.fillStyle = color; ctx.fillText(text, x, y);
   }
-  const zoom = d3.zoom().scaleExtent([1, 60]).on("zoom", e => { tf = e.transform; draw(); });
+  const zoom = d3.zoom().scaleExtent([1, 2000]).on("zoom", e => { tf = e.transform; draw(); });
   d3.select(cv).call(zoom).on("dblclick.zoom", null);
-  cv.addEventListener("click", e => { if (!proj) return; const dpr = devicePixelRatio;
-    const ll = proj.invert([(e.offsetX * dpr - tf.x * dpr) / tf.k, (e.offsetY * dpr - tf.y * dpr) / tf.k]);
-    if (ll && isFinite(ll[0])) Clues.inspect(ll[0], ll[1]); });
-  cv.addEventListener("mousemove", e => { if (!proj) return; const dpr = devicePixelRatio;
-    const ll = proj.invert([(e.offsetX * dpr - tf.x * dpr) / tf.k, (e.offsetY * dpr - tf.y * dpr) / tf.k]);
-    if (ll && isFinite(ll[0])) $("#clueHover").textContent = `lat ${ll[1].toFixed(2)}, lon ${ll[0].toFixed(2)} · click to inspect clues`; });
+  const toLL = e => { const dpr = devicePixelRatio; return proj.invert([(e.offsetX * dpr - tf.x * dpr) / tf.k, (e.offsetY * dpr - tf.y * dpr) / tf.k]); };
+  cv.addEventListener("click", e => { if (!proj) return; const ll = toLL(e); if (ll && isFinite(ll[0])) Clues.inspect(ll[0], ll[1]); });
+  cv.addEventListener("mousemove", e => { if (!proj) return; const ll = toLL(e);
+    if (ll && isFinite(ll[0])) $("#clueHover").textContent = `lat ${ll[1].toFixed(3)}, lon ${ll[0].toFixed(3)} · zoom ${tf.k.toFixed(1)}× · click to inspect clues`; });
+  // fit the view to a set of circles {lon, lat, r}
+  function fit(circles, maxK = 2000) {
+    if (!proj || !circles.length) return;
+    const dpr = devicePixelRatio; let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+    circles.forEach(c => { const b = d3.geoPath(proj).bounds(d3.geoCircle().center([c.lon, c.lat]).radius(Math.max(c.r, 5) / 111.195)());
+      x0 = Math.min(x0, b[0][0]); y0 = Math.min(y0, b[0][1]); x1 = Math.max(x1, b[1][0]); y1 = Math.max(y1, b[1][1]); });
+    if (!isFinite(x0)) return;
+    const kk = Math.max(1, Math.min(maxK, 0.8 * Math.min(cv.width / (x1 - x0), cv.height / (y1 - y0))));
+    const cx = (x0 + x1) / 2 / dpr, cy = (y0 + y1) / 2 / dpr;
+    d3.select(cv).transition().duration(700).call(zoom.transform, d3.zoomIdentity.translate(cv.clientWidth / 2 - cx * kk, cv.clientHeight / 2 - cy * kk).scale(kk));
+  }
+  function focus(c) { if (c) fit([{lon: c.centre.lon, lat: c.centre.lat, r: c.uncertainty_radius_km}]); }
+  function focusPlace(q) { if (q) fit([{lon: q.lon, lat: q.lat, r: Math.max(q.radius_km * 3, 15)}]); }
+  function best() {  // the top places (within 1 nat of the best) if any, else the best estimate circle
+    const P = Clues.places().filter(q => q.delta_to_best_nats <= 1.0).slice(0, 8);
+    if (P.length) return fit(P.map(q => ({lon: q.lon, lat: q.lat, r: Math.max(q.radius_km * 2, 15)})));
+    const c = Clues.geo?.candidates?.[0]; if (c) focus(c);
+  }
   $("#clReset").onclick = () => d3.select(cv).transition().call(zoom.transform, d3.zoomIdentity);
-  ["#clAgree", "#clProb", "#clCand", "#clLabels"].forEach(s => $(s).onchange = draw);
+  $("#clZoomIn").onclick = () => d3.select(cv).transition().duration(250).call(zoom.scaleBy, 2);
+  $("#clZoomOut").onclick = () => d3.select(cv).transition().duration(250).call(zoom.scaleBy, 0.5);
+  $("#clBest").onclick = best;
+  ["#clAgree", "#clProb", "#clCand", "#clLabels", "#clPlaces"].forEach(s => $(s).onchange = draw);
+  $("#clFill").oninput = draw;
   $("#clLow").onchange = () => { Clues.showLow = $("#clLow").checked; renderClueList(); draw(); Map3D.refresh(); };
-  function focus(c) { if (!c || !proj) return; const p = proj([c.centre.lon, c.centre.lat]); if (!p) return;
-    const r = Math.max(c.uncertainty_radius_km, 50), kk = Math.min(40, Math.max(1, 3000 / r)), dpr = devicePixelRatio;
-    d3.select(cv).transition().duration(600).call(zoom.transform, d3.zoomIdentity.translate(cv.clientWidth / 2 - p[0] / dpr * kk, cv.clientHeight / 2 - p[1] / dpr * kk).scale(kk)); }
-  return {resize, draw, focus};
+  return {resize, draw, focus, focusPlace, best};
 })();
+
+function renderFilters() {
+  const groups = [...new Set(Clues.layers.filter(l => l.used || Clues.showLow).map(l => l.group))];
+  $("#clFilters").innerHTML = groups.length ? `<span class="muted small">Filters:</span>` + groups.map(gname =>
+    `<span class="chip ${Clues.groupOff.has(gname) ? "off" : ""}" data-g="${esc(gname)}">${esc(GROUP_NAMES[gname] || gname)}</span>`).join("") : "";
+  $$("#clFilters .chip").forEach(ch => ch.onclick = () => { const gname = ch.dataset.g;
+    Clues.groupOff.has(gname) ? Clues.groupOff.delete(gname) : Clues.groupOff.add(gname); renderFilters(); ClueMap.draw(); Map3D.refresh(); });
+}
+
+function renderPlaces() {
+  const lp = Clues.geo?.likely_places, P = lp?.places || [];
+  if (!P.length) { $("#placeList").innerHTML = "No point clues (tram networks, spoken place names or bell towers) in this recording."; return; }
+  $("#placeList").innerHTML = P.map(q => `<div class="place" data-r="${q.rank}"><span class="rk">${q.rank}</span>
+      <div><b>${esc(q.name)}</b>, ${esc(q.country || "")} <span class="muted">· circle ${q.radius_km} km</span>
+      <div class="muted">${esc(q.supporting.map(s => s.label).slice(0, 4).join(" · "))}</div>
+      <div class="bar" style="width:${Math.max(2, q.share * 100)}%"></div></div><span>${(q.share * 100).toFixed(1)}%</span></div>`).join("") +
+    `<div class="muted small" style="margin-top:4px">${esc(lp.note || "")}</div>`;
+  $$("#placeList .place").forEach(el => el.onclick = () => ClueMap.focusPlace(P[+el.dataset.r - 1]));
+}
 
 function renderClueList() {
   const g = Clues.geo;
+  renderFilters(); renderPlaces();
   if (!g || !Clues.layers.length) { $("#clueList").innerHTML = "No geographically locatable clues in this recording."; }
-  else $("#clueList").innerHTML = Clues.layers.filter(l => l.used || Clues.showLow).map(l => `<div class="clue ${l.used ? "" : "low"}" data-id="${l.id}">
-      <input type="checkbox" ${Clues.visible.has(l.id) ? "checked" : ""}><span class="sw" style="background:${l.color}"></span>
-      <div><b>${esc(l.label)}</b> <span class="badge">${esc(l.group)}</span>${l.used ? "" : '<span class="badge">low confidence, not used in the estimate</span>'}
+  else $("#clueList").innerHTML = Clues.layers.filter(l => l.used || Clues.showLow).map(l => `<div class="clue ${l.used ? "" : "low"} ${Clues.ghost.has(l.id) ? "ghost" : ""}" data-id="${l.id}">
+      <input type="checkbox" ${Clues.visible.has(l.id) ? "checked" : ""} title="Show / hide"><span class="sw" style="background:${l.color}"></span>
+      <div><b class="nm" title="Click to make see-through">${esc(l.label)}</b> <span class="badge">${esc(GROUP_NAMES[l.group] || l.group)}</span>${l.used ? "" : '<span class="badge">low confidence, not used in the estimate</span>'}
       <div class="muted">confidence ${l.confidence} · area ${(l.area_km2 || 0).toLocaleString()} km² · ${esc(l.precision || "")}</div>
       <div class="muted">${esc((l.countries || []).slice(0, 5).map(c => c.name).join(", "))}${(l.countries || []).length > 5 ? "…" : ""}</div>
-      <div class="muted">source: ${esc(l.source || "")}${l.record ? " · detection " + esc(l.record) : ""}</div></div></div>`).join("");
-  $$("#clueList .clue input").forEach(cb => cb.onchange = () => { const id = cb.closest(".clue").dataset.id; cb.checked ? Clues.visible.add(id) : Clues.visible.delete(id); ClueMap.draw(); Map3D.refresh(); });
+      <div class="muted">source: ${esc(l.source || "")}${l.record ? " · detection " + esc(l.record) : ""}</div></div>
+      <div class="ctl"><button class="solo" title="Show only this clue">◉</button>
+      <input type="range" min="0" max="100" value="${Math.round((Clues.opacity[l.id] ?? 1) * 100)}" title="Opacity"></div></div>`).join("");
+  const redraw = () => { ClueMap.draw(); Map3D.refresh(); };
+  $$("#clueList .clue").forEach(row => {
+    const id = row.dataset.id;
+    row.querySelector("input[type=checkbox]").onchange = e => { e.target.checked ? Clues.visible.add(id) : Clues.visible.delete(id); redraw(); };
+    row.querySelector(".nm").onclick = () => { Clues.ghost.has(id) ? Clues.ghost.delete(id) : Clues.ghost.add(id); row.classList.toggle("ghost"); redraw(); };
+    row.querySelector("input[type=range]").oninput = e => { Clues.opacity[id] = +e.target.value / 100; redraw(); };
+    row.querySelector(".solo").onclick = () => {
+      const only = Clues.visible.size === 1 && Clues.visible.has(id);
+      Clues.visible = only ? new Set(Clues.layers.filter(l => l.used).map(l => l.id)) : new Set([id]);
+      renderClueList(); redraw(); };
+  });
   const un = g?.unlocated || [];
   const byCat = {}; un.forEach(u => (byCat[u.category] = byCat[u.category] || []).push(u));
   $("#unlocList").innerHTML = un.length ? `${un.length} detection(s) cannot be placed on a map:` + Object.entries(byCat).map(([c, us]) =>
@@ -199,13 +297,13 @@ const Map3D = (() => {
   }
   function refresh() {
     if (!ready || !map) return;
-    ["clues-fill", "clues-line", "prob", "cands-fill", "cands-line"].forEach(id => map.getLayer(id) && map.removeLayer(id));
-    ["clues", "probsrc", "cands"].forEach(id => map.getSource(id) && map.removeSource(id));
+    ["clues-fill", "clues-line", "prob", "cands-fill", "cands-line", "places-fill", "places-line", "places-label"].forEach(id => map.getLayer(id) && map.removeLayer(id));
+    ["clues", "probsrc", "cands", "places"].forEach(id => map.getSource(id) && map.removeSource(id));
     const showLow = $("#m3Low").checked;
-    const feats = $("#m3Clues").checked ? Clues.layers.filter(l => Clues.visible.has(l.id) && (l.used || showLow)).map(l => ({type: "Feature",
-      properties: {color: l.color, label: l.label, used: l.used ? 1 : 0}, geometry: {type: "MultiPolygon", coordinates: polysFromContour(l.contour)}})) : [];
+    const feats = $("#m3Clues").checked ? Clues.layers.filter(l => Clues.visible.has(l.id) && (l.used || showLow) && !Clues.groupOff.has(l.group) && l.shape?.kind !== "points").map(l => ({type: "Feature",
+      properties: {color: l.color, label: l.label, used: l.used ? 1 : 0, a: Clues.alpha(l)}, geometry: {type: "MultiPolygon", coordinates: polysFromContour(l.contour)}})) : [];
     map.addSource("clues", {type: "geojson", data: {type: "FeatureCollection", features: feats}});
-    map.addLayer({id: "clues-fill", type: "fill", source: "clues", paint: {"fill-color": ["get", "color"], "fill-opacity": ["case", ["==", ["get", "used"], 1], 0.25, 0.12]}});
+    map.addLayer({id: "clues-fill", type: "fill", source: "clues", paint: {"fill-color": ["get", "color"], "fill-opacity": ["*", ["get", "a"], ["case", ["==", ["get", "used"], 1], 0.25, 0.12]]}});
     map.addLayer({id: "clues-line", type: "line", source: "clues", paint: {"line-color": "#ffffff", "line-width": 1.6, "line-opacity": 0.9}});
     const g = Clues.geo;
     if (g && $("#m3Prob").checked) {
@@ -216,13 +314,23 @@ const Map3D = (() => {
     cf.forEach(f => f.geometry.coordinates = f.geometry.coordinates.map(r => r.slice().reverse()));
     map.addSource("cands", {type: "geojson", data: {type: "FeatureCollection", features: cf}});
     map.addLayer({id: "cands-line", type: "line", source: "cands", paint: {"line-color": ["case", ["==", ["get", "rank"], 1], "#ff5a3c", "#ffb340"], "line-width": 2.5}});
+    const pf = Clues.places().map(q => { const c = d3.geoCircle().center([q.lon, q.lat]).radius(Math.max(q.radius_km, 3) / 111.195)();
+      c.coordinates = c.coordinates.map(r => r.slice().reverse());
+      return {type: "Feature", properties: {rank: q.rank, label: `${q.rank}. ${q.name} ${(q.share * 100).toFixed(0)}%`}, geometry: c}; });
+    map.addSource("places", {type: "geojson", data: {type: "FeatureCollection", features: pf}});
+    map.addLayer({id: "places-fill", type: "fill", source: "places", paint: {"fill-color": ["case", ["==", ["get", "rank"], 1], "#ff4632", "#ffb340"], "fill-opacity": 0.22}});
+    map.addLayer({id: "places-line", type: "line", source: "places", paint: {"line-color": ["case", ["==", ["get", "rank"], 1], "#ff4632", "#ffb340"], "line-width": 2.5}});
     if (map.getLayer("building-3d")) map.setLayoutProperty("building-3d", "visibility", $("#m3Build").checked ? "visible" : "none");
     map.setLayoutProperty("sat", "visibility", $("#m3Sat").checked ? "visible" : "none");
   }
   $("#m3Terrain").onchange = setTerrain;
+  $("#m3Flat").onchange = () => { if (!map) return; const flat = $("#m3Flat").checked;   // flat street map: Mercator, no tilt or terrain
+    try { map.setProjection({type: flat ? "mercator" : "globe"}); } catch (e) {}
+    if (flat) { map.easeTo({pitch: 0, bearing: 0}); try { map.setTerrain(null); } catch (e) {} } else setTerrain(); };
   ["#m3Build", "#m3Sat", "#m3Clues", "#m3Low", "#m3Prob"].forEach(s => $(s).onchange = refresh);
   $("#m3Globe").onclick = () => map && map.flyTo({center: [10, 30], zoom: 1.3, pitch: 0, bearing: 0});
-  $("#m3Lead").onclick = () => { const c = Clues.geo?.candidates?.[0]; if (map && c) map.flyTo({center: [c.centre.lon, c.centre.lat],
+  $("#m3Lead").onclick = () => { const q = Clues.places()[0]; if (map && q) return map.flyTo({center: [q.lon, q.lat], zoom: 11, pitch: $("#m3Flat").checked ? 0 : 50});
+    const c = Clues.geo?.candidates?.[0]; if (map && c) map.flyTo({center: [c.centre.lon, c.centre.lat],
     zoom: Math.max(3, Math.min(11, 9 - Math.log2(Math.max(c.uncertainty_radius_km, 5) / 5))), pitch: 55}); };
   return {show() { wanted = true; ensure(); if (map) map.resize(); }, refresh, set() { refresh(); }};
 })();
@@ -240,7 +348,7 @@ const _geoRender0 = Geo.render;
 Geo.render = function (g) {
   _geoRender0(g); Clues.set(g); renderClueList(); ClueMap.draw(); Map3D.set(g);
   $("#geoStatus").textContent = g ? `${(g.footprints || []).length} locatable clue(s) · ${(g.unlocated || []).length} unlocated detection(s)` : "";
-  if (g?.candidates?.length) setTimeout(() => ClueMap.focus(g.candidates[0]), 80);
+  if (g?.likely_places?.places?.length || g?.candidates?.length) setTimeout(() => ClueMap.best(), 80);
 };
 
 // ---------------------------------------------------------------- Intelligence tab

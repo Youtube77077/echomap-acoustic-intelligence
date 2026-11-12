@@ -103,12 +103,22 @@
         <div class="rowflex">
           <label><input type="checkbox" id="clAgree" checked> Agreement (where clues overlap)</label>
           <label><input type="checkbox" id="clProb"> Combined probability</label>
-          <label><input type="checkbox" id="clCand" checked> Candidate areas</label>
+          <label><input type="checkbox" id="clCand" checked> Estimate circles</label>
+          <label><input type="checkbox" id="clPlaces" checked> Likely places</label>
           <label><input type="checkbox" id="clLow"> Low-confidence clues</label>
           <label><input type="checkbox" id="clLabels" checked> Labels</label>
-          <button id="clReset" class="ghost">Reset view</button>
+          <label title="Global opacity of all clue regions">Fill <input type="range" id="clFill" min="0" max="100" value="45" style="width:80px"></label>
         </div>
-        <canvas id="clueCanvas"></canvas>
+        <div class="rowflex" id="clFilters" title="Filters: click a chip to show or hide every clue of that kind"></div>
+        <div class="mapwrap">
+          <canvas id="clueCanvas"></canvas>
+          <div class="zoomctl">
+            <button id="clZoomIn" title="Zoom in">+</button>
+            <button id="clZoomOut" title="Zoom out">−</button>
+            <button id="clBest" title="Zoom to the most likely place">◎</button>
+            <button id="clReset" title="Whole world">⟲</button>
+          </div>
+        </div>
         <div id="clueHover" class="muted small mono">Click anywhere to see which clues cover that point · drag to pan · wheel to zoom</div>
       </div>
       <div id="v-map3d" class="geoview hidden">
@@ -119,8 +129,9 @@
           <label><input type="checkbox" id="m3Clues" checked> Clue regions</label>
           <label><input type="checkbox" id="m3Low"> Low-confidence clues</label>
           <label><input type="checkbox" id="m3Prob" checked> Combined probability</label>
+          <label><input type="checkbox" id="m3Flat"> Flat street map</label>
           <button id="m3Globe" class="ghost">Return to globe</button>
-          <button id="m3Lead" class="ghost">Leading candidate</button>
+          <button id="m3Lead" class="ghost">Most likely place</button>
         </div>
         <div id="map3d"></div>
         <div id="m3Note" class="muted small"></div>
@@ -142,7 +153,10 @@
     <div class="card geo-side">
       <div id="pointInfo" class="hidden"></div>
       <div id="geoSummary" class="muted">Geographic analysis runs after the recording-context step.</div>
+      <h4>Likely places</h4>
+      <div id="placeList" class="muted small">-</div>
       <h4>Clues on the map</h4>
+      <div class="muted small">Tick to show · click a name to make it see-through · slider = opacity · ◉ = show only this clue</div>
       <div id="clueList" class="muted small">No clues yet.</div>
       <h4>Unlocated evidence</h4>
       <div id="unlocList" class="muted small">-</div>

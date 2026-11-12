@@ -18,3 +18,5 @@
 | Mains frequency per country | Facts transcribed from Wikipedia, "Mains electricity by country" (CC BY-SA) | https://en.wikipedia.org/wiki/Mains_electricity_by_country |
 
 Test audio in the private `test-audio-v1` release: ESC-50 clips (CC BY-NC 3.0, K. J. Piczak 2015) and the BirdNET V3.0-dev example soundscape. They are used for testing only and are not redistributed.
+| Tram network dataset (echomap/data/tram_networks.json.gz), derived from OpenStreetMap railway=tram ways | ODbL 1.0, © OpenStreetMap contributors. The derived database is offered under ODbL 1.0 | https://www.openstreetmap.org/copyright |
+| Natural Earth 1:10m countries via world-atlas 2.0.2 (sharper borders when zoomed in) | Public domain (NE); ISC (world-atlas) | https://github.com/topojson/world-atlas |

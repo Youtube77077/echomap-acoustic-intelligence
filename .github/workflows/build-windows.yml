@@ -94,7 +94,8 @@ jobs:
           if ($rep.Content -notmatch "Full processing history") { throw "report incomplete" }
           "Report HTML: $([math]::Round($rep.RawContentLength/1KB)) KB" | Tee-Object -Append $env:GITHUB_STEP_SUMMARY
           python -m pip install selenium==4.27.1
-          python packaging/ui_screens.py $url screenshots
+          python tools/example_geo.py screenshots
+          python packaging/ui_screens.py $url screenshots screenshots/examples.json
           Get-ChildItem screenshots | Select-Object Name, Length | Format-Table
           Stop-Process -Id $p.Id -Force
       - uses: actions/upload-artifact@v4

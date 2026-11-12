@@ -1,3 +1,44 @@
+# EchoMap v1.0.3
+
+Downloads:
+- `EchoMap-v1.0.3-win64.zip`: the application.
+- `EchoMap-models-v2.zip`: same model pack as v1.0.2 (no change). Extract into `EchoMap\models`.
+
+## New
+- **Circles and likely places.**
+  - Point clues are now ranked as concrete **likely places**, each drawn as a circle sized to the place: tram networks, cities named in speech, bell towers. Every place is scored with *all* evidence evaluated at that exact point.
+  - Each place shows a relative share. That share is relative among the places considered, not a calibrated probability.
+  - The estimate areas are drawn as filled circles labelled with their radius.
+- **Tram / streetcar clue (worldwide).**
+  - New dataset of every tram network on OpenStreetMap (railway=tram track), built on GitHub.
+  - The sound model has no "tram" class, so a tram is hypothesised from a close match to a tram reference recording, or (weakly) from rail sound together with a bell/ding or wheel squeal.
+- **Spoken place names.**
+  - Transcribed speech is searched for city names: 31,821 GeoNames cities over 15,000 inhabitants, Latin script.
+  - Announcement phrases ("next stop", "příští zastávka", "nächster Halt", …) raise confidence.
+  - Common words that are also city names ("Reading", "Mobile", "Nice", …) need such a phrase.
+  - Mentioning a place is not proof of being there, so this evidence is moderate and floored.
+- **Sharper, zoomable map.**
+  - Country-level clues (language, mains hum) are drawn with exact country borders instead of 55 km squares.
+  - Sharper 1:10m borders load when zoomed in.
+  - + / − / "most likely place" / reset zoom buttons.
+  - Zoom up to 2000×.
+  - The view auto-zooms to the likely places.
+- **Filters and transparency.**
+  - Filter chips show or hide every clue of one kind (Language, Electrical hum, Wildlife, Bells, Trams, Place names, …).
+  - Click a clue's name to make it see-through, use its opacity slider, or ◉ to show only that clue.
+  - A global fill slider controls all clue regions.
+- **3D map:**
+  - "Flat street map" mode (Mercator, no tilt) for street-level zoom.
+  - Likely-place circles.
+  - "Most likely place" button.
+- **Reports:** world view plus a zoomed view of the most likely area, drawn as vectors. They also include a likely-places table and a list of place names heard in speech.
+- **Worked examples** (`tools/example_geo.py`): hand-specified clue sets (tram + Czech + 50 Hz, the same with a spoken stop name, tram + English + 50 Hz, Spanish + 60 Hz) run through the real engine. Screenshots come from the real UI.
+
+## Limits (stated in the app)
+- A tram sound alone narrows to tram cities worldwide, not to one city. Language, mains hum or a spoken name are needed to separate cities.
+- English is a weak clue: CLDR counts second-language speakers, so many countries share English. Accent identification is not included.
+- Island / small-grid identification from hum fluctuations is **not** included in this version. No verified reference statistics are bundled yet.
+
 # EchoMap v1.0.2
 
 Downloads:

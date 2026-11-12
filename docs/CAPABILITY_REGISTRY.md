@@ -149,3 +149,14 @@ For each gap: what must be detected, prior work, a candidate approach, resources
 - **Direction and distance:** stereo gives a lateral cone only. Elevation, distance and 3-D position need a calibrated array. Distance is never estimated.
 - **TinyCLAP:** verified at 17.8 MB, Apache-2.0. Teacher-side text embeddings depend on the 2.3 GB MS CLAP 2022 weights with an inconsistent licence. Conversion pending.
 - **Google Photorealistic 3D Tiles / Cesium ion:** need your own key and billing (paid; EEA restrictions). The provider-independent overlays work with MapLibre now.
+
+## Added in v1.0.3
+| Capability | Status | Notes |
+|---|---|---|
+| Likely places (ranked circles) | Working, tested | Scores every point clue with all evidence at that point; relative shares, not calibrated |
+| Tram / streetcar clue | Working (hypothesis level) | No AudioSet tram class; reference-match or weak rule; worldwide OSM tram networks |
+| Spoken place names | Working, tested | Latin-script city names ≥ 15,000 inhabitants; cue phrases; common-word guard; mention ≠ presence |
+| Exact-border country clues, zoom controls, filters, transparency | Working | 2D clue map; 3D map honours filters and opacity |
+| Island / small-grid detection from ENF variability | Not included | Needs verified per-grid fluctuation statistics; planned |
+| Train model / operator identification | Not feasible now | No open labelled dataset; station names via speech are the practical route |
+| Accent identification (e.g. British vs other English) | Not included | Would need a new model (vetting and approval first) |

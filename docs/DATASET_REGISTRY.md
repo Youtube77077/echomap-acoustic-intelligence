@@ -19,3 +19,10 @@ Last verification: 2026-11-12. Counts below were measured from the actual files 
 | AWS Terrain Tiles (optional, online) | s3.amazonaws.com/elevation-tiles-prod | open data (Mapzen/Joerd attribution) | public tiles | global DEM (SRTM, 3DEP, …) | - | 3D terrain | Attribution required | Resolution varies by region |
 | EOX Sentinel-2 cloudless (optional, online) | tiles.maps.eox.at | CC BY-NC-SA 4.0 | public tiles | global imagery | - | satellite toggle | Non-commercial | Seasonal composite, not current |
 | GBIF / Overpass / Open-Meteo (optional, online) | public APIs | CC0 / CC BY, ODbL, CC BY 4.0 | APIs | - | - | display / compatibility / weather checks | per service | GBIF effort bias; OSM gaps |
+
+## Added in v1.0.3
+| Dataset | Use | Licence | Build |
+|---|---|---|---|
+| Tram networks (OpenStreetMap railway=tram ways, clustered into networks) | Tram / streetcar clue; likely-place circles | ODbL 1.0 (© OpenStreetMap contributors); derived database offered under ODbL | `tools/build_trams.py` via the `build-trams` workflow (Overpass API, tiled) |
+| Natural Earth 1:10m countries (world-atlas 2.0.2) | Sharper borders when zoomed in; report zoom view | Public domain / ISC | `vendor-js` workflow, npm integrity-checked |
+| GeoNames cities ≥ 15,000 (already bundled) | Now also used to find place names in transcripts | CC BY 4.0 | unchanged |

@@ -90,3 +90,23 @@ menu{display:flex;justify-content:flex-end;gap:8px;padding:0}
 .tierb{font-size:10px;padding:0 6px;border-radius:8px;border:1px solid var(--accent);color:var(--accent)}
 
 .round.mini{width:22px;height:22px;font-size:10px;padding:0}
+
+/* v1.0.3 clue map controls */
+.mapwrap{position:relative;flex:1;display:flex;min-height:420px}
+.mapwrap canvas{flex:1}
+.zoomctl{position:absolute;right:10px;top:10px;display:flex;flex-direction:column;gap:4px}
+.zoomctl button{width:32px;height:32px;padding:0;font-size:18px;line-height:30px;border-radius:6px;background:#16213a;color:#e6ecf5;border:1px solid #3a4a6a;cursor:pointer}
+.zoomctl button:hover{background:#22325a}
+#clFilters{gap:6px;flex-wrap:wrap;margin:4px 0}
+.chip{padding:2px 10px;border-radius:12px;border:1px solid #3a4a6a;background:#1a2440;color:#dfe7f3;font-size:12px;cursor:pointer;user-select:none}
+.chip.off{opacity:.45;text-decoration:line-through}
+.clue{grid-template-columns:18px 14px 1fr auto}
+.clue .nm{cursor:pointer}
+.clue.ghost .nm{opacity:.5}
+.clue .ctl{display:flex;flex-direction:column;align-items:flex-end;gap:2px}
+.clue .ctl input[type=range]{width:70px}
+.clue .solo{background:none;border:1px solid #3a4a6a;color:#dfe7f3;border-radius:4px;cursor:pointer;font-size:11px;padding:0 4px}
+.place{display:grid;grid-template-columns:22px 1fr auto;gap:6px;padding:4px 2px;border-bottom:1px solid #1e2a42;cursor:pointer}
+.place:hover{background:#1a2338}
+.place .rk{font-weight:700;color:#ff8a6a}
+.place .bar{height:4px;background:#ff5a3c;border-radius:2px;margin-top:3px}

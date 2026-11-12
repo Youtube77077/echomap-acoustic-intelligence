@@ -25,9 +25,21 @@ jobs:
           cp x/package/LICENSE.txt echomap/web/vendor/maplibre/LICENSE.txt
           echo "maplibre-gl 6.18.0 $want" > echomap/web/vendor/maplibre/VERSION.txt
           ls -la echomap/web/vendor/maplibre
+      - name: Fetch world-atlas 2.0.2 countries-10m (ISC; Natural Earth public domain)
+        run: |
+          set -euo pipefail
+          meta=$(curl -sSL https://registry.npmjs.org/world-atlas/2.0.2)
+          url=$(echo "$meta" | python3 -c "import sys,json;print(json.load(sys.stdin)['dist']['tarball'])")
+          want=$(echo "$meta" | python3 -c "import sys,json;print(json.load(sys.stdin)['dist']['integrity'])")
+          curl -sSL -o wa.tgz "$url"
+          got="sha512-$(openssl dgst -sha512 -binary wa.tgz | base64 -w0)"
+          [ "$got" = "$want" ] || { echo "INTEGRITY MISMATCH"; exit 1; }
+          mkdir -p wa && tar -xzf wa.tgz -C wa
+          cp wa/package/countries-10m.json echomap/web/vendor/countries-10m.json
+          ls -la echomap/web/vendor/countries-10m.json
       - name: Commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add echomap/web/vendor/maplibre
-          git diff --cached --quiet && echo "no changes" || (git commit -m "Vendor maplibre-gl 6.18.0 (integrity-checked)" && git pull --rebase && git push)
+          git add echomap/web/vendor/maplibre echomap/web/vendor/countries-10m.json
+          git diff --cached --quiet && echo "no changes" || (git commit -m "Vendor maplibre-gl 6.18.0 and world-atlas countries-10m (integrity-checked)" && git pull --rebase && git push)
