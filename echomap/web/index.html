@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EchoMap</title>
+<link rel="stylesheet" href="/static/app.css">
+<meta name="echomap-token" content="__ECHOMAP_TOKEN__">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><span class="logo">◉</span> EchoMap <span class="ver">acoustic intelligence</span></div>
+  <nav class="tabs" role="tablist">
+    <button class="tab active" data-tab="analysis">1 · Analysis</button>
+    <button class="tab" data-tab="inventory">2 · Detection inventory <span id="invCount" class="pill">0</span></button>
+    <button class="tab" data-tab="geo">3 · Geographic intelligence</button>
+    <button class="tab" data-tab="report">4 · Forensic report</button>
+  </nav>
+  <div class="topright"><button id="btnModels" class="ghost" title="Models and settings">⚙ Models & settings</button></div>
+</header>
+
+<main>
+<!-- ======================= TAB 1: ANALYSIS ======================= -->
+<section id="tab-analysis" class="tabpane active">
+  <div class="toolbar">
+    <button id="btnOpen" class="primary">Import audio / video…</button>
+    <div id="fileInfo" class="fileinfo muted">No recording loaded. Supports MP3, WAV, FLAC, OGG, M4A, AAC, MP4, MOV, MKV, WEBM (≤ 5 min).</div>
+    <button id="btnAnalyse" class="primary" disabled>Start analysis</button>
+    <button id="btnContext" class="ghost" disabled>Recording context…</button>
+  </div>
+  <div id="progressWrap" class="progress hidden"><div id="progressBar"></div><span id="progressText"></span></div>
+  <div id="prepPanel" class="card hidden"></div>
+
+  <div class="player card">
+    <button id="btnPlay" class="round" disabled>▶</button>
+    <span id="timeNow" class="mono">00:00.000</span><span class="muted">/</span><span id="timeDur" class="mono">00:00.000</span>
+    <label class="muted">Loop selection <input type="checkbox" id="chkLoop"></label>
+    <span class="sep"></span>
+    <label>Scale <select id="selScale"><option value="linear">Linear</option><option value="log">Log-frequency</option><option value="mel">Mel</option></select></label>
+    <label>Freq <input id="fMin" type="number" value="0" step="100" class="num"> – <input id="fMax" type="number" value="16000" step="500" class="num"> Hz</label>
+    <label>Floor <input id="dbMin" type="range" min="-140" max="-40" value="-110"></label>
+    <label>Ceil <input id="dbMax" type="range" min="-60" max="0" value="-10"></label>
+    <button id="btnZoomFit" class="ghost">Fit</button>
+    <label class="muted"><input type="checkbox" id="chkOverlay" checked> Event overlay</label>
+  </div>
+  <div class="viz card">
+    <canvas id="wave" height="70"></canvas>
+    <div class="specwrap"><canvas id="spec" height="330"></canvas><div id="hover" class="hover hidden"></div></div>
+    <div class="legend" id="paletteLegend"></div>
+    <div class="muted small">Wheel: zoom time · Shift+wheel: zoom frequency · Drag: pan · Click: seek · Double-click an event box: select it</div>
+  </div>
+
+  <div class="card">
+    <div class="rowflex">
+      <h3>Event timeline</h3>
+      <input id="tlSearch" placeholder="Search events…" class="search">
+      <select id="tlCat"><option value="">All categories</option></select>
+      <select id="tlTier"><option value="">All tiers</option><option>confirmed</option><option>probable</option><option>possible</option><option>unclassified</option></select>
+      <select id="tlSort"><option value="start">Sort: time</option><option value="confidence">confidence</option><option value="category">category</option><option value="duration">duration</option></select>
+    </div>
+    <div id="timeline" class="timeline"></div>
+  </div>
+</section>
+
+<!-- ======================= TAB 2: INVENTORY ======================= -->
+<section id="tab-inventory" class="tabpane">
+  <div class="toolbar">
+    <input id="invSearch" placeholder="Search every detection (label, species, language, ID)…" class="search wide">
+    <label><input type="checkbox" class="tierf" value="confirmed" checked> Confirmed</label>
+    <label><input type="checkbox" class="tierf" value="probable" checked> Probable</label>
+    <label><input type="checkbox" class="tierf" value="possible" checked> Possible</label>
+    <label><input type="checkbox" class="tierf" value="unclassified" checked> Unclassified</label>
+    <select id="invSort"><option value="start">Sort: timestamp</option><option value="category">category</option><option value="confidence">confidence</option><option value="duration">duration</option></select>
+    <button id="invExpand" class="ghost">Expand all</button>
+  </div>
+  <div class="note">Scores are model outputs, <b>not calibrated probabilities</b>. Low-confidence observations are kept and labelled. Repeated model hits on one sound are merged into a single record, and the individual model outputs stay under “Evidence”.</div>
+  <div id="invSummary" class="chips"></div>
+  <div id="inventory"></div>
+</section>
+
+<!-- ======================= TAB 3: GEO ======================= -->
+<section id="tab-geo" class="tabpane">
+  <div class="geo-layout">
+    <div class="card globe-card">
+      <div class="rowflex">
+        <button id="btn3d" class="ghost active">3D globe</button><button id="btn2d" class="ghost">2D map</button>
+        <label><input type="checkbox" id="lyrHeat" checked> Plausibility</label>
+        <label><input type="checkbox" id="lyrCand" checked> Candidates</label>
+        <label><input type="checkbox" id="lyrBorders" checked> Borders</label>
+        <label><input type="checkbox" id="lyrGrat" checked> Graticule</label>
+        <label><input type="checkbox" id="lyrEvid" checked> Evidence markers</label>
+        <button id="btnGeoReset" class="ghost">Reset view</button>
+      </div>
+      <canvas id="globe"></canvas>
+      <div id="geoHover" class="muted small mono">Drag to rotate or pan · wheel to zoom</div>
+    </div>
+    <div class="card geo-side">
+      <div id="geoSummary" class="muted">Geographic analysis runs after the recording-context step.</div>
+      <div id="geoCands"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= TAB 4: REPORT ======================= -->
+<section id="tab-report" class="tabpane">
+  <div class="toolbar">
+    <button id="expHtml" class="primary" disabled>Export HTML</button>
+    <button id="expPdf" class="primary" disabled>Export PDF</button>
+    <button id="expJson" class="ghost" disabled>Export case data (JSON)</button>
+    <span id="expMsg" class="muted"></span>
+  </div>
+  <iframe id="reportFrame" title="Forensic report" sandbox="allow-same-origin allow-modals"></iframe>
+</section>
+</main>
+
+<!-- context questionnaire -->
+<dialog id="ctxDlg">
+  <form method="dialog" class="ctxform">
+    <h2>Recording context <span class="muted small">(optional; every field may stay “unknown”)</span></h2>
+    <fieldset><legend>When was this recording made?</legend>
+      <label><input type="radio" name="dmode" value="unknown" checked> Unknown</label>
+      <label><input type="radio" name="dmode" value="exact"> Exact date &amp; time <input type="datetime-local" id="dExact"></label>
+      <label><input type="radio" name="dmode" value="approx_date"> Approximate date <input type="date" id="dApprox"></label>
+      <label><input type="radio" name="dmode" value="month_year"> Month &amp; year
+        <select id="dMonth">
+          <option value="1">January</option><option value="2">February</option><option value="3">March</option>
+          <option value="4">April</option><option value="5">May</option><option value="6">June</option>
+          <option value="7">July</option><option value="8">August</option><option value="9">September</option>
+          <option value="10">October</option><option value="11">November</option><option value="12">December</option>
+        </select> <input type="number" id="dYear" min="1950" max="2100" value="2026" class="num"></label>
+      <label>Timezone <select id="tz"><option value="">Unknown</option></select></label>
+    </fieldset>
+    <fieldset><legend>Do you know the country or general area?</legend>
+      <label><input type="radio" name="lmode" value="unknown" checked> Unknown</label>
+      <label><input type="radio" name="lmode" value="country"> Country</label>
+      <label><input type="radio" name="lmode" value="region"> Region</label>
+      <label><input type="radio" name="lmode" value="city"> City</label>
+      <div class="rowflex">
+        <select id="lCountry"><option value="">(country)</option></select>
+        <input id="lRegion" placeholder="Region / state / province">
+        <input id="lCity" placeholder="City (offline lookup)" list="cityList"><datalist id="cityList"></datalist>
+      </div>
+      <div class="muted small">City and region lookups use the offline GeoNames gazetteer. Nothing you type is sent online.</div>
+    </fieldset>
+    <menu><button value="cancel" class="ghost">Cancel</button><button id="ctxRun" value="run" class="primary">Run geographic &amp; temporal analysis</button></menu>
+  </form>
+</dialog>
+
+<!-- models & settings -->
+<dialog id="modelsDlg">
+  <form method="dialog">
+    <h2>Models & settings</h2>
+    <div id="modelsBody"></div>
+    <fieldset><legend>Optional online lookups (off by default; logged in the processing history)</legend>
+      <label><input type="checkbox" id="setGbif"> GBIF species occurrence by country (sends species names)</label>
+      <label><input type="checkbox" id="setOsm"> OpenStreetMap infrastructure check (sends a candidate bounding box)</label>
+      <label><input type="checkbox" id="setWx"> Open-Meteo historical weather (sends candidate coordinates and date)</label>
+    </fieldset>
+    <fieldset><legend>Listing threshold</legend>
+      <label>Minimum model score listed as an event <input type="number" id="setThr" min="0.05" max="0.9" step="0.05" class="num"> (all scores are still saved in case data)</label>
+    </fieldset>
+    <menu><button id="btnModelsDir" class="ghost" value="">Choose models folder…</button><button value="close" class="primary">Save & close</button></menu>
+  </form>
+</dialog>
+
+<audio id="audio" preload="auto"></audio>
+<script src="/static/vendor/d3.min.js"></script>
+<script src="/static/vendor/topojson-client.min.js"></script>
+<script src="/static/app.js"></script>
+</body>
+</html>

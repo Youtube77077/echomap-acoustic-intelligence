@@ -45,6 +45,6 @@ jobs:
           if [ "$CLIPS" = "all" ]; then CLIPS=$(python -c "import json;print(' '.join(c['file'] for c in json.load(open('tests/test_audio_manifest.json'))['clips']))"); fi
           for c in $CLIPS; do
             echo "::group::$c"
-            ECHOMAP_STACKDUMP=60 python tools/run_case.py "/home/runner/audio/$c" ${{ inputs.args }}
-            echo "::endgroup::"
+            ECHOMAP_STACKDUMP=45 timeout -s KILL 420 python -u tools/run_case.py "/home/runner/audio/$c" ${{ inputs.args }}
+            echo "exit=$?"; echo "::endgroup::"
           done
