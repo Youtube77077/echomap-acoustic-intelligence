@@ -86,7 +86,7 @@ from onnxruntime.quantization import QuantType, quantize_dynamic  # noqa: E402
 import onnxruntime as ort  # noqa: E402
 
 int8_path = os.path.join(out, f"whisper_{tag}_lid_int8.onnx")
-quantize_dynamic(fp32_path, int8_path, weight_type=QuantType.QInt8)
+quantize_dynamic(fp32_path, int8_path, weight_type=QuantType.QInt8, op_types_to_quantize=["MatMul", "Gemm"])
 sess = ort.InferenceSession(int8_path, providers=["CPUExecutionProvider"])
 
 report = {"model": model_id, "languages": len(lang_codes), "cases": {}}

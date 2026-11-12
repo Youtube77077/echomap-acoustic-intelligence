@@ -1,0 +1,5661 @@
+[
+{
+"idx": 0,
+"mid": "/m/09x0r",
+"name": "Speech",
+"ancestors": [
+"Human voice",
+"Human sounds"
+],
+"description": "Speech is the vocalized form of human communication, created out of the phonetic combination of a limited set of vowel and consonant speech sound units."
+},
+{
+"idx": 1,
+"mid": "/m/05zppz",
+"name": "Male speech, man speaking",
+"ancestors": [
+"Speech",
+"Human voice",
+"Human sounds"
+],
+"description": "Speech uttered by an adult male human."
+},
+{
+"idx": 2,
+"mid": "/m/02zsn",
+"name": "Female speech, woman speaking",
+"ancestors": [
+"Speech",
+"Human voice",
+"Human sounds"
+],
+"description": "Speech uttered by an adult female human."
+},
+{
+"idx": 3,
+"mid": "/m/0ytgt",
+"name": "Child speech, kid speaking",
+"ancestors": [
+"Speech",
+"Human voice",
+"Human sounds"
+],
+"description": "Speech uttered by a human child, i.e. a human whose voice does not yet resemble that of an adult."
+},
+{
+"idx": 4,
+"mid": "/m/01h8n0",
+"name": "Conversation",
+"ancestors": [
+"Speech",
+"Human voice",
+"Human sounds"
+],
+"description": "Interactive, spontaneous spoken communication between two or more people."
+},
+{
+"idx": 5,
+"mid": "/m/02qldy",
+"name": "Narration, monologue",
+"ancestors": [
+"Speech",
+"Human voice",
+"Human sounds"
+],
+"description": "Speech by a single human aimed at an audience (either present or assumed, as in a video blog)."
+},
+{
+"idx": 6,
+"mid": "/m/0261r1",
+"name": "Babbling",
+"ancestors": [
+"Speech",
+"Human voice",
+"Human sounds"
+],
+"description": "Speech-like sounds uttered by a human that lack the deeper structure and meaning of conventional speech. Babbling is a stage in a child's development of language."
+},
+{
+"idx": 7,
+"mid": "/m/0brhx",
+"name": "Speech synthesizer",
+"ancestors": [
+"Speech",
+"Human voice",
+"Human sounds"
+],
+"description": "Artificially-produced human speech."
+},
+{
+"idx": 8,
+"mid": "/m/07p6fty",
+"name": "Shout",
+"ancestors": [
+"Human voice",
+"Human sounds"
+],
+"description": "Talk in a loud voice to deliberately command attention or overcome interfering sounds. Does not have the stronger emotional connotations of Yell or Scream."
+},
+{
+"idx": 9,
+"mid": "/m/07q4ntr",
+"name": "Bellow",
+"ancestors": [
+"Shout",
+"Human voice",
+"Human sounds"
+],
+"description": "A very loud utterance by a person that seems more animal than human."
+},
+{
+"idx": 10,
+"mid": "/m/07rwj3x",
+"name": "Whoop",
+"ancestors": [
+"Shout",
+"Human voice",
+"Human sounds"
+],
+"description": "A loud hooting cry of exultation or excitement."
+},
+{
+"idx": 11,
+"mid": "/m/07sr1lc",
+"name": "Yell",
+"ancestors": [
+"Shout",
+"Human voice",
+"Human sounds"
+],
+"description": "Utter or declare in a very loud voice that seems excessive or involuntary, or that is deliberately startling in order to command attention, as distinct from the pragmatically raised voice of Shout."
+},
+{
+"idx": 12,
+"mid": "/m/04gy_2",
+"name": "Battle cry",
+"ancestors": [
+"Shout",
+"Human voice",
+"Human sounds"
+],
+"description": "A yell or chant taken up in battle, usually by members of the same combatant group, aiming at arousing aggression on one's own side and intimidating the enemy."
+},
+{
+"idx": 13,
+"mid": "/t/dd00135",
+"name": "Children shouting",
+"ancestors": [
+"Shout",
+"Human voice",
+"Human sounds",
+"Human group actions"
+],
+"description": "The boisterous vocalizations of a group of children, for instance in a playground."
+},
+{
+"idx": 14,
+"mid": "/m/03qc9zr",
+"name": "Screaming",
+"ancestors": [
+"Human voice",
+"Human sounds"
+],
+"description": "A sharp, high-pitched human vocalization; often an instinctive action indicating fear, pain, surprise, joy, anger, etc. Verbal content is absent or overwhelmed, unlike Shout and Yell."
+},
+{
+"idx": 15,
+"mid": "/m/02rtxlg",
+"name": "Whispering",
+"ancestors": [
+"Human voice",
+"Human sounds"
+],
+"description": "Unvoiced speech, usually intended to be quieter to avoid causing disturbance or being overheard."
+},
+{
+"idx": 16,
+"mid": "/m/01j3sz",
+"name": "Laughter",
+"ancestors": [
+"Human voice",
+"Human sounds"
+],
+"description": "The sound of rhythmical contractions of the diaphragm in response to stimuli such as tickling, or from humorous stories or thoughts."
+},
+{
+"idx": 17,
+"mid": "/t/dd00001",
+"name": "Baby laughter",
+"ancestors": [
+"Laughter",
+"Human voice",
+"Human sounds"
+],
+"description": "Laughter that is produced by a baby or infant."
+},
+{
+"idx": 18,
+"mid": "/m/07r660_",
+"name": "Giggle",
+"ancestors": [
+"Laughter",
+"Human voice",
+"Human sounds"
+],
+"description": "A foolish or nervous laugh."
+},
+{
+"idx": 19,
+"mid": "/m/07s04w4",
+"name": "Snicker",
+"ancestors": [
+"Laughter",
+"Human voice",
+"Human sounds"
+],
+"description": "A disrespectful laugh."
+},
+{
+"idx": 20,
+"mid": "/m/07sq110",
+"name": "Belly laugh",
+"ancestors": [
+"Laughter",
+"Human voice",
+"Human sounds"
+],
+"description": "Very loud and abrupt laughter that encompasses much of the body."
+},
+{
+"idx": 21,
+"mid": "/m/07rgt08",
+"name": "Chuckle, chortle",
+"ancestors": [
+"Laughter",
+"Human voice",
+"Human sounds"
+],
+"description": "Laugh quietly or with restraint."
+},
+{
+"idx": 22,
+"mid": "/m/0463cq4",
+"name": "Crying, sobbing",
+"ancestors": [
+"Human voice",
+"Human sounds"
+],
+"description": "Sound associated with the shedding of tears in response to an emotional state, arising from slow but erratic inhalation, occasional instances of breath holding and muscular tremor."
+},
+{
+"idx": 23,
+"mid": "/t/dd00002",
+"name": "Baby cry, infant cry",
+"ancestors": [
+"Crying, sobbing",
+"Human voice",
+"Human sounds"
+],
+"description": "The sound of a young child crying or bawling."
+},
+{
+"idx": 24,
+"mid": "/m/07qz6j3",
+"name": "Whimper",
+"ancestors": [
+"Crying, sobbing",
+"Human voice",
+"Human sounds"
+],
+"description": "A plaintive, whining vocalization with some abrupt changes in loudness."
+},
+{
+"idx": 25,
+"mid": "/m/07qw_06",
+"name": "Wail, moan",
+"ancestors": [
+"Human voice",
+"Human sounds"
+],
+"description": "A weak or soft emotional vocalization, possibly indicating pain, sadness, or pleasure."
+},
+{
+"idx": 26,
+"mid": "/m/07plz5l",
+"name": "Sigh",
+"ancestors": [
+"Human voice",
+"Human sounds"
+],
+"description": "An utterance made by exhaling audibly."
+},
+{
+"idx": 27,
+"mid": "/m/015lz1",
+"name": "Singing",
+"ancestors": [
+"Human voice",
+"Human sounds"
+],
+"description": "Musical sounds produced with the human voice, including sustained tonality, rhythm, and a variety of other vocal techniques."
+},
+{
+"idx": 28,
+"mid": "/m/0l14jd",
+"name": "Choir",
+"ancestors": [
+"Singing",
+"Human voice",
+"Human sounds",
+"Musical instrument",
+"Music"
+],
+"description": "A musical ensemble of singers."
+},
+{
+"idx": 29,
+"mid": "/m/01swy6",
+"name": "Yodeling",
+"ancestors": [
+"Singing",
+"Human voice",
+"Human sounds"
+],
+"description": "A form of singing that involves repeated and rapid changes of pitch between the low-pitch chest register and the high-pitch head register or falsetto."
+},
+{
+"idx": 30,
+"mid": "/m/02bk07",
+"name": "Chant",
+"ancestors": [
+"Singing",
+"Human voice",
+"Human sounds",
+"Vocal music",
+"Music genre",
+"Music"
+],
+"description": "The rhythmic speaking or singing of words or sounds, often primarily on one or two main pitches called reciting tones."
+},
+{
+"idx": 31,
+"mid": "/m/01c194",
+"name": "Mantra",
+"ancestors": [
+"Chant",
+"Singing",
+"Human voice",
+"Human sounds",
+"Vocal music",
+"Music genre",
+"Music"
+],
+"description": "A melodic sacred utterance believed to have spiritual powers."
+},
+{
+"idx": 32,
+"mid": "/t/dd00003",
+"name": "Male singing",
+"ancestors": [
+"Singing",
+"Human voice",
+"Human sounds"
+],
+"description": "Singing produced by an adult human male."
+},
+{
+"idx": 33,
+"mid": "/t/dd00004",
+"name": "Female singing",
+"ancestors": [
+"Singing",
+"Human voice",
+"Human sounds"
+],
+"description": "Singing produced by an adult human female."
+},
+{
+"idx": 34,
+"mid": "/t/dd00005",
+"name": "Child singing",
+"ancestors": [
+"Singing",
+"Human voice",
+"Human sounds"
+],
+"description": "Singing produced by a young human whose voice has not yet reached its adult state."
+},
+{
+"idx": 35,
+"mid": "/t/dd00006",
+"name": "Synthetic singing",
+"ancestors": [
+"Singing",
+"Human voice",
+"Human sounds"
+],
+"description": "Singing-like sounds produced by artificial means, such as an electronic synthesizer.  Does not include pre-recorded sounds that originate in a human voice."
+},
+{
+"idx": 36,
+"mid": "/m/06bxc",
+"name": "Rapping",
+"ancestors": [
+"Singing",
+"Human voice",
+"Human sounds"
+],
+"description": "The sound of \"spoken or chanted rhyming lyrics\", serving the role of a vocal line in music but with normal speech intonation instead of a melodic line."
+},
+{
+"idx": 37,
+"mid": "/m/02fxyj",
+"name": "Humming",
+"ancestors": [
+"Human voice",
+"Human sounds"
+],
+"description": "A wordless tone produced by forcing the sound to emerge from the nose, often with a melody."
+},
+{
+"idx": 38,
+"mid": "/m/07s2xch",
+"name": "Groan",
+"ancestors": [
+"Human voice",
+"Human sounds"
+],
+"description": "An utterance expressing pain or disapproval. Specifically refers to humans."
+},
+{
+"idx": 39,
+"mid": "/m/07r4k75",
+"name": "Grunt",
+"ancestors": [
+"Human voice",
+"Human sounds"
+],
+"description": "A short low gruff noise, resembling the sound made by animals such as pigs. Specifically refers to humans."
+},
+{
+"idx": 40,
+"mid": "/m/01w250",
+"name": "Whistling",
+"ancestors": [
+"Human sounds"
+],
+"description": "High-pitched tone produced by blowing or sucking air through a small opening between the lips. Used to draw attention, as a personal tic, and to reproduce a melody."
+},
+{
+"idx": 41,
+"mid": "/m/0lyf6",
+"name": "Breathing",
+"ancestors": [
+"Respiratory sounds",
+"Human sounds"
+],
+"description": "Air being moved in and out of the lungs in order to sustain life."
+},
+{
+"idx": 42,
+"mid": "/m/07mzm6",
+"name": "Wheeze",
+"ancestors": [
+"Breathing",
+"Respiratory sounds",
+"Human sounds"
+],
+"description": "A continuous, coarse, whistling sound produced by obstruction of the respiratory airways during breathing."
+},
+{
+"idx": 43,
+"mid": "/m/01d3sd",
+"name": "Snoring",
+"ancestors": [
+"Breathing",
+"Respiratory sounds",
+"Human sounds"
+],
+"description": "The sound resulting from obstructed respiratory airways during breathing while sleeping."
+},
+{
+"idx": 44,
+"mid": "/m/07s0dtb",
+"name": "Gasp",
+"ancestors": [
+"Breathing",
+"Respiratory sounds",
+"Human sounds"
+],
+"description": "A short labored intake of breath with the mouth open. Often indicates shock or surprise."
+},
+{
+"idx": 45,
+"mid": "/m/07pyy8b",
+"name": "Pant",
+"ancestors": [
+"Breathing",
+"Respiratory sounds",
+"Human sounds"
+],
+"description": "Fast and noisy breathing, often associated with physical exertion."
+},
+{
+"idx": 46,
+"mid": "/m/07q0yl5",
+"name": "Snort",
+"ancestors": [
+"Breathing",
+"Respiratory sounds",
+"Human sounds"
+],
+"description": "The sound of a single, hard exhalation through the nose."
+},
+{
+"idx": 47,
+"mid": "/m/01b_21",
+"name": "Cough",
+"ancestors": [
+"Respiratory sounds",
+"Human sounds"
+],
+"description": "A sudden and often repetitively occurring reflex which consists of an inhalation, a forced exhalation against a closed glottis, and a violent release of air following opening of the glottis."
+},
+{
+"idx": 48,
+"mid": "/m/0dl9sf8",
+"name": "Throat clearing",
+"ancestors": [
+"Cough",
+"Respiratory sounds",
+"Human sounds"
+],
+"description": "Forced exhalation through a partially-closed glottis to disrupt built-up mucus, or used as a social signal to draw attention to one's presence."
+},
+{
+"idx": 49,
+"mid": "/m/01hsr_",
+"name": "Sneeze",
+"ancestors": [
+"Respiratory sounds",
+"Human sounds"
+],
+"description": "A convulsive expulsion of air from the lungs through the nose and mouth, usually caused by foreign particles irritating the nasal mucous."
+},
+{
+"idx": 50,
+"mid": "/m/07ppn3j",
+"name": "Sniff",
+"ancestors": [
+"Respiratory sounds",
+"Human sounds"
+],
+"description": "Inhale audibly through the nose."
+},
+{
+"idx": 51,
+"mid": "/m/06h7j",
+"name": "Run",
+"ancestors": [
+"Human locomotion",
+"Human sounds"
+],
+"description": "Move fast by using one's feet."
+},
+{
+"idx": 52,
+"mid": "/m/07qv_x_",
+"name": "Shuffle",
+"ancestors": [
+"Human locomotion",
+"Human sounds"
+],
+"description": "Walk while dragging the feet, often indicating impaired mobility."
+},
+{
+"idx": 53,
+"mid": "/m/07pbtc8",
+"name": "Walk, footsteps",
+"ancestors": [
+"Human locomotion",
+"Human sounds"
+],
+"description": "The sound of feet or shoes contacting the ground in conventional human locomotion."
+},
+{
+"idx": 54,
+"mid": "/m/03cczk",
+"name": "Chewing, mastication",
+"ancestors": [
+"Digestive",
+"Human sounds"
+],
+"description": "Food being crushed and ground by teeth."
+},
+{
+"idx": 55,
+"mid": "/m/07pdhp0",
+"name": "Biting",
+"ancestors": [
+"Digestive",
+"Human sounds"
+],
+"description": "Gripping or chewing off with the teeth and jaws."
+},
+{
+"idx": 56,
+"mid": "/m/0939n_",
+"name": "Gargling",
+"ancestors": [
+"Digestive",
+"Human sounds"
+],
+"description": "Air from the lungs bubbling through a liquid in the mouth."
+},
+{
+"idx": 57,
+"mid": "/m/01g90h",
+"name": "Stomach rumble",
+"ancestors": [
+"Digestive",
+"Human sounds"
+],
+"description": "A rumbling, growling or gurgling noise produced by movement of the contents of the gastro-intestinal tract."
+},
+{
+"idx": 58,
+"mid": "/m/03q5_w",
+"name": "Burping, eructation",
+"ancestors": [
+"Digestive",
+"Human sounds"
+],
+"description": "The release of gas from the digestive tract through the mouth."
+},
+{
+"idx": 59,
+"mid": "/m/02p3nc",
+"name": "Hiccup",
+"ancestors": [
+"Digestive",
+"Human sounds"
+],
+"description": "A strong, involuntary contraction of the diaphragm that may repeat several times per minute."
+},
+{
+"idx": 60,
+"mid": "/m/02_nn",
+"name": "Fart",
+"ancestors": [
+"Digestive",
+"Human sounds"
+],
+"description": "The release of gasses produced by digestion through the anus; flatulence."
+},
+{
+"idx": 61,
+"mid": "/m/0k65p",
+"name": "Hands",
+"ancestors": [
+"Human sounds"
+],
+"description": "Sounds originating primarily from the hands and fingers of humans."
+},
+{
+"idx": 62,
+"mid": "/m/025_jnm",
+"name": "Finger snapping",
+"ancestors": [
+"Hands",
+"Human sounds"
+],
+"description": "A snapping or clicking sound usually caused by building tension between the thumb and another finger and then moving the other finger forcefully downward to hits the palm at high speed."
+},
+{
+"idx": 63,
+"mid": "/m/0l15bq",
+"name": "Clapping",
+"ancestors": [
+"Hands",
+"Human sounds",
+"Human group actions"
+],
+"description": "A percussive sound made by a human striking together the palms of their two hands, often quickly and repeatedly to express appreciation or approval. This category is to be used for distinct claps by a single person; for a group of people cl"
+},
+{
+"idx": 64,
+"mid": "/m/01jg02",
+"name": "Heart sounds, heartbeat",
+"ancestors": [
+"Human sounds"
+],
+"description": "Noises generated by the beating heart and the resultant flow of blood through it."
+},
+{
+"idx": 65,
+"mid": "/m/01jg1z",
+"name": "Heart murmur",
+"ancestors": [
+"Heart sounds, heartbeat",
+"Human sounds"
+],
+"description": "Heart sounds produced by abnormal blood flow across one of the heart valves, typically detected by a stethoscope."
+},
+{
+"idx": 66,
+"mid": "/m/053hz1",
+"name": "Cheering",
+"ancestors": [
+"Human group actions",
+"Human sounds"
+],
+"description": "Encouraging, stimulating, or exciting vocalizations indicating approval or welcoming persons, announcements, etc."
+},
+{
+"idx": 67,
+"mid": "/m/028ght",
+"name": "Applause",
+"ancestors": [
+"Human group actions",
+"Human sounds"
+],
+"description": "Group expression of approval by the collective act of clapping by a group."
+},
+{
+"idx": 68,
+"mid": "/m/07rkbfh",
+"name": "Chatter",
+"ancestors": [
+"Human group actions",
+"Human sounds"
+],
+"description": "The combined sound of casual speech by many people in individual simultaneous conversations."
+},
+{
+"idx": 69,
+"mid": "/m/03qtwd",
+"name": "Crowd",
+"ancestors": [
+"Human group actions",
+"Human sounds"
+],
+"description": "The sound of a large group of people gathered together."
+},
+{
+"idx": 70,
+"mid": "/m/07qfr4h",
+"name": "Hubbub, speech noise, speech babble",
+"ancestors": [
+"Human group actions",
+"Human sounds",
+"Noise",
+"Channel, environment and background"
+],
+"description": "Loud, disordered, unintelligible speech noise from many sources."
+},
+{
+"idx": 71,
+"mid": "/t/dd00013",
+"name": "Children playing",
+"ancestors": [
+"Human group actions",
+"Human sounds"
+],
+"description": "The sound of children at play, including any of vocalization or the sounds of their activities."
+},
+{
+"idx": 72,
+"mid": "/m/0jbk",
+"name": "Animal",
+"ancestors": [],
+"description": "All sound produced by the bodies and actions of nonhuman animals."
+},
+{
+"idx": 73,
+"mid": "/m/068hy",
+"name": "Domestic animals, pets",
+"ancestors": [
+"Animal"
+],
+"description": "Sounds of animals kept in close proximity to humans for company, protection, and entertainment."
+},
+{
+"idx": 74,
+"mid": "/m/0bt9lr",
+"name": "Dog",
+"ancestors": [
+"Domestic animals, pets",
+"Animal"
+],
+"description": "Any sounds coming from the familiar domesticated canid which has been selectively bred over millennia for companionship, protection, as well as for superior sensory capabilities, and other useful behaviors."
+},
+{
+"idx": 75,
+"mid": "/m/05tny_",
+"name": "Bark",
+"ancestors": [
+"Dog",
+"Domestic animals, pets",
+"Animal"
+],
+"description": "Principal communication sound produced by dogs. Often transliterated as woof, especially for large dogs."
+},
+{
+"idx": 76,
+"mid": "/m/07r_k2n",
+"name": "Yip",
+"ancestors": [
+"Dog",
+"Domestic animals, pets",
+"Animal"
+],
+"description": "A sharp high-pitched bark or cry, typically from a miniature dog."
+},
+{
+"idx": 77,
+"mid": "/m/07qf0zm",
+"name": "Howl",
+"ancestors": [
+"Dog",
+"Domestic animals, pets",
+"Animal",
+"Canidae, dogs, wolves",
+"Wild animals"
+],
+"description": "The long plaintive cry of a dog, wolf, or other canidae."
+},
+{
+"idx": 78,
+"mid": "/m/07rc7d9",
+"name": "Bow-wow",
+"ancestors": [
+"Dog",
+"Domestic animals, pets",
+"Animal"
+],
+"description": "Dog communication sound that is more tonal and less abrupt than a classic bark."
+},
+{
+"idx": 79,
+"mid": "/m/0ghcn6",
+"name": "Growling",
+"ancestors": [
+"Dog",
+"Domestic animals, pets",
+"Animal",
+"Cat",
+"Roaring cats (lions, tigers)",
+"Wild animals",
+"Canidae, dogs, wolves"
+],
+"description": "A low, guttural vocalization produced by animals as a warning, a sign of aggression, or to express anger."
+},
+{
+"idx": 80,
+"mid": "/t/dd00136",
+"name": "Whimper (dog)",
+"ancestors": [
+"Dog",
+"Domestic animals, pets",
+"Animal"
+],
+"description": "Muted dog vocalization indicating submission, fear, or pain."
+},
+{
+"idx": 81,
+"mid": "/m/01yrx",
+"name": "Cat",
+"ancestors": [
+"Domestic animals, pets",
+"Animal"
+],
+"description": "Sounds associated with the familiar, furry, domestic carnivorous mammal."
+},
+{
+"idx": 82,
+"mid": "/m/02yds9",
+"name": "Purr",
+"ancestors": [
+"Cat",
+"Domestic animals, pets",
+"Animal"
+],
+"description": "A tonal fluttering sound made by cats to indicate contentment or relaxed pleasure."
+},
+{
+"idx": 83,
+"mid": "/m/07qrkrw",
+"name": "Meow",
+"ancestors": [
+"Cat",
+"Domestic animals, pets",
+"Animal"
+],
+"description": "The classic tonal communication sound made by cats."
+},
+{
+"idx": 84,
+"mid": "/m/07rjwbb",
+"name": "Hiss",
+"ancestors": [
+"Cat",
+"Domestic animals, pets",
+"Animal",
+"Snake",
+"Wild animals",
+"Steam",
+"Water",
+"Natural sounds",
+"Onomatopoeia",
+"Source-ambiguous sounds"
+],
+"description": "A fricative sound, such as from a cat giving warning, or an audience indicating disapproval."
+},
+{
+"idx": 85,
+"mid": "/m/07r81j2",
+"name": "Caterwaul",
+"ancestors": [
+"Cat",
+"Domestic animals, pets",
+"Animal"
+],
+"description": "The yowling sound made by a cat in heat."
+},
+{
+"idx": 86,
+"mid": "/m/0ch8v",
+"name": "Livestock, farm animals, working animals",
+"ancestors": [
+"Animal"
+],
+"description": "Sound made by animals associated with farms and agriculture."
+},
+{
+"idx": 87,
+"mid": "/m/03k3r",
+"name": "Horse",
+"ancestors": [
+"Livestock, farm animals, working animals",
+"Animal"
+],
+"description": "Sounds associated with the familiar domesticated large, fast, and strong ungulate mammal."
+},
+{
+"idx": 88,
+"mid": "/m/07rv9rh",
+"name": "Clip-clop",
+"ancestors": [
+"Horse",
+"Livestock, farm animals, working animals",
+"Animal",
+"Clicking",
+"Onomatopoeia",
+"Source-ambiguous sounds"
+],
+"description": "The sound of a horse's hoofs hitting on a hard surface."
+},
+{
+"idx": 89,
+"mid": "/m/07q5rw0",
+"name": "Neigh, whinny",
+"ancestors": [
+"Horse",
+"Livestock, farm animals, working animals",
+"Animal"
+],
+"description": "The characteristic communication sound made by a horse."
+},
+{
+"idx": 90,
+"mid": "/m/01xq0k1",
+"name": "Cattle, bovinae",
+"ancestors": [
+"Livestock, farm animals, working animals",
+"Animal"
+],
+"description": "Sounds associated with the most common type of large domesticated ungulates."
+},
+{
+"idx": 91,
+"mid": "/m/07rpkh9",
+"name": "Moo",
+"ancestors": [
+"Cattle, bovinae",
+"Livestock, farm animals, working animals",
+"Animal"
+],
+"description": "The classic communication sound made by a cow or bull."
+},
+{
+"idx": 92,
+"mid": "/m/0239kh",
+"name": "Cowbell",
+"ancestors": [
+"Cattle, bovinae",
+"Livestock, farm animals, working animals",
+"Animal",
+"Percussion",
+"Musical instrument",
+"Music",
+"Bell",
+"Sounds of things"
+],
+"description": "A simple metal bell historically tied around the necks of cattle to keep track of their whereabouts."
+},
+{
+"idx": 93,
+"mid": "/m/068zj",
+"name": "Pig",
+"ancestors": [
+"Livestock, farm animals, working animals",
+"Animal"
+],
+"description": "Sounds associated with the highly intelligent, very common, domesticated relative of the boar."
+},
+{
+"idx": 94,
+"mid": "/t/dd00018",
+"name": "Oink",
+"ancestors": [
+"Pig",
+"Livestock, farm animals, working animals",
+"Animal"
+],
+"description": "Common vocalization sound associated with pigs."
+},
+{
+"idx": 95,
+"mid": "/m/03fwl",
+"name": "Goat",
+"ancestors": [
+"Livestock, farm animals, working animals",
+"Animal"
+],
+"description": "Sounds of the medium-sized domesticated bovidae."
+},
+{
+"idx": 96,
+"mid": "/m/07q0h5t",
+"name": "Bleat",
+"ancestors": [
+"Goat",
+"Livestock, farm animals, working animals",
+"Animal",
+"Sheep"
+],
+"description": "Communicative vocalization of sheep and goats."
+},
+{
+"idx": 97,
+"mid": "/m/07bgp",
+"name": "Sheep",
+"ancestors": [
+"Livestock, farm animals, working animals",
+"Animal"
+],
+"description": "Sounds associated with the familiar quadrupedal, ruminant mammal typically kept as livestock."
+},
+{
+"idx": 98,
+"mid": "/m/025rv6n",
+"name": "Fowl",
+"ancestors": [
+"Livestock, farm animals, working animals",
+"Animal"
+],
+"description": "Sounds associated with the bird species commonly raised for human consumption."
+},
+{
+"idx": 99,
+"mid": "/m/09b5t",
+"name": "Chicken, rooster",
+"ancestors": [
+"Fowl",
+"Livestock, farm animals, working animals",
+"Animal"
+],
+"description": "Sounds of the very common and widespread domesticated fowl, raised for its eggs and meat."
+},
+{
+"idx": 100,
+"mid": "/m/07st89h",
+"name": "Cluck",
+"ancestors": [
+"Chicken, rooster",
+"Fowl",
+"Livestock, farm animals, working animals",
+"Animal"
+],
+"description": "The soft, low-pitched, and repetitive sound made by chickens."
+},
+{
+"idx": 101,
+"mid": "/m/07qn5dc",
+"name": "Crowing, cock-a-doodle-doo",
+"ancestors": [
+"Chicken, rooster",
+"Fowl",
+"Livestock, farm animals, working animals",
+"Animal"
+],
+"description": "The multi-syllable warning call made by a rooster (male chicken)."
+},
+{
+"idx": 102,
+"mid": "/m/01rd7k",
+"name": "Turkey",
+"ancestors": [
+"Fowl",
+"Livestock, farm animals, working animals",
+"Animal"
+],
+"description": "Sounds associated with the large poultry bird, originally domesticated in the Americas."
+},
+{
+"idx": 103,
+"mid": "/m/07svc2k",
+"name": "Gobble",
+"ancestors": [
+"Turkey",
+"Fowl",
+"Livestock, farm animals, working animals",
+"Animal"
+],
+"description": "The characteristic sound made by a turkey cock."
+},
+{
+"idx": 104,
+"mid": "/m/09ddx",
+"name": "Duck",
+"ancestors": [
+"Fowl",
+"Livestock, farm animals, working animals",
+"Animal"
+],
+"description": "Sounds associated with this collection of waterfowl species."
+},
+{
+"idx": 105,
+"mid": "/m/07qdb04",
+"name": "Quack",
+"ancestors": [
+"Duck",
+"Fowl",
+"Livestock, farm animals, working animals",
+"Animal"
+],
+"description": "The harsh communication sound made by a duck."
+},
+{
+"idx": 106,
+"mid": "/m/0dbvp",
+"name": "Goose",
+"ancestors": [
+"Fowl",
+"Livestock, farm animals, working animals",
+"Animal"
+],
+"description": "Sounds associated with this species of larger waterfowl."
+},
+{
+"idx": 107,
+"mid": "/m/07qwf61",
+"name": "Honk",
+"ancestors": [
+"Goose",
+"Fowl",
+"Livestock, farm animals, working animals",
+"Animal"
+],
+"description": "The cry of a goose."
+},
+{
+"idx": 108,
+"mid": "/m/01280g",
+"name": "Wild animals",
+"ancestors": [
+"Animal"
+],
+"description": "Sounds associated with animals not normally raised by humans."
+},
+{
+"idx": 109,
+"mid": "/m/0cdnk",
+"name": "Roaring cats (lions, tigers)",
+"ancestors": [
+"Wild animals",
+"Animal"
+],
+"description": "Sounds associated with the larger and more ferocious wild relatives of cats."
+},
+{
+"idx": 110,
+"mid": "/m/04cvmfc",
+"name": "Roar",
+"ancestors": [
+"Roaring cats (lions, tigers)",
+"Wild animals",
+"Animal"
+],
+"description": "A deep, bellowing outburst of sound forced through an open mouth, made by a lion or other \"big cat\" species."
+},
+{
+"idx": 111,
+"mid": "/m/015p6",
+"name": "Bird",
+"ancestors": [
+"Wild animals",
+"Animal"
+],
+"description": "Sounds associated with the large group of flying vertebrates."
+},
+{
+"idx": 112,
+"mid": "/m/020bb7",
+"name": "Bird vocalization, bird call, bird song",
+"ancestors": [
+"Bird",
+"Wild animals",
+"Animal"
+],
+"description": "Bird communication calls, often considered melodious to the human ear."
+},
+{
+"idx": 113,
+"mid": "/m/07pggtn",
+"name": "Chirp, tweet",
+"ancestors": [
+"Bird vocalization, bird call, bird song",
+"Bird",
+"Wild animals",
+"Animal",
+"Brief tone",
+"Onomatopoeia",
+"Source-ambiguous sounds"
+],
+"description": "A brief sound as made by a small bird."
+},
+{
+"idx": 114,
+"mid": "/m/07sx8x_",
+"name": "Squawk",
+"ancestors": [
+"Bird vocalization, bird call, bird song",
+"Bird",
+"Wild animals",
+"Animal"
+],
+"description": "Abrasive, unpleasant sharp sound produced by a bird."
+},
+{
+"idx": 115,
+"mid": "/m/0h0rv",
+"name": "Pigeon, dove",
+"ancestors": [
+"Bird",
+"Wild animals",
+"Animal"
+],
+"description": "Sounds associated with these species of birds having short necks and short, slender bills."
+},
+{
+"idx": 116,
+"mid": "/m/07r_25d",
+"name": "Coo",
+"ancestors": [
+"Pigeon, dove",
+"Bird",
+"Wild animals",
+"Animal"
+],
+"description": "The sound made by a pigeon or dove."
+},
+{
+"idx": 117,
+"mid": "/m/04s8yn",
+"name": "Crow",
+"ancestors": [
+"Bird",
+"Wild animals",
+"Animal"
+],
+"description": "Sounds associated with the species of medium-to-large birds, Corvus."
+},
+{
+"idx": 118,
+"mid": "/m/07r5c2p",
+"name": "Caw",
+"ancestors": [
+"Crow",
+"Bird",
+"Wild animals",
+"Animal"
+],
+"description": "The relatively harsh sound made by corvine birds."
+},
+{
+"idx": 119,
+"mid": "/m/09d5_",
+"name": "Owl",
+"ancestors": [
+"Bird",
+"Wild animals",
+"Animal"
+],
+"description": "Sounds associated with the mostly solitary and nocturnal carnivorous birds from the order Strigiformes."
+},
+{
+"idx": 120,
+"mid": "/m/07r_80w",
+"name": "Hoot",
+"ancestors": [
+"Owl",
+"Bird",
+"Wild animals",
+"Animal"
+],
+"description": "The loud raucous cry of an owl."
+},
+{
+"idx": 121,
+"mid": "/m/05_wcq",
+"name": "Bird flight, flapping wings",
+"ancestors": [
+"Bird",
+"Wild animals",
+"Animal"
+],
+"description": "Sounds caused by a bird's use of its wings to travel through the air."
+},
+{
+"idx": 122,
+"mid": "/m/01z5f",
+"name": "Canidae, dogs, wolves",
+"ancestors": [
+"Wild animals",
+"Animal"
+],
+"description": "Sounds associated with the wild relatives of domesticated dogs."
+},
+{
+"idx": 123,
+"mid": "/m/06hps",
+"name": "Rodents, rats, mice",
+"ancestors": [
+"Wild animals",
+"Animal"
+],
+"description": "Sounds associated with the small mammals of the order Rodentia, found in vast numbers on all continents except Antarctica."
+},
+{
+"idx": 124,
+"mid": "/m/04rmv",
+"name": "Mouse",
+"ancestors": [
+"Rodents, rats, mice",
+"Wild animals",
+"Animal"
+],
+"description": "Sounds associated with the familiar small rodent."
+},
+{
+"idx": 125,
+"mid": "/m/07r4gkf",
+"name": "Patter",
+"ancestors": [
+"Rodents, rats, mice",
+"Wild animals",
+"Animal"
+],
+"description": "A quick succession of light rapid sounds, usually suggesting the locomotion of small animals."
+},
+{
+"idx": 126,
+"mid": "/m/03vt0",
+"name": "Insect",
+"ancestors": [
+"Wild animals",
+"Animal"
+],
+"description": "Sounds associated with invertebrates from the arthropod phylum that have a chitinous exoskeleton, a three-part body, three pairs of jointed legs, compound eyes, and one pair of antennae."
+},
+{
+"idx": 127,
+"mid": "/m/09xqv",
+"name": "Cricket",
+"ancestors": [
+"Insect",
+"Wild animals",
+"Animal"
+],
+"description": "Sounds associated with these relatives of grasshoppers characterized by enlarged hind legs, providing power for jumping. Crickets are mainly nocturnal, and are best known for the loud, persistent, chirping song of males trying to attract fe"
+},
+{
+"idx": 128,
+"mid": "/m/09f96",
+"name": "Mosquito",
+"ancestors": [
+"Insect",
+"Wild animals",
+"Animal"
+],
+"description": "Sounds associated with these small, midge-like flies whose tube-like mouth parts pierce the hosts' skin to consume blood."
+},
+{
+"idx": 129,
+"mid": "/m/0h2mp",
+"name": "Fly, housefly",
+"ancestors": [
+"Insect",
+"Wild animals",
+"Animal"
+],
+"description": "Sounds associated with these insects of the order Diptera, which use only a single pair of wings to fly."
+},
+{
+"idx": 130,
+"mid": "/m/07pjwq1",
+"name": "Buzz",
+"ancestors": [
+"Fly, housefly",
+"Insect",
+"Wild animals",
+"Animal",
+"Bee, wasp, etc.",
+"Brief tone",
+"Onomatopoeia",
+"Source-ambiguous sounds"
+],
+"description": "The sound of rapid vibration, commonly the wings of a flying insect."
+},
+{
+"idx": 131,
+"mid": "/m/01h3n",
+"name": "Bee, wasp, etc.",
+"ancestors": [
+"Insect",
+"Wild animals",
+"Animal"
+],
+"description": "Sounds associated with these closely-related species of flying insects known for pollination, honey-production, and the ability to sting humans."
+},
+{
+"idx": 132,
+"mid": "/m/09ld4",
+"name": "Frog",
+"ancestors": [
+"Wild animals",
+"Animal"
+],
+"description": "Sounds associated with the short-bodied, tailless amphibians composing the order Anura."
+},
+{
+"idx": 133,
+"mid": "/m/07st88b",
+"name": "Croak",
+"ancestors": [
+"Frog",
+"Wild animals",
+"Animal"
+],
+"description": "The harsh hoarse utterance of a frog."
+},
+{
+"idx": 134,
+"mid": "/m/078jl",
+"name": "Snake",
+"ancestors": [
+"Wild animals",
+"Animal"
+],
+"description": "Sounds associated with the elongated, legless, carnivorous reptiles of the suborder Serpentes."
+},
+{
+"idx": 135,
+"mid": "/m/07qn4z3",
+"name": "Rattle",
+"ancestors": [
+"Snake",
+"Wild animals",
+"Animal",
+"Onomatopoeia",
+"Source-ambiguous sounds"
+],
+"description": "A rapid series of short loud sounds as of small hard items loose inside a container."
+},
+{
+"idx": 136,
+"mid": "/m/032n05",
+"name": "Whale vocalization",
+"ancestors": [
+"Wild animals",
+"Animal"
+],
+"description": "Sounds produced by whales for different kinds of communication."
+},
+{
+"idx": 137,
+"mid": "/m/04rlf",
+"name": "Music",
+"ancestors": [],
+"description": "Music is an art form and cultural activity whose medium is sound and silence. The common elements of music are pitch, rhythm, dynamics, and the sonic qualities of timbre and texture."
+},
+{
+"idx": 138,
+"mid": "/m/04szw",
+"name": "Musical instrument",
+"ancestors": [
+"Music"
+],
+"description": "Sounds specifically associated with instruments created, adapted or otherwise used to make musical sounds."
+},
+{
+"idx": 139,
+"mid": "/m/0fx80y",
+"name": "Plucked string instrument",
+"ancestors": [
+"Musical instrument",
+"Music"
+],
+"description": "Sounds of a musical instrument using tensioned strings to produce tones, where the usual mode of playing is to pull and release the strings to cause them to vibrate."
+},
+{
+"idx": 140,
+"mid": "/m/0342h",
+"name": "Guitar",
+"ancestors": [
+"Plucked string instrument",
+"Musical instrument",
+"Music"
+],
+"description": "Sounds of a string instrument with between 4 and 18 strings (typically 6) running over a fretboard, typically played by strumming or plucking the strings with the right hand while fretting the strings with the fingers of the left hand."
+},
+{
+"idx": 141,
+"mid": "/m/02sgy",
+"name": "Electric guitar",
+"ancestors": [
+"Guitar",
+"Plucked string instrument",
+"Musical instrument",
+"Music"
+],
+"description": "Sounds of a guitar that uses a pickup to convert the vibration of its strings (which are typically made of metal, and which occurs when a guitarist strums, plucks, or fingerpicks the strings) into electrical impulses, which are then amplifi"
+},
+{
+"idx": 142,
+"mid": "/m/018vs",
+"name": "Bass guitar",
+"ancestors": [
+"Guitar",
+"Plucked string instrument",
+"Musical instrument",
+"Music"
+],
+"description": "Sounds of a relative of the electric guitar with a longer neck and 4 to 6 strings. The common 4-string bass is usually tuned one octave lower than the four lowest pitched strings of a guitar."
+},
+{
+"idx": 143,
+"mid": "/m/042v_gx",
+"name": "Acoustic guitar",
+"ancestors": [
+"Guitar",
+"Plucked string instrument",
+"Musical instrument",
+"Music"
+],
+"description": "Sounds of a guitar that produces sound acoustically by transmitting the vibration of the strings from its body to the air. Includes guitars with both nylon (or gut) strings, and those with steel strings."
+},
+{
+"idx": 144,
+"mid": "/m/06w87",
+"name": "Steel guitar, slide guitar",
+"ancestors": [
+"Guitar",
+"Plucked string instrument",
+"Musical instrument",
+"Music"
+],
+"description": "Sounds of a guitar whose string length is controlled by a hard object placed on the string (the \"slide\" or \"steel\") instead of by pressing against the frets with the fingers."
+},
+{
+"idx": 145,
+"mid": "/m/01glhc",
+"name": "Tapping (guitar technique)",
+"ancestors": [
+"Guitar",
+"Plucked string instrument",
+"Musical instrument",
+"Music"
+],
+"description": "Sounds of a guitar playing technique, where a string is fretted and set into vibration as part of a single motion of being pushed onto the fretboard, as opposed to the standard technique being fretted with one hand and picked with the other"
+},
+{
+"idx": 146,
+"mid": "/m/07s0s5r",
+"name": "Strum",
+"ancestors": [
+"Guitar",
+"Plucked string instrument",
+"Musical instrument",
+"Music"
+],
+"description": "The sound of playing a guitar by dragging a finger or plectrum over multiple strings near-simultaneously."
+},
+{
+"idx": 147,
+"mid": "/m/018j2",
+"name": "Banjo",
+"ancestors": [
+"Plucked string instrument",
+"Musical instrument",
+"Music"
+],
+"description": "Sounds of a 4-, 5-, or 6-stringed instrument with a thin membrane stretched over a frame or cavity as a resonator, called the head."
+},
+{
+"idx": 148,
+"mid": "/m/0jtg0",
+"name": "Sitar",
+"ancestors": [
+"Plucked string instrument",
+"Musical instrument",
+"Music"
+],
+"description": "Sounds of a plucked stringed instrument used mainly in Hindustani and Indian classical music, which derives its distinctive timbre and resonance from sympathetic strings, bridge design, a long hollow neck, and a gourd-shaped resonance chamb"
+},
+{
+"idx": 149,
+"mid": "/m/04rzd",
+"name": "Mandolin",
+"ancestors": [
+"Plucked string instrument",
+"Musical instrument",
+"Music"
+],
+"description": "Sounds of an instrument in the lute family, commonly with 4 courses of doubled metal strings, usually plucked with a plectrum or \"pick\"."
+},
+{
+"idx": 150,
+"mid": "/m/01bns_",
+"name": "Zither",
+"ancestors": [
+"Plucked string instrument",
+"Musical instrument",
+"Music"
+],
+"description": "Sounds of a class of stringed instruments consisting of many strings stretched across a thin, flat body, played by strumming or plucking."
+},
+{
+"idx": 151,
+"mid": "/m/07xzm",
+"name": "Ukulele",
+"ancestors": [
+"Plucked string instrument",
+"Musical instrument",
+"Music"
+],
+"description": "Sounds of a small four-stringed guitar-like instument that originated in Hawaii."
+},
+{
+"idx": 152,
+"mid": "/m/05148p4",
+"name": "Keyboard (musical)",
+"ancestors": [
+"Musical instrument",
+"Music"
+],
+"description": "Sounds of a musical instrument played using a keyboard, most commonly the piano, organ, and various electronic keyboards, including synthesizers and digital pianos."
+},
+{
+"idx": 153,
+"mid": "/m/05r5c",
+"name": "Piano",
+"ancestors": [
+"Keyboard (musical)",
+"Musical instrument",
+"Music"
+],
+"description": "Sounds of a musical instrument played via a row of keys that the performer presses down or strikes with the fingers and thumbs of both hands, to trigger a decaying note whose loudness reflects the vigor of the press."
+},
+{
+"idx": 154,
+"mid": "/m/01s0ps",
+"name": "Electric piano",
+"ancestors": [
+"Piano",
+"Keyboard (musical)",
+"Musical instrument",
+"Music"
+],
+"description": "Sounds of a music instrument with a piano-style keyboard, where pressing keys causes mechanical hammers to strike metal strings, metal reeds, or wire tines, leading to vibrations which are converted into electrical signals by magnetic picku"
+},
+{
+"idx": 155,
+"mid": "/m/013y1f",
+"name": "Organ",
+"ancestors": [
+"Keyboard (musical)",
+"Musical instrument",
+"Music"
+],
+"description": "Sounds of a keyboard instrument of one or more pipe divisions, each played with its own keyboard, played either with the hands on a keyboard or with the feet using pedals. Unlike the piano, organ notes typically sustain while the key is dep"
+},
+{
+"idx": 156,
+"mid": "/m/03xq_f",
+"name": "Electronic organ",
+"ancestors": [
+"Organ",
+"Keyboard (musical)",
+"Musical instrument",
+"Music"
+],
+"description": "Sounds of an electronic keyboard instrument designed to imitate the sound of the pipe organ."
+},
+{
+"idx": 157,
+"mid": "/m/03gvt",
+"name": "Hammond organ",
+"ancestors": [
+"Organ",
+"Keyboard (musical)",
+"Musical instrument",
+"Music"
+],
+"description": "Sounds of an electric organ invented by Laurens Hammond and John M. Hanert in which sliding drawbars create a variety of sounds."
+},
+{
+"idx": 158,
+"mid": "/m/0l14qv",
+"name": "Synthesizer",
+"ancestors": [
+"Keyboard (musical)",
+"Musical instrument",
+"Music"
+],
+"description": "Sounds associated with an electronic musical instrument that generates electric signals converted to sound through amplifiers and loudspeakers or headphones. Synthesizers may imitate instruments such as piano, organ, flute, or vocals; or th"
+},
+{
+"idx": 159,
+"mid": "/m/01v1d8",
+"name": "Sampler",
+"ancestors": [
+"Synthesizer",
+"Keyboard (musical)",
+"Musical instrument",
+"Music"
+],
+"description": "Sounds suggesting the use of an electronic musical instrument that uses recordings of sounds loaded or recorded into it by the user, then played back by means of the sampler program itself, a keyboard, sequencer, or another triggering devic"
+},
+{
+"idx": 160,
+"mid": "/m/03q5t",
+"name": "Harpsichord",
+"ancestors": [
+"Keyboard (musical)",
+"Musical instrument",
+"Music"
+],
+"description": "Sounds of a keyboard-controlled instrument in which each key plucks a particular string."
+},
+{
+"idx": 161,
+"mid": "/m/0l14md",
+"name": "Percussion",
+"ancestors": [
+"Musical instrument",
+"Music"
+],
+"description": "The sound of a musical instrument that is sounded by being struck or scraped by a beater; struck, scraped or rubbed by hand; or struck against another similar instrument."
+},
+{
+"idx": 162,
+"mid": "/m/02hnl",
+"name": "Drum kit",
+"ancestors": [
+"Percussion",
+"Musical instrument",
+"Music"
+],
+"description": "Sounds of a collection of drums and other percussion instruments, typically cymbals, which are set up on stands to be played by a single player with drumsticks held in both hands and the feet operating pedals that control the hi-hat cymbal "
+},
+{
+"idx": 163,
+"mid": "/m/0cfdd",
+"name": "Drum machine",
+"ancestors": [
+"Drum kit",
+"Percussion",
+"Musical instrument",
+"Music"
+],
+"description": "Sounds of an electronic musical instrument designed to imitate the sound of drums, cymbals, other percussion instruments, and often basslines."
+},
+{
+"idx": 164,
+"mid": "/m/026t6",
+"name": "Drum",
+"ancestors": [
+"Percussion",
+"Musical instrument",
+"Music"
+],
+"description": "The sound of an instrument consisting of at least one membrane, called a drumhead or drum skin, that is stretched over a shell and struck, either directly with the player's hands, or with a drum stick, to produce sound."
+},
+{
+"idx": 165,
+"mid": "/m/06rvn",
+"name": "Snare drum",
+"ancestors": [
+"Drum",
+"Percussion",
+"Musical instrument",
+"Music"
+],
+"description": "The sound of a drum that produces a sharp staccato sound by virtue of metal coils (the \"snare\") stretched across one of the membranes."
+},
+{
+"idx": 166,
+"mid": "/m/03t3fj",
+"name": "Rimshot",
+"ancestors": [
+"Snare drum",
+"Drum",
+"Percussion",
+"Musical instrument",
+"Music"
+],
+"description": "The sound of an accented snare drum beat produced by simultaneously hitting the rim and head of a drum with a drum stick."
+},
+{
+"idx": 167,
+"mid": "/m/02k_mr",
+"name": "Drum roll",
+"ancestors": [
+"Snare drum",
+"Drum",
+"Percussion",
+"Musical instrument",
+"Music"
+],
+"description": "A sustained sound produced by multiple, rapid strikes between drum sticks and drum, made possible by bouncing alternating sticks off the head to produce a temporally dense sequence."
+},
+{
+"idx": 168,
+"mid": "/m/0bm02",
+"name": "Bass drum",
+"ancestors": [
+"Drum",
+"Percussion",
+"Musical instrument",
+"Music"
+],
+"description": "The sound of a large drum that produces a note of low definite or indefinite pitch."
+},
+{
+"idx": 169,
+"mid": "/m/011k_j",
+"name": "Timpani",
+"ancestors": [
+"Drum",
+"Percussion",
+"Musical instrument",
+"Music"
+],
+"description": "The sound of an orchestral drum consisting of a skin stretched over a large bowl traditionally made of copper, where the head is tensioned to produce an identifiable pitch."
+},
+{
+"idx": 170,
+"mid": "/m/01p970",
+"name": "Tabla",
+"ancestors": [
+"Drum",
+"Percussion",
+"Musical instrument",
+"Music"
+],
+"description": "The sound of a classical Hindustani percussion instrument consisting of a pair of hand drums of contrasting sizes and timbres, producing distinct pitches when struck. The larger drum has a pitch that can be manipulated with the player's han"
+},
+{
+"idx": 171,
+"mid": "/m/01qbl",
+"name": "Cymbal",
+"ancestors": [
+"Percussion",
+"Musical instrument",
+"Music"
+],
+"description": "The sound of a percussion instrument consisting of thin, normally round plates of various alloys. They may be used in pairs, struck together, or as single cymbals struck with sticks."
+},
+{
+"idx": 172,
+"mid": "/m/03qtq",
+"name": "Hi-hat",
+"ancestors": [
+"Cymbal",
+"Percussion",
+"Musical instrument",
+"Music"
+],
+"description": "The sound of a mating pair of small cymbals mounted atop one-another on a stand, the bottom fixed and the top activated up and down by a foot pedal. The rate of decay of the sound is changed between a shimmering and sharp effect by pressing"
+},
+{
+"idx": 173,
+"mid": "/m/01sm1g",
+"name": "Wood block",
+"ancestors": [
+"Percussion",
+"Musical instrument",
+"Music"
+],
+"description": "The sound of a small slit drum made from a single piece of wood, making a very short, clean sound."
+},
+{
+"idx": 174,
+"mid": "/m/07brj",
+"name": "Tambourine",
+"ancestors": [
+"Percussion",
+"Musical instrument",
+"Music"
+],
+"description": "The sound of a musical instrument consisting of a frame with pairs of small metal jingles. There is often a drumhead stretched across the frame, and the instrument is usually played by striking the frame or head with the hand."
+},
+{
+"idx": 175,
+"mid": "/m/05r5wn",
+"name": "Rattle (instrument)",
+"ancestors": [
+"Percussion",
+"Musical instrument",
+"Music"
+],
+"description": "The sound of an instrument that produces a sound when shaken, usually consisting of a closed rigid shell containing numerous small particles that strike the shell when shaken."
+},
+{
+"idx": 176,
+"mid": "/m/0xzly",
+"name": "Maraca",
+"ancestors": [
+"Rattle (instrument)",
+"Percussion",
+"Musical instrument",
+"Music"
+],
+"description": "The sound of a specific kind of rattle that appears in many genres of Caribbean and Latin music. Players hold them by their handles, usually in pairs, and shake them."
+},
+{
+"idx": 177,
+"mid": "/m/0mbct",
+"name": "Gong",
+"ancestors": [
+"Percussion",
+"Musical instrument",
+"Music"
+],
+"description": "The sound of a musical percussion instrument consisting of a flat, circular metal disc which is hit with a mallet."
+},
+{
+"idx": 178,
+"mid": "/m/016622",
+"name": "Tubular bells",
+"ancestors": [
+"Percussion",
+"Musical instrument",
+"Music"
+],
+"description": "Sounds of tuned percussion instruments consisting of a metal tube, tuned by altering its length in the range C4-F5."
+},
+{
+"idx": 179,
+"mid": "/m/0j45pbj",
+"name": "Mallet percussion",
+"ancestors": [
+"Percussion",
+"Musical instrument",
+"Music"
+],
+"description": "Sounds of melodic percussion instruments consisting of an array of elements, one for each note, played with mallets."
+},
+{
+"idx": 180,
+"mid": "/m/0dwsp",
+"name": "Marimba, xylophone",
+"ancestors": [
+"Mallet percussion",
+"Percussion",
+"Musical instrument",
+"Music"
+],
+"description": "Sounds of a percussion instrument consisting of a set of wooden bars struck with mallets to produce musical tones. Resonators suspended underneath the bars may amplify their sound."
+},
+{
+"idx": 181,
+"mid": "/m/0dwtp",
+"name": "Glockenspiel",
+"ancestors": [
+"Mallet percussion",
+"Percussion",
+"Musical instrument",
+"Music"
+],
+"description": "Sounds of a percussion instrument composed of a set of tuned metal plates or tubes laid out like the keyboard of a piano."
+},
+{
+"idx": 182,
+"mid": "/m/0dwt5",
+"name": "Vibraphone",
+"ancestors": [
+"Mallet percussion",
+"Percussion",
+"Musical instrument",
+"Music"
+],
+"description": "Sounds of a tuned mallet percussion instrument similar to a xylophone or glockenspiel with the addition a motor-driven valve on each resonator that produce a tremolo or vibrato effect."
+},
+{
+"idx": 183,
+"mid": "/m/0l156b",
+"name": "Steelpan",
+"ancestors": [
+"Mallet percussion",
+"Percussion",
+"Musical instrument",
+"Music"
+],
+"description": "Sounds of a tuned percussion instrument originally constructed from steel oil drums by hammering out small patches on the head to produce separate pitches."
+},
+{
+"idx": 184,
+"mid": "/m/05pd6",
+"name": "Orchestra",
+"ancestors": [
+"Musical instrument",
+"Music"
+],
+"description": "The sound of a large instrumental ensemble (a dozen or more people), often used in classical music, that contains sections of string, brass, woodwind, and percussion instruments."
+},
+{
+"idx": 185,
+"mid": "/m/01kcd",
+"name": "Brass instrument",
+"ancestors": [
+"Musical instrument",
+"Music"
+],
+"description": "The sound of a musical instrument that produces sound by vibration of air in a tubular resonator in sympathy with the vibration of the player's lips."
+},
+{
+"idx": 186,
+"mid": "/m/0319l",
+"name": "French horn",
+"ancestors": [
+"Brass instrument",
+"Musical instrument",
+"Music"
+],
+"description": "The sound of a brass instrument made of tubing wrapped into a coil with a flared bell. A modern French horn includes valves to control pitch by routing air into extra sections of tubing."
+},
+{
+"idx": 187,
+"mid": "/m/07gql",
+"name": "Trumpet",
+"ancestors": [
+"Brass instrument",
+"Musical instrument",
+"Music"
+],
+"description": "The sound of a high-pitched brass instruments played by blowing air through almost-closed lips, producing a \"buzzing\" sound that starts a standing wave vibration in the air column inside the instrument."
+},
+{
+"idx": 188,
+"mid": "/m/07c6l",
+"name": "Trombone",
+"ancestors": [
+"Brass instrument",
+"Musical instrument",
+"Music"
+],
+"description": "The sound of a brass instrument that includes a telescoping slide mechanism that varies the length of the instrument to change the pitch."
+},
+{
+"idx": 189,
+"mid": "/m/0l14_3",
+"name": "Bowed string instrument",
+"ancestors": [
+"Musical instrument",
+"Music"
+],
+"description": "Sounds of the subcategory of string instruments that are usually played by a bow rubbing the strings.  Examples may include other playing techniques for these instruments, such as plucking."
+},
+{
+"idx": 190,
+"mid": "/m/02qmj0d",
+"name": "String section",
+"ancestors": [
+"Bowed string instrument",
+"Musical instrument",
+"Music"
+],
+"description": "The sound of a group of string instruments typically present in a standard classical orchestra."
+},
+{
+"idx": 191,
+"mid": "/m/07y_7",
+"name": "Violin, fiddle",
+"ancestors": [
+"Bowed string instrument",
+"Musical instrument",
+"Music"
+],
+"description": "The sound of a wooden string instrument, typically with four strings tuned in perfect fifths, that is most commonly played by drawing a bow across its strings, though it can also be played by plucking the strings."
+},
+{
+"idx": 192,
+"mid": "/m/0d8_n",
+"name": "Pizzicato",
+"ancestors": [
+"Violin, fiddle",
+"Bowed string instrument",
+"Musical instrument",
+"Music"
+],
+"description": "The sound of playing a stringed instrument that is usually bowed (such as a violin) by plucking the strings with the fingers."
+},
+{
+"idx": 193,
+"mid": "/m/01xqw",
+"name": "Cello",
+"ancestors": [
+"Bowed string instrument",
+"Musical instrument",
+"Music"
+],
+"description": "The sound of a larger, lower-pitched bowed string instrument with four strings tuned in perfect fifths, usually C2, G2, D3, and A3."
+},
+{
+"idx": 194,
+"mid": "/m/02fsn",
+"name": "Double bass",
+"ancestors": [
+"Bowed string instrument",
+"Musical instrument",
+"Music"
+],
+"description": "The sound of a large, bowed string instrument, the lowest-pitched in a standard symphony orchestra, with strings usually tuned to E1, A1, D2, and G2."
+},
+{
+"idx": 195,
+"mid": "/m/085jw",
+"name": "Wind instrument, woodwind instrument",
+"ancestors": [
+"Musical instrument",
+"Music"
+],
+"description": "Sounds of a family of musical instruments in which a column of air within a resonator is set into vibration by the player blowing into a mouthpiece set at the end of the resonator."
+},
+{
+"idx": 196,
+"mid": "/m/0l14j_",
+"name": "Flute",
+"ancestors": [
+"Wind instrument, woodwind instrument",
+"Musical instrument",
+"Music"
+],
+"description": "The sound of an aerophone or reedless wind instrument that produces its sound from the flow of air across an opening."
+},
+{
+"idx": 197,
+"mid": "/m/06ncr",
+"name": "Saxophone",
+"ancestors": [
+"Wind instrument, woodwind instrument",
+"Musical instrument",
+"Music"
+],
+"description": "The sound of a woodwind instrument made of brass and played with a single-reed mouthpiece similar to that of the clarinet."
+},
+{
+"idx": 198,
+"mid": "/m/01wy6",
+"name": "Clarinet",
+"ancestors": [
+"Wind instrument, woodwind instrument",
+"Musical instrument",
+"Music"
+],
+"description": "The sound of a woodwind instrument consisting of a single-reed mouthpiece, a straight cylindrical tube with an almost cylindrical bore, and a flared bell."
+},
+{
+"idx": 199,
+"mid": "/m/03m5k",
+"name": "Harp",
+"ancestors": [
+"Musical instrument",
+"Music"
+],
+"description": "The sound of a stringed musical instrument with a number of individual strings, plucked with the fingers, running at an angle to its soundboard."
+},
+{
+"idx": 200,
+"mid": "/m/0395lw",
+"name": "Bell",
+"ancestors": [
+"Musical instrument",
+"Music",
+"Sounds of things"
+],
+"description": "The sound of a simple instrument usually consisting of metal cast in the shape of a hollow cup, whose sides form a resonator which vibrates in a single tone upon being struck by a \"clapper\" suspended within, or by a separate mallet or hamme"
+},
+{
+"idx": 201,
+"mid": "/m/03w41f",
+"name": "Church bell",
+"ancestors": [
+"Bell",
+"Musical instrument",
+"Music",
+"Sounds of things"
+],
+"description": "The sound of a large bell usually encountered in churches where it used either to signify the hour or the time for worshippers to go to church."
+},
+{
+"idx": 202,
+"mid": "/m/027m70_",
+"name": "Jingle bell",
+"ancestors": [
+"Bell",
+"Musical instrument",
+"Music",
+"Sounds of things"
+],
+"description": "The sound of a type of bell which produces a distinctive 'jingle' sound, especially in large numbers. They are commonly produced from a single piece of sheet metal bent into a roughly spherical shape containing a small ball bearing."
+},
+{
+"idx": 203,
+"mid": "/m/0gy1t2s",
+"name": "Bicycle bell",
+"ancestors": [
+"Bell",
+"Musical instrument",
+"Music",
+"Sounds of things",
+"Bicycle",
+"Non-motorized land vehicle",
+"Vehicle",
+"Alarm"
+],
+"description": "The sound of a percussive signaling instrument mounted on a bicycle for warning pedestrians and other cyclists."
+},
+{
+"idx": 204,
+"mid": "/m/07n_g",
+"name": "Tuning fork",
+"ancestors": [
+"Bell",
+"Musical instrument",
+"Music",
+"Sounds of things"
+],
+"description": "The sound of an acoustic resonator in the form of a two-pronged fork with the prongs formed from a U-shaped bar of elastic metal. It emits a pure musical tone and is frequently used as a standard of pitch to tune musical instruments."
+},
+{
+"idx": 205,
+"mid": "/m/0f8s22",
+"name": "Chime",
+"ancestors": [
+"Bell",
+"Musical instrument",
+"Music",
+"Sounds of things"
+],
+"description": "The sound of a musical instrument consisting of multiple tuned bells, usually rung by an automated mechanism to produce a short, characteristic tone or melody."
+},
+{
+"idx": 206,
+"mid": "/m/026fgl",
+"name": "Wind chime",
+"ancestors": [
+"Chime",
+"Bell",
+"Musical instrument",
+"Music",
+"Sounds of things"
+],
+"description": "The sound of an instrument constructed from suspended tubes, rods, bells, or other objects that are often made of metal or wood along with some type of weight the tubes or rods can strike when they or another wind-catching surface are blown"
+},
+{
+"idx": 207,
+"mid": "/m/0150b9",
+"name": "Change ringing (campanology)",
+"ancestors": [
+"Bell",
+"Musical instrument",
+"Music",
+"Sounds of things"
+],
+"description": "Sounds of the art of ringing a set of (typically large) tuned bells in a controlled manner to produce variations in their sounding order."
+},
+{
+"idx": 208,
+"mid": "/m/03qjg",
+"name": "Harmonica",
+"ancestors": [
+"Musical instrument",
+"Music"
+],
+"description": "The sound of a wind instrument played by using the mouth to direct air into or out of one or more holes along a mouthpiece. Behind each hole is a chamber containing at least one reed, producing a specific note or notes."
+},
+{
+"idx": 209,
+"mid": "/m/0mkg",
+"name": "Accordion",
+"ancestors": [
+"Musical instrument",
+"Music"
+],
+"description": "The sound of a family of box-shaped bellows-driven musical instruments played by pressing buttons or keys which allow air to flow across strips of brass or steel, called reeds, that vibrate to produce sound inside the body."
+},
+{
+"idx": 210,
+"mid": "/m/0192l",
+"name": "Bagpipes",
+"ancestors": [
+"Musical instrument",
+"Music"
+],
+"description": "The sound of a wind instrument using enclosed reeds fed from a constant reservoir of air in the form of a bag."
+},
+{
+"idx": 211,
+"mid": "/m/02bxd",
+"name": "Didgeridoo",
+"ancestors": [
+"Musical instrument",
+"Music"
+],
+"description": "The sound of an Indigenous Australian wind instrument, usually cylindrical or conical, measuring anywhere from 1 to 3 m long."
+},
+{
+"idx": 212,
+"mid": "/m/0l14l2",
+"name": "Shofar",
+"ancestors": [
+"Musical instrument",
+"Music"
+],
+"description": "The sound of an ancient musical horn made of ram's horn, used for Jewish religious purposes."
+},
+{
+"idx": 213,
+"mid": "/m/07kc_",
+"name": "Theremin",
+"ancestors": [
+"Musical instrument",
+"Music"
+],
+"description": "The sound of an early electronic musical instrument controlled without physical contact via two metal antennas that sense the relative position of the player's hands and control oscillators for frequency with one hand, and amplitude with th"
+},
+{
+"idx": 214,
+"mid": "/m/0l14t7",
+"name": "Singing bowl",
+"ancestors": [
+"Musical instrument",
+"Music"
+],
+"description": "The sound of a type of bell that sits with the bottom surface resting, allowing the rim to vibrate to produce sound."
+},
+{
+"idx": 215,
+"mid": "/m/01hgjl",
+"name": "Scratching (performance technique)",
+"ancestors": [
+"Musical instrument",
+"Music"
+],
+"description": "The sound of a technique of moving a vinyl record back and forth on a turntable while optionally manipulating the crossfader on a DJ mixer."
+},
+{
+"idx": 216,
+"mid": "/m/064t9",
+"name": "Pop music",
+"ancestors": [
+"Music genre",
+"Music"
+],
+"description": "A genre of popular music that originated in the West during the 1950s and 1960s. Pop music is eclectic, often borrowing elements from urban, dance, rock, Latin, country, and other styles. Songs are typically short to medium-length with repe"
+},
+{
+"idx": 217,
+"mid": "/m/0glt670",
+"name": "Hip hop music",
+"ancestors": [
+"Music genre",
+"Music"
+],
+"description": "Hip hop or rap music formed in the United States in the 1970s and consists of stylized rhythmic music that commonly accompanies rhythmic and rhyming speech (\"rapping\")."
+},
+{
+"idx": 218,
+"mid": "/m/02cz_7",
+"name": "Beatboxing",
+"ancestors": [
+"Hip hop music",
+"Music genre",
+"Music",
+"Vocal music"
+],
+"description": "A form of vocal percussion primarily involving the art of mimicking drum machines using one's mouth, lips, tongue, and voice."
+},
+{
+"idx": 219,
+"mid": "/m/06by7",
+"name": "Rock music",
+"ancestors": [
+"Music genre",
+"Music"
+],
+"description": "A genre of popular music that originated as \"rock and roll\" in the United States in the 1950s, and developed into a range of different styles in the 1960s and later. Compared to pop music, rock places a higher degree of emphasis on musician"
+},
+{
+"idx": 220,
+"mid": "/m/03lty",
+"name": "Heavy metal",
+"ancestors": [
+"Rock music",
+"Music genre",
+"Music"
+],
+"description": "A genre of rock music that developed in the late 1960s and early 1970s, consisting of a thick, massive sound, characterized by highly amplified distortion, extended guitar solos, emphatic beats, and overall loudness."
+},
+{
+"idx": 221,
+"mid": "/m/05r6t",
+"name": "Punk rock",
+"ancestors": [
+"Rock music",
+"Music genre",
+"Music"
+],
+"description": "A rock music genre that developed between 1974 and 1976 typically composed of short or fast-paced songs, with hard-edged melodies and singing styles, stripped-down instrumentation, and often political, anti-establishment lyrics."
+},
+{
+"idx": 222,
+"mid": "/m/0dls3",
+"name": "Grunge",
+"ancestors": [
+"Rock music",
+"Music genre",
+"Music"
+],
+"description": "A subgenre of alternative rock that emerged during the mid-1980s fusing elements of punk rock and heavy metal, such as distorted electric guitars. Lyrics are typically angst-filled, addressing themes such as social alienation, apathy, confi"
+},
+{
+"idx": 223,
+"mid": "/m/0dl5d",
+"name": "Progressive rock",
+"ancestors": [
+"Rock music",
+"Music genre",
+"Music"
+],
+"description": "A rock music subgenre that developed in the late 1960s as an attempt to give greater artistic credibility to rock music. Songs were replaced by musical suites that often stretched to 20 or 40 minutes in length and contained symphonic influe"
+},
+{
+"idx": 224,
+"mid": "/m/07sbbz2",
+"name": "Rock and roll",
+"ancestors": [
+"Rock music",
+"Music genre",
+"Music"
+],
+"description": "A genre of popular music that originated and evolved in the United States during the late 1940s and early 1950s, from a combination of African-American genres such as blues, boogie-woogie, jump blues, jazz, and gospel music, together with W"
+},
+{
+"idx": 225,
+"mid": "/m/05w3f",
+"name": "Psychedelic rock",
+"ancestors": [
+"Rock music",
+"Music genre",
+"Music"
+],
+"description": "A style of rock music influenced by psychedelic culture and attempts to replicate and enhance the mind-altering experiences of psychedelic drugs, most notably LSD. It often uses new recording techniques and effects and sometimes draws on so"
+},
+{
+"idx": 226,
+"mid": "/m/06j6l",
+"name": "Rhythm and blues",
+"ancestors": [
+"Music genre",
+"Music"
+],
+"description": "A genre of popular African-American music that originated in the 1940s as urbane, rocking, jazz based music with a heavy, insistent beat. Lyrics focus heavily on the themes of triumphs and failures in terms of relationships, freedom, econom"
+},
+{
+"idx": 227,
+"mid": "/m/0gywn",
+"name": "Soul music",
+"ancestors": [
+"Music genre",
+"Music"
+],
+"description": "A popular music genre that combines elements of African-American gospel music, rhythm and blues and jazz."
+},
+{
+"idx": 228,
+"mid": "/m/06cqb",
+"name": "Reggae",
+"ancestors": [
+"Music genre",
+"Music"
+],
+"description": "A music genre that originated in Jamaica in the late 1960s, strongly influenced by traditional mento as well as American jazz and rhythm and blues, instantly recognizable from the counterpoint between the bass and drum downbeat, and the off"
+},
+{
+"idx": 229,
+"mid": "/m/01lyv",
+"name": "Country",
+"ancestors": [
+"Music genre",
+"Music"
+],
+"description": "A genre of United States popular music with origins in folk, Blues and Western music, often consisting of ballads and dance tunes with generally simple forms and harmonies accompanied by mostly string instruments such as banjos, electric an"
+},
+{
+"idx": 230,
+"mid": "/m/015y_n",
+"name": "Swing music",
+"ancestors": [
+"Country",
+"Music genre",
+"Music"
+],
+"description": "A form of American music that dominated in the 1930s and 1940s, using a strong rhythm section of double bass and drums as the anchor, a lead section of brass, woodwind, and sometimes stringed instruments, medium to fast tempos, and a \"lilti"
+},
+{
+"idx": 231,
+"mid": "/m/0gg8l",
+"name": "Bluegrass",
+"ancestors": [
+"Country",
+"Music genre",
+"Music"
+],
+"description": "A form of American roots music from the Appalachias with mixed roots in Irish, Scottish, Welsh, and English traditional music, later influenced by the music of African-Americans through incorporation of jazz elements."
+},
+{
+"idx": 232,
+"mid": "/m/02x8m",
+"name": "Funk",
+"ancestors": [
+"Music genre",
+"Music"
+],
+"description": "A music genre that originated in the 1960s when African American musicians created a rhythmic, danceable new form of music that de-emphasized melody and chord progressions to bring a strong rhythmic groove of a bass line and drum part to th"
+},
+{
+"idx": 233,
+"mid": "/m/02w4v",
+"name": "Folk music",
+"ancestors": [
+"Music genre",
+"Music"
+],
+"description": "A genre that evolved from traditional music during the 20th century folk revival. One meaning often given is that of old songs with no known composers; another is music that has been transmitted and evolved by a process of oral transmission"
+},
+{
+"idx": 234,
+"mid": "/m/06j64v",
+"name": "Middle Eastern music",
+"ancestors": [
+"Music genre",
+"Music"
+],
+"description": "Music originating from the vast region from Morocco to Iran, including the Arabic countries of the Middle East and North Africa, the Iraqi traditions of Mesopotamia, Iranian traditions of Persia, the Hebrew music of Israel, Armenian music, "
+},
+{
+"idx": 235,
+"mid": "/m/03_d0",
+"name": "Jazz",
+"ancestors": [
+"Music genre",
+"Music"
+],
+"description": "A music genre that originated from African American communities of New Orleans during the late 19th and early 20th centuries in the form of independent traditional and popular musical styles, all linked by the common bonds of African Americ"
+},
+{
+"idx": 236,
+"mid": "/m/026z9",
+"name": "Disco",
+"ancestors": [
+"Music genre",
+"Music"
+],
+"description": "A genre of dance music containing elements of funk, soul, pop, and salsa that achieved popularity during the mid-1970s to the early 1980s."
+},
+{
+"idx": 237,
+"mid": "/m/0ggq0m",
+"name": "Classical music",
+"ancestors": [
+"Music genre",
+"Music"
+],
+"description": "Art music produced or rooted in the traditions of Western music, including both liturgical and secular music, over the broad span of time from roughly the 11th century to the present day."
+},
+{
+"idx": 238,
+"mid": "/m/05lls",
+"name": "Opera",
+"ancestors": [
+"Classical music",
+"Music genre",
+"Music"
+],
+"description": "An art form in which singers and musicians perform a dramatic work combining text and musical score, usually in a theatrical setting."
+},
+{
+"idx": 239,
+"mid": "/m/02lkt",
+"name": "Electronic music",
+"ancestors": [
+"Music genre",
+"Music"
+],
+"description": "A large set of predominantly popular and dance genres in which synthesizers and other electronic instruments are the primary sources of sound."
+},
+{
+"idx": 240,
+"mid": "/m/03mb9",
+"name": "House music",
+"ancestors": [
+"Electronic music",
+"Music genre",
+"Music"
+],
+"description": "A genre of electronic dance music originating in Chicago in the early 1980s which is generally dance-based music characterized by repetitive 4/4 beats, rhythms mainly provided by drum machines, off-beat hi-hat cymbals, and synthesized bassl"
+},
+{
+"idx": 241,
+"mid": "/m/07gxw",
+"name": "Techno",
+"ancestors": [
+"Electronic music",
+"Music genre",
+"Music"
+],
+"description": "A form of electronic dance music that emerged in Detroit during the mid-to-late 1980s, resulting from the melding of African American music including with electronic music by artists such as Kraftwerk, Giorgio Moroder, and Yellow Magic Orch"
+},
+{
+"idx": 242,
+"mid": "/m/07s72n",
+"name": "Dubstep",
+"ancestors": [
+"Electronic music",
+"Music genre",
+"Music"
+],
+"description": "A genre of electronic dance music that originated in South London in the late 1990s which generally features sparse, syncopated drum and percussion patterns with bass lines that contain prominent sub bass frequencies."
+},
+{
+"idx": 243,
+"mid": "/m/0283d",
+"name": "Drum and bass",
+"ancestors": [
+"Electronic music",
+"Music genre",
+"Music"
+],
+"description": "A genre of electronic music that emerged from rave and oldschool jungle scenes in England during the early 1990s characterized by fast, syncopated breakbeats with heavy bass and sub-bass lines, sampled sources, and synthesizers."
+},
+{
+"idx": 244,
+"mid": "/m/0m0jc",
+"name": "Electronica",
+"ancestors": [
+"Electronic music",
+"Music genre",
+"Music"
+],
+"description": "An umbrella term that encompasses a broad group of electronic-based styles such as techno, house, ambient, drum and bass, jungle, and industrial dance, among others."
+},
+{
+"idx": 245,
+"mid": "/m/08cyft",
+"name": "Electronic dance music",
+"ancestors": [
+"Electronic music",
+"Music genre",
+"Music"
+],
+"description": "A broad range of percussive electronic music genres including techno, house, trance, drum and bass, dubstep, and Jersey club produced largely for nightclubs, raves, and festivals, or by disc jockeys in the context of a live mix."
+},
+{
+"idx": 246,
+"mid": "/m/0fd3y",
+"name": "Ambient music",
+"ancestors": [
+"Electronic music",
+"Music genre",
+"Music"
+],
+"description": "A genre of music that developed in England in the 1970s from experimental and synthesizer-oriented styles which puts an emphasis on tone and atmosphere over traditional musical structure or rhythm."
+},
+{
+"idx": 247,
+"mid": "/m/07lnk",
+"name": "Trance music",
+"ancestors": [
+"Electronic music",
+"Music genre",
+"Music"
+],
+"description": "A genre of electronic dance music that developed in Germany during the 1990s characterized by a tempo between 125 and 150 beats per minute, repeating melodic phrases, and a musical form that distinctly builds tension throughout a track by m"
+},
+{
+"idx": 248,
+"mid": "/m/0g293",
+"name": "Music of Latin America",
+"ancestors": [
+"Music genre",
+"Music"
+],
+"description": "Music originating from Latin America which encompasses a wide variety of styles, including son, rumba, salsa, merengue, tango, samba, and bossa nova."
+},
+{
+"idx": 249,
+"mid": "/m/0ln16",
+"name": "Salsa music",
+"ancestors": [
+"Music of Latin America",
+"Music genre",
+"Music"
+],
+"description": "A genre of music that is based largely on Cuban, Puerto Rican, and Dominican popular dance music, occasionally incorporating elements of rock, R&B, and funk."
+},
+{
+"idx": 250,
+"mid": "/m/0326g",
+"name": "Flamenco",
+"ancestors": [
+"Music of Latin America",
+"Music genre",
+"Music"
+],
+"description": "A genre originating in Andalusian music and dance styles which includes cante, toque, baile, jaleo, palmas, and pitos."
+},
+{
+"idx": 251,
+"mid": "/m/0155w",
+"name": "Blues",
+"ancestors": [
+"Music genre",
+"Music"
+],
+"description": "A genre and musical form developed by African Americans in the United States around the end of the 19th century from African-American work songs and European-American folk music. The blues form, ubiquitous in jazz and rock and roll, is char"
+},
+{
+"idx": 252,
+"mid": "/m/05fw6t",
+"name": "Music for children",
+"ancestors": [
+"Music genre",
+"Music"
+],
+"description": "Music performed for children, often designed to provide an entertaining means of teaching about cultures, good behavior, facts, and skills."
+},
+{
+"idx": 253,
+"mid": "/m/02v2lh",
+"name": "New-age music",
+"ancestors": [
+"Music genre",
+"Music"
+],
+"description": "A genre of music intended to create artistic inspiration, relaxation, and optimism used by listeners for yoga, massage, meditation, and reading as a method of stress management or to create a peaceful atmosphere. Includes both electronic an"
+},
+{
+"idx": 254,
+"mid": "/m/0y4f8",
+"name": "Vocal music",
+"ancestors": [
+"Music genre",
+"Music"
+],
+"description": "Music performed by one or more singers, with or without instrumental accompaniment, in which singing provides the main focus of the piece."
+},
+{
+"idx": 255,
+"mid": "/m/0z9c",
+"name": "A capella",
+"ancestors": [
+"Vocal music",
+"Music genre",
+"Music"
+],
+"description": "Group or solo singing without instrumental accompaniment."
+},
+{
+"idx": 256,
+"mid": "/m/0164x2",
+"name": "Music of Africa",
+"ancestors": [
+"Music genre",
+"Music"
+],
+"description": "Music whose style or form clearly indicates African origin or primarily African influence. Given the vastness of the continent, this covers many distinct musical traditions. Sub-Saharan African music frequently relies on percussion instrume"
+},
+{
+"idx": 257,
+"mid": "/m/0145m",
+"name": "Afrobeat",
+"ancestors": [
+"Music of Africa",
+"Music genre",
+"Music"
+],
+"description": "A combination of traditional Nigerian music, Ghanaian music, jazz, highlife, funk, and chanted vocals, fused with percussion and vocal styles, popularised in Africa in the 1970s."
+},
+{
+"idx": 258,
+"mid": "/m/02mscn",
+"name": "Christian music",
+"ancestors": [
+"Music genre",
+"Music"
+],
+"description": "Music that has been written to express either personal or a communal belief regarding Christian life and faith. Its forms vary widely across the world, according to culture and social context."
+},
+{
+"idx": 259,
+"mid": "/m/016cjb",
+"name": "Gospel music",
+"ancestors": [
+"Christian music",
+"Music genre",
+"Music"
+],
+"description": "A genre of Christian music usually featuring dominant vocals with Christian lyrics. Gospel music is rooted in the black oral tradition, in which hymns and sacred songs were repeated in call and response fashion, with hand clapping and foot "
+},
+{
+"idx": 260,
+"mid": "/m/028sqc",
+"name": "Music of Asia",
+"ancestors": [
+"Music genre",
+"Music"
+],
+"description": "Musical styles originating from a large number of Asian countries located in Central, Southern, and East Asia."
+},
+{
+"idx": 261,
+"mid": "/m/015vgc",
+"name": "Carnatic music",
+"ancestors": [
+"Music of Asia",
+"Music genre",
+"Music"
+],
+"description": "A system of music commonly associated with the southern India, whose main emphasis is on vocal music. Although improvisation plays an important role, Carnatic music is mainly sung through compositions."
+},
+{
+"idx": 262,
+"mid": "/m/0dq0md",
+"name": "Music of Bollywood",
+"ancestors": [
+"Music of Asia",
+"Music genre",
+"Music"
+],
+"description": "Hindi film songs featured in Bollywood films. Bollywood songs, along with dance, are a characteristic motif of Hindi cinema which gives it enduring popular appeal, cultural value, and context."
+},
+{
+"idx": 263,
+"mid": "/m/06rqw",
+"name": "Ska",
+"ancestors": [
+"Music genre",
+"Music"
+],
+"description": "A music genre that originated in Jamaica in the late 1950s, combining elements of Caribbean mento and calypso with American jazz and rhythm and blues. It is characterized by a walking bass line accented with rhythms on the off-beat."
+},
+{
+"idx": 264,
+"mid": "/m/02p0sh1",
+"name": "Traditional music",
+"ancestors": [
+"Music genre",
+"Music"
+],
+"description": "Musical forms that have origins many generations into the past, commonly without formal notation or description, commonly familiar to people in a given culture."
+},
+{
+"idx": 265,
+"mid": "/m/05rwpb",
+"name": "Independent music",
+"ancestors": [
+"Music genre",
+"Music"
+],
+"description": "Music produced independent of major commercial record labels, possibly including a do-it-yourself approach to recording and publishing. The term indie is also used to describe music of this style regardless of actual production channel."
+},
+{
+"idx": 266,
+"mid": "/m/074ft",
+"name": "Song",
+"ancestors": [
+"Musical concepts",
+"Music"
+],
+"description": "A musical work intended to be sung by the human voice with distinct and fixed pitches and patterns using sound and silence and a variety of forms that often include the repetition of sections."
+},
+{
+"idx": 267,
+"mid": "/m/025td0t",
+"name": "Background music",
+"ancestors": [
+"Music role",
+"Music"
+],
+"description": "Styles of music or soundscapes primarily intended to be listened to passively and not meant to be the main focus of an audience."
+},
+{
+"idx": 268,
+"mid": "/m/02cjck",
+"name": "Theme music",
+"ancestors": [
+"Music role",
+"Music"
+],
+"description": "Music often written specifically for a radio program, television program, video game, or movie, and usually played during the intro, opening credits, and/or ending credits."
+},
+{
+"idx": 269,
+"mid": "/m/03r5q_",
+"name": "Jingle (music)",
+"ancestors": [
+"Music role",
+"Music"
+],
+"description": "A short song or tune used in advertising and for other commercial uses. The jingle contains one or more hooks that explicitly promote the product or service being advertised."
+},
+{
+"idx": 270,
+"mid": "/m/0l14gg",
+"name": "Soundtrack music",
+"ancestors": [
+"Music role",
+"Music"
+],
+"description": "Recorded music accompanying a movie, video, TV show, video game, or the like. Although any music can be used in a soundtrack, this specifically refers to music that suggests its use to accompany images, rather than something that happens to"
+},
+{
+"idx": 271,
+"mid": "/m/07pkxdp",
+"name": "Lullaby",
+"ancestors": [
+"Music role",
+"Music"
+],
+"description": "The act of singing a quiet song to lull a child to sleep."
+},
+{
+"idx": 272,
+"mid": "/m/01z7dr",
+"name": "Video game music",
+"ancestors": [
+"Music role",
+"Music"
+],
+"description": "The soundtrack that accompanies video games. Early video game music was once limited to simple melodies of early sound synthesizer technology; with advances in technology, video game music has now grown to include the same breadth and compl"
+},
+{
+"idx": 273,
+"mid": "/m/0140xf",
+"name": "Christmas music",
+"ancestors": [
+"Music role",
+"Music"
+],
+"description": "A variety of genres of music normally performed or heard around the Christmas season."
+},
+{
+"idx": 274,
+"mid": "/m/0ggx5q",
+"name": "Dance music",
+"ancestors": [
+"Music role",
+"Music"
+],
+"description": "Music composed specifically to facilitate or accompany dancing. It can be either a whole musical piece or part of a larger musical arrangement."
+},
+{
+"idx": 275,
+"mid": "/m/04wptg",
+"name": "Wedding music",
+"ancestors": [
+"Music role",
+"Music"
+],
+"description": "Music played at wedding celebrations, including the ceremony and any festivities before or after the event."
+},
+{
+"idx": 276,
+"mid": "/t/dd00031",
+"name": "Happy music",
+"ancestors": [
+"Music mood",
+"Music"
+],
+"description": "Music that evokes or conveys feelings of happiness."
+},
+{
+"idx": 277,
+"mid": "/t/dd00032",
+"name": "Funny music",
+"ancestors": [
+"Music mood",
+"Music"
+],
+"description": "Music that evokes or conveys amusement."
+},
+{
+"idx": 278,
+"mid": "/t/dd00033",
+"name": "Sad music",
+"ancestors": [
+"Music mood",
+"Music"
+],
+"description": "Music that evokes or conveys feelings of sadness."
+},
+{
+"idx": 279,
+"mid": "/t/dd00034",
+"name": "Tender music",
+"ancestors": [
+"Music mood",
+"Music"
+],
+"description": "Music that evokes or conveys feelings of tenderness."
+},
+{
+"idx": 280,
+"mid": "/t/dd00035",
+"name": "Exciting music",
+"ancestors": [
+"Music mood",
+"Music"
+],
+"description": "Music that evokes or conveys feelings of excitement."
+},
+{
+"idx": 281,
+"mid": "/t/dd00036",
+"name": "Angry music",
+"ancestors": [
+"Music mood",
+"Music"
+],
+"description": "Music that evokes or conveys feelings of anger."
+},
+{
+"idx": 282,
+"mid": "/t/dd00037",
+"name": "Scary music",
+"ancestors": [
+"Music mood",
+"Music"
+],
+"description": "Music that evokes or conveys feelings of fear."
+},
+{
+"idx": 283,
+"mid": "/m/03m9d0z",
+"name": "Wind",
+"ancestors": [
+"Natural sounds"
+],
+"description": "Sounds caused by the large-scale flow of gases, especially the air flowing over the surface of the Earth. Long-duration winds have various names associated with their average strength, such as breeze, gale, storm, and hurricane."
+},
+{
+"idx": 284,
+"mid": "/m/09t49",
+"name": "Rustling leaves",
+"ancestors": [
+"Wind",
+"Natural sounds"
+],
+"description": "The sound of dried leaves rubbing against one another in respondse to being moved by the wind or another cause."
+},
+{
+"idx": 285,
+"mid": "/t/dd00092",
+"name": "Wind noise (microphone)",
+"ancestors": [
+"Wind",
+"Natural sounds",
+"Microphone",
+"Sound equipment",
+"Miscellaneous sources",
+"Sounds of things"
+],
+"description": "The noise produced when a strong air current passes over a microphone, causing large amplitude local turbulence, normally recorded as mechanical clipping as the microphone element exceeds its limits of linearity."
+},
+{
+"idx": 286,
+"mid": "/m/0jb2l",
+"name": "Thunderstorm",
+"ancestors": [
+"Natural sounds"
+],
+"description": "The sound of a storm characterized by the presence of lightning and its acoustic effect on the Earth's atmosphere, known as thunder."
+},
+{
+"idx": 287,
+"mid": "/m/0ngt1",
+"name": "Thunder",
+"ancestors": [
+"Thunderstorm",
+"Natural sounds"
+],
+"description": "The sound caused by lightning. Depending on the distance and nature of the lightning, thunder can range from a sharp, loud crack to a long, low rumble."
+},
+{
+"idx": 288,
+"mid": "/m/0838f",
+"name": "Water",
+"ancestors": [
+"Natural sounds"
+],
+"description": "Sounds caused by motion of liquid water."
+},
+{
+"idx": 289,
+"mid": "/m/06mb1",
+"name": "Rain",
+"ancestors": [
+"Water",
+"Natural sounds"
+],
+"description": "The sound of droplets of liquid water that have condensed from atmospheric water vapor and then fallen under gravity."
+},
+{
+"idx": 290,
+"mid": "/m/07r10fb",
+"name": "Raindrop",
+"ancestors": [
+"Rain",
+"Water",
+"Natural sounds"
+],
+"description": "A sound clearly attributable to a single drop of rain."
+},
+{
+"idx": 291,
+"mid": "/t/dd00038",
+"name": "Rain on surface",
+"ancestors": [
+"Rain",
+"Water",
+"Natural sounds"
+],
+"description": "Steady sound of many rain drops striking a surface such as a roof or window."
+},
+{
+"idx": 292,
+"mid": "/m/0j6m2",
+"name": "Stream",
+"ancestors": [
+"Water",
+"Natural sounds"
+],
+"description": "Sounds of a body of water with a current, confined within a bed and banks."
+},
+{
+"idx": 293,
+"mid": "/m/0j2kx",
+"name": "Waterfall",
+"ancestors": [
+"Water",
+"Natural sounds"
+],
+"description": "The sound of water flowing over a vertical drop or a series of drops in the course of a stream or river."
+},
+{
+"idx": 294,
+"mid": "/m/05kq4",
+"name": "Ocean",
+"ancestors": [
+"Water",
+"Natural sounds"
+],
+"description": "Sounds of the body of saline water that composes much of Earth's surface."
+},
+{
+"idx": 295,
+"mid": "/m/034srq",
+"name": "Waves, surf",
+"ancestors": [
+"Ocean",
+"Water",
+"Natural sounds"
+],
+"description": "Sounds caused by the surface waves that occur on the free surface of oceans, seas, lakes, rivers, etc., resulting from the wind blowing over the surface."
+},
+{
+"idx": 296,
+"mid": "/m/06wzb",
+"name": "Steam",
+"ancestors": [
+"Water",
+"Natural sounds"
+],
+"description": "Sounds caused by  water in the gas phase, which is formed when water boils."
+},
+{
+"idx": 297,
+"mid": "/m/07swgks",
+"name": "Gurgling",
+"ancestors": [
+"Water",
+"Natural sounds"
+],
+"description": "The bubbling sound of water flowing through a narrow constriction, such as from a bottle with a narrow neck."
+},
+{
+"idx": 298,
+"mid": "/m/02_41",
+"name": "Fire",
+"ancestors": [
+"Natural sounds"
+],
+"description": "Sounds resulting from  the rapid oxidation of a material in the exothermic chemical process of combustion, releasing heat, light, and various reaction products."
+},
+{
+"idx": 299,
+"mid": "/m/07pzfmf",
+"name": "Crackle",
+"ancestors": [
+"Fire",
+"Natural sounds",
+"Onomatopoeia",
+"Source-ambiguous sounds"
+],
+"description": "An irregular sequence of sharp sounds, as from sudden vaporization of liquids trapped in a burning solid, or from a collection of snapping noises."
+},
+{
+"idx": 300,
+"mid": "/m/07yv9",
+"name": "Vehicle",
+"ancestors": [
+"Sounds of things"
+],
+"description": "Sounds of mobile machines that transport people or cargo."
+},
+{
+"idx": 301,
+"mid": "/m/019jd",
+"name": "Boat, Water vehicle",
+"ancestors": [
+"Vehicle",
+"Sounds of things"
+],
+"description": "Sounds of watercraft designed to float, plane, work, or travel on water."
+},
+{
+"idx": 302,
+"mid": "/m/0hsrw",
+"name": "Sailboat, sailing ship",
+"ancestors": [
+"Boat, Water vehicle",
+"Vehicle",
+"Sounds of things"
+],
+"description": "Sounds of a boat (large or small) propelled partly or entirely by sails."
+},
+{
+"idx": 303,
+"mid": "/m/056ks2",
+"name": "Rowboat, canoe, kayak",
+"ancestors": [
+"Boat, Water vehicle",
+"Vehicle",
+"Sounds of things"
+],
+"description": "Sounds of a boat propelled using the motion of oars in the water."
+},
+{
+"idx": 304,
+"mid": "/m/02rlv9",
+"name": "Motorboat, speedboat",
+"ancestors": [
+"Boat, Water vehicle",
+"Vehicle",
+"Sounds of things"
+],
+"description": "Sounds of a boat which is powered by an inboard or outboard engine."
+},
+{
+"idx": 305,
+"mid": "/m/06q74",
+"name": "Ship",
+"ancestors": [
+"Boat, Water vehicle",
+"Vehicle",
+"Sounds of things"
+],
+"description": "The sound of a large buoyant watercraft, distinguished from boats based on size, shape, and cargo or passenger capacity."
+},
+{
+"idx": 306,
+"mid": "/m/012f08",
+"name": "Motor vehicle (road)",
+"ancestors": [
+"Vehicle",
+"Sounds of things"
+],
+"description": "Sounds of self-propelled land vehicles, usually wheeled, that do not operate on rails. Includes \"off-road\" vehicles designed for unmade roads."
+},
+{
+"idx": 307,
+"mid": "/m/0k4j",
+"name": "Car",
+"ancestors": [
+"Motor vehicle (road)",
+"Vehicle",
+"Sounds of things"
+],
+"description": "Sounds of a self-powered motor vehicle with usually four wheels used for transportation of one to eight people, designed to run primarily on roads."
+},
+{
+"idx": 308,
+"mid": "/m/0912c9",
+"name": "Vehicle horn, car horn, honking",
+"ancestors": [
+"Car",
+"Motor vehicle (road)",
+"Vehicle",
+"Sounds of things",
+"Alarm"
+],
+"description": "The sound of a motor vehicle accessory whose purpose is to provide an audible alert of the vehicle's presence."
+},
+{
+"idx": 309,
+"mid": "/m/07qv_d5",
+"name": "Toot",
+"ancestors": [
+"Vehicle horn, car horn, honking",
+"Car",
+"Motor vehicle (road)",
+"Vehicle",
+"Sounds of things",
+"Alarm"
+],
+"description": "A blast of a horn."
+},
+{
+"idx": 310,
+"mid": "/m/02mfyn",
+"name": "Car alarm",
+"ancestors": [
+"Car",
+"Motor vehicle (road)",
+"Vehicle",
+"Sounds of things",
+"Alarm"
+],
+"description": "The loud sound of an electronic device installed in a vehicle in an attempt to discourage theft of the vehicle or its contents."
+},
+{
+"idx": 311,
+"mid": "/m/04gxbd",
+"name": "Power windows, electric windows",
+"ancestors": [
+"Car",
+"Motor vehicle (road)",
+"Vehicle",
+"Sounds of things"
+],
+"description": "The sound of automobile windows being raised and lowered by a built-in electric motor, controlled by a button or switch."
+},
+{
+"idx": 312,
+"mid": "/m/07rknqz",
+"name": "Skidding",
+"ancestors": [
+"Car",
+"Motor vehicle (road)",
+"Vehicle",
+"Sounds of things"
+],
+"description": "The sound of a vehicle sliding on a road surface as a consequence of its wheels losing sufficient frictional contact."
+},
+{
+"idx": 313,
+"mid": "/m/0h9mv",
+"name": "Tire squeal",
+"ancestors": [
+"Car",
+"Motor vehicle (road)",
+"Vehicle",
+"Sounds of things"
+],
+"description": "The high-pitched sound of a rubber vehicle tire sliding over a road surface when the torque applied to the wheel (to either accelerate or decelerate) exceeds the maximum frictional force that can be supported."
+},
+{
+"idx": 314,
+"mid": "/t/dd00134",
+"name": "Car passing by",
+"ancestors": [
+"Car",
+"Motor vehicle (road)",
+"Vehicle",
+"Sounds of things"
+],
+"description": "The sound of a motorized vehicle as it passes by a listener close to the vehicle's path. The sound may include engine and tire noise and will typically involve a clear build-up and/or decay of intensity as the vehicle approaches and retreat"
+},
+{
+"idx": 315,
+"mid": "/m/0ltv",
+"name": "Race car, auto racing",
+"ancestors": [
+"Car",
+"Motor vehicle (road)",
+"Vehicle",
+"Sounds of things"
+],
+"description": "The sound of one or more motor vehicles engaged in a competition to complete a course as quickly as possible. Specialized race cars include many modifications, often making them much louder than common street vehicles."
+},
+{
+"idx": 316,
+"mid": "/m/07r04",
+"name": "Truck",
+"ancestors": [
+"Motor vehicle (road)",
+"Vehicle",
+"Sounds of things"
+],
+"description": "Sounds of large motor vehicles designed to transport cargo on roads."
+},
+{
+"idx": 317,
+"mid": "/m/0gvgw0",
+"name": "Air brake",
+"ancestors": [
+"Truck",
+"Motor vehicle (road)",
+"Vehicle",
+"Sounds of things"
+],
+"description": "Sounds of a vehicle braking system in which compressed air is used to transmit force to the brake pads on the wheels. The pneumatic system makes an abrupt hissing sound when the pressure is released by venting the air."
+},
+{
+"idx": 318,
+"mid": "/m/05x_td",
+"name": "Air horn, truck horn",
+"ancestors": [
+"Truck",
+"Motor vehicle (road)",
+"Vehicle",
+"Sounds of things",
+"Alarm"
+],
+"description": "The sound of a pneumatic device mounted on large vehicles designed to create an extremely loud noise for signalling purposes."
+},
+{
+"idx": 319,
+"mid": "/m/02rhddq",
+"name": "Reversing beeps",
+"ancestors": [
+"Truck",
+"Motor vehicle (road)",
+"Vehicle",
+"Sounds of things"
+],
+"description": "The sound of an electronic warning device fitted to many commercial vehicles to alert pedestrians when the reverse gear is engaged, signaling that the vehicle is likely to move backwards."
+},
+{
+"idx": 320,
+"mid": "/m/03cl9h",
+"name": "Ice cream truck, ice cream van",
+"ancestors": [
+"Truck",
+"Motor vehicle (road)",
+"Vehicle",
+"Sounds of things"
+],
+"description": "Sounds of a commercial vehicle that serves as a mobile retail outlet for ice cream, usually during the summer. Ice cream vans often play a repeating nursery-rhyme-style melody from speakers mounted on the vehicle's exterior to attract custo"
+},
+{
+"idx": 321,
+"mid": "/m/01bjv",
+"name": "Bus",
+"ancestors": [
+"Motor vehicle (road)",
+"Vehicle",
+"Sounds of things"
+],
+"description": "Interior and exterior sounds of a road vehicle designed to carry many passengers."
+},
+{
+"idx": 322,
+"mid": "/m/03j1ly",
+"name": "Emergency vehicle",
+"ancestors": [
+"Motor vehicle (road)",
+"Vehicle",
+"Sounds of things"
+],
+"description": "The sound of any vehicle that is designated and authorized to respond to an emergency. Since emergency vehicles often need to travel at high speeds, they are frequently fitted with audible sirens to warn other motorists to give way."
+},
+{
+"idx": 323,
+"mid": "/m/04qvtq",
+"name": "Police car (siren)",
+"ancestors": [
+"Emergency vehicle",
+"Motor vehicle (road)",
+"Vehicle",
+"Sounds of things",
+"Siren",
+"Alarm"
+],
+"description": "The sound of a siren fitted to a ground vehicle used by police when responding to incidents."
+},
+{
+"idx": 324,
+"mid": "/m/012n7d",
+"name": "Ambulance (siren)",
+"ancestors": [
+"Emergency vehicle",
+"Motor vehicle (road)",
+"Vehicle",
+"Sounds of things",
+"Siren",
+"Alarm"
+],
+"description": "The sound of a siren fitted to a vehicle used to transport sick or injured people to a hospital or other medical facility."
+},
+{
+"idx": 325,
+"mid": "/m/012ndj",
+"name": "Fire engine, fire truck (siren)",
+"ancestors": [
+"Emergency vehicle",
+"Motor vehicle (road)",
+"Vehicle",
+"Sounds of things",
+"Siren",
+"Alarm"
+],
+"description": "The sound of a siren fitted to a vehicle used to transport firefighters and their equipment to an emergency situation."
+},
+{
+"idx": 326,
+"mid": "/m/04_sv",
+"name": "Motorcycle",
+"ancestors": [
+"Motor vehicle (road)",
+"Vehicle",
+"Sounds of things"
+],
+"description": "Sounds of a small motor vehicle, usually with only two wheels. Motorcycles typically lack an external shell and seat riders astride the engine."
+},
+{
+"idx": 327,
+"mid": "/m/0btp2",
+"name": "Traffic noise, roadway noise",
+"ancestors": [
+"Motor vehicle (road)",
+"Vehicle",
+"Sounds of things"
+],
+"description": "The combined sounds of many motor vehicles traveling on roads."
+},
+{
+"idx": 328,
+"mid": "/m/06d_3",
+"name": "Rail transport",
+"ancestors": [
+"Vehicle",
+"Sounds of things"
+],
+"description": "Sounds associated with wheeled vehicles running on rails (tracks)."
+},
+{
+"idx": 329,
+"mid": "/m/07jdr",
+"name": "Train",
+"ancestors": [
+"Rail transport",
+"Vehicle",
+"Sounds of things"
+],
+"description": "The sound of one or more coupled vehicles running on a rail track to transport cargo or passengers, propelled by a separate locomotive or individual motors in each railroad car."
+},
+{
+"idx": 330,
+"mid": "/m/04zmvq",
+"name": "Train whistle",
+"ancestors": [
+"Train",
+"Rail transport",
+"Vehicle",
+"Sounds of things"
+],
+"description": "The sound of an audible signaling device on a steam locomotive used to warn that the train is approaching, and to communicate with rail workers."
+},
+{
+"idx": 331,
+"mid": "/m/0284vy3",
+"name": "Train horn",
+"ancestors": [
+"Train",
+"Rail transport",
+"Vehicle",
+"Sounds of things"
+],
+"description": "The sound of an air horn which serves as an audible warning device on diesel and electric locomotives."
+},
+{
+"idx": 332,
+"mid": "/m/01g50p",
+"name": "Railroad car, train wagon",
+"ancestors": [
+"Rail transport",
+"Vehicle",
+"Sounds of things"
+],
+"description": "The sound of a vehicle used for carrying cargo or passengers on a rail transport system."
+},
+{
+"idx": 333,
+"mid": "/t/dd00048",
+"name": "Train wheels squealing",
+"ancestors": [
+"Rail transport",
+"Vehicle",
+"Sounds of things"
+],
+"description": "The high-pitched tones caused by steel train wheels rubbing against rails, for instance when traversing a tight bend or when braking."
+},
+{
+"idx": 334,
+"mid": "/m/0195fx",
+"name": "Subway, metro, underground",
+"ancestors": [
+"Rail transport",
+"Vehicle",
+"Sounds of things"
+],
+"description": "Sounds of high-capacity electric railways that serve as public transport, generally in urban areas."
+},
+{
+"idx": 335,
+"mid": "/m/0k5j",
+"name": "Aircraft",
+"ancestors": [
+"Vehicle",
+"Sounds of things"
+],
+"description": "Sound of vehicles that fly by gaining support from the air."
+},
+{
+"idx": 336,
+"mid": "/m/014yck",
+"name": "Aircraft engine",
+"ancestors": [
+"Aircraft",
+"Vehicle",
+"Sounds of things"
+],
+"description": "The sound of the part of an aircraft that generates mechanical power. Aircraft engines are almost always lightweight piston engines, gas turbines, or, in small multicopter UAVs, electric motors."
+},
+{
+"idx": 337,
+"mid": "/m/04229",
+"name": "Jet engine",
+"ancestors": [
+"Aircraft engine",
+"Aircraft",
+"Vehicle",
+"Sounds of things",
+"Engine"
+],
+"description": "The sound of an internal combustion airbreathing engine that generates thrust by discharging a fast-moving jet of gas. Jet aircraft use such engines for long-distance travel."
+},
+{
+"idx": 338,
+"mid": "/m/02l6bg",
+"name": "Propeller, airscrew",
+"ancestors": [
+"Aircraft engine",
+"Aircraft",
+"Vehicle",
+"Sounds of things"
+],
+"description": "The sound of an aircraft propulsion system that converts rotary motion from an engine via a rotating set of blades into forward thrust through the air."
+},
+{
+"idx": 339,
+"mid": "/m/09ct_",
+"name": "Helicopter",
+"ancestors": [
+"Aircraft",
+"Vehicle",
+"Sounds of things"
+],
+"description": "Sounds of a type of rotorcraft in which lift and thrust are supplied by rotors. This allows the helicopter to take off and land vertically, to hover, and to fly forward, backward, and laterally."
+},
+{
+"idx": 340,
+"mid": "/m/0cmf2",
+"name": "Fixed-wing aircraft, airplane",
+"ancestors": [
+"Aircraft",
+"Vehicle",
+"Sounds of things"
+],
+"description": "Sounds of an aircraft capable of flight using wings that generate lift caused by the vehicle's forward airspeed and the shape of the wings."
+},
+{
+"idx": 341,
+"mid": "/m/0199g",
+"name": "Bicycle",
+"ancestors": [
+"Non-motorized land vehicle",
+"Vehicle",
+"Sounds of things"
+],
+"description": "Sounds of a human-powered, pedal-driven vehicle, having two wheels attached to a frame, one behind the other."
+},
+{
+"idx": 342,
+"mid": "/m/06_fw",
+"name": "Skateboard",
+"ancestors": [
+"Non-motorized land vehicle",
+"Vehicle",
+"Sounds of things"
+],
+"description": "Sounds of a type of sports equipment consisting of a board mounted on two pairs of wheels. A skateboard is typically propelled by pushing with one foot while the other remains on the board, or by simply standing on the deck while on a downw"
+},
+{
+"idx": 343,
+"mid": "/m/02mk9",
+"name": "Engine",
+"ancestors": [
+"Sounds of things"
+],
+"description": "The sound of a machine designed to produce mechanical energy. Combustion engines burn a fuel to create heat, which then creates a force. Electric motors convert electrical energy into mechanical motion. Other classes of engines include pneu"
+},
+{
+"idx": 344,
+"mid": "/t/dd00065",
+"name": "Light engine (high frequency)",
+"ancestors": [
+"Engine",
+"Sounds of things"
+],
+"description": "The sound of a small engine such as a toy car, sewing machine, or moped."
+},
+{
+"idx": 345,
+"mid": "/m/08j51y",
+"name": "Dental drill, dentist's drill",
+"ancestors": [
+"Light engine (high frequency)",
+"Engine",
+"Sounds of things",
+"Drill",
+"Power tool",
+"Tools"
+],
+"description": "The sound of a small, high-speed drill used during dental procedures, usually to remove decay and shape tooth structure prior to the insertion of a filling or crown."
+},
+{
+"idx": 346,
+"mid": "/m/01yg9g",
+"name": "Lawn mower",
+"ancestors": [
+"Light engine (high frequency)",
+"Engine",
+"Sounds of things"
+],
+"description": "The sound of a machine utilizing one or more revolving blades to cut grass, powered by an electric motor, a small internal combustion engine, or by a human pushing the machine."
+},
+{
+"idx": 347,
+"mid": "/m/01j4z9",
+"name": "Chainsaw",
+"ancestors": [
+"Light engine (high frequency)",
+"Engine",
+"Sounds of things"
+],
+"description": "The sound of a portable mechanical saw which cuts with a set of teeth attached to a rotating chain. Chainsaws are commonly powered by a small two-stroke internal combustion engine."
+},
+{
+"idx": 348,
+"mid": "/t/dd00066",
+"name": "Medium engine (mid frequency)",
+"ancestors": [
+"Engine",
+"Sounds of things"
+],
+"description": "The sound of a moderately-sized engine such as that which powers a motorcycle, sedan, or small truck."
+},
+{
+"idx": 349,
+"mid": "/t/dd00067",
+"name": "Heavy engine (low frequency)",
+"ancestors": [
+"Engine",
+"Sounds of things"
+],
+"description": "The sound of a large, heavy-duty internal combustion engine, such as that which powers a large truck, locomotive, or ship.  Jet engines, steam engines, rocket engines etc. are excluded."
+},
+{
+"idx": 350,
+"mid": "/m/01h82_",
+"name": "Engine knocking",
+"ancestors": [
+"Engine",
+"Sounds of things"
+],
+"description": "A metallic \"pinging\" sound caused by a malfunctioning spark-ignited internal combustion engine. Engine knocking indicates that the combustion of the air/fuel mixture in the cylinder is occurring at the wrong point in the piston's stroke."
+},
+{
+"idx": 351,
+"mid": "/t/dd00130",
+"name": "Engine starting",
+"ancestors": [
+"Engine",
+"Sounds of things"
+],
+"description": "The sound of an engine starting from rest, which may involve a specific starter mechanism (as in a standard car)."
+},
+{
+"idx": 352,
+"mid": "/m/07pb8fc",
+"name": "Idling",
+"ancestors": [
+"Engine",
+"Sounds of things"
+],
+"description": "The sound of an engine (typically in an automobile) running without any load and at minimal RPM."
+},
+{
+"idx": 353,
+"mid": "/m/07q2z82",
+"name": "Accelerating, revving, vroom",
+"ancestors": [
+"Engine",
+"Sounds of things"
+],
+"description": "The sound made by the engine of a vehicle undergoing acceleration, usually involving an increase in loudness and a rising pitch."
+},
+{
+"idx": 354,
+"mid": "/m/02dgv",
+"name": "Door",
+"ancestors": [
+"Domestic sounds, home sounds",
+"Sounds of things"
+],
+"description": "Sounds of a moving structure used to open or close an entrance to an enclosed space such as a building or vehicle."
+},
+{
+"idx": 355,
+"mid": "/m/03wwcy",
+"name": "Doorbell",
+"ancestors": [
+"Door",
+"Domestic sounds, home sounds",
+"Sounds of things",
+"Alarm"
+],
+"description": "The sound of a signaling device typically placed near a building's entrance with which a visitor can announce their presence to occupants."
+},
+{
+"idx": 356,
+"mid": "/m/07r67yg",
+"name": "Ding-dong",
+"ancestors": [
+"Doorbell",
+"Door",
+"Domestic sounds, home sounds",
+"Sounds of things",
+"Alarm"
+],
+"description": "A multi-tone chime made by a doorbell."
+},
+{
+"idx": 357,
+"mid": "/m/02y_763",
+"name": "Sliding door",
+"ancestors": [
+"Door",
+"Domestic sounds, home sounds",
+"Sounds of things"
+],
+"description": "The sound of a type of door which opens horizontally by sliding, usually parallel to a wall."
+},
+{
+"idx": 358,
+"mid": "/m/07rjzl8",
+"name": "Slam",
+"ancestors": [
+"Door",
+"Domestic sounds, home sounds",
+"Sounds of things"
+],
+"description": "The sound of a door or other hinged cover being closed violently."
+},
+{
+"idx": 359,
+"mid": "/m/07r4wb8",
+"name": "Knock",
+"ancestors": [
+"Door",
+"Domestic sounds, home sounds",
+"Sounds of things",
+"Generic impact sounds",
+"Source-ambiguous sounds"
+],
+"description": "A sharp noise of a rigid surface being struck, usually without damage and deliberately, most often with the knuckles of the hand."
+},
+{
+"idx": 360,
+"mid": "/m/07qcpgn",
+"name": "Tap",
+"ancestors": [
+"Door",
+"Domestic sounds, home sounds",
+"Sounds of things",
+"Generic impact sounds",
+"Source-ambiguous sounds"
+],
+"description": "The sound of a light collision between a rigid object and a rigid surface, for instance to deliberately attract attention."
+},
+{
+"idx": 361,
+"mid": "/m/07q6cd_",
+"name": "Squeak",
+"ancestors": [
+"Door",
+"Domestic sounds, home sounds",
+"Sounds of things",
+"Brief tone",
+"Onomatopoeia",
+"Source-ambiguous sounds"
+],
+"description": "A short, high-pitched noise without a sharp attack."
+},
+{
+"idx": 362,
+"mid": "/m/0642b4",
+"name": "Cupboard open or close",
+"ancestors": [
+"Domestic sounds, home sounds",
+"Sounds of things"
+],
+"description": "The sound of the door to a storage cabinet being opened or closed."
+},
+{
+"idx": 363,
+"mid": "/m/0fqfqc",
+"name": "Drawer open or close",
+"ancestors": [
+"Domestic sounds, home sounds",
+"Sounds of things"
+],
+"description": "The sound of the opening or closing of a box-shaped container that fits into a piece of furniture in such a way that it can be drawn out horizontally to reach its contents."
+},
+{
+"idx": 364,
+"mid": "/m/04brg2",
+"name": "Dishes, pots, and pans",
+"ancestors": [
+"Domestic sounds, home sounds",
+"Sounds of things"
+],
+"description": "The sound of non-destructive collisions between plates, dishes, glassware, cooking vessels, and kitchen and eating utensils."
+},
+{
+"idx": 365,
+"mid": "/m/023pjk",
+"name": "Cutlery, silverware",
+"ancestors": [
+"Domestic sounds, home sounds",
+"Sounds of things"
+],
+"description": "The sounds of hand implements such as knife, fork, and spoon, that are typically made of steel and are used in preparing, serving, and eating food in the Western world."
+},
+{
+"idx": 366,
+"mid": "/m/07pn_8q",
+"name": "Chopping (food)",
+"ancestors": [
+"Domestic sounds, home sounds",
+"Sounds of things"
+],
+"description": "The sound of cutting ingredients into pieces with a knife or similar blade tool."
+},
+{
+"idx": 367,
+"mid": "/m/0dxrf",
+"name": "Frying (food)",
+"ancestors": [
+"Domestic sounds, home sounds",
+"Sounds of things"
+],
+"description": "The sound of cooking food in oil or another fat."
+},
+{
+"idx": 368,
+"mid": "/m/0fx9l",
+"name": "Microwave oven",
+"ancestors": [
+"Domestic sounds, home sounds",
+"Sounds of things"
+],
+"description": "Sounds made by a kitchen appliance that heats food by exposing it to microwave radiation, including the noise of the fan, rotation mechanism, and microwave source, as well as the alert sound used to indicate that cooking is complete."
+},
+{
+"idx": 369,
+"mid": "/m/02pjr4",
+"name": "Blender",
+"ancestors": [
+"Domestic sounds, home sounds",
+"Sounds of things"
+],
+"description": "The sound of a kitchen and laboratory appliance used to mix, purée, or emulsify food and other substances, usually by means of metal blades at the base of a container spun rapidly by an electric motor."
+},
+{
+"idx": 370,
+"mid": "/m/02jz0l",
+"name": "Water tap, faucet",
+"ancestors": [
+"Domestic sounds, home sounds",
+"Sounds of things"
+],
+"description": "The sound of a hand-operated valve controlling the release of water, for instance as fitted to a sink or bath, and the resulting water flow."
+},
+{
+"idx": 371,
+"mid": "/m/0130jx",
+"name": "Sink (filling or washing)",
+"ancestors": [
+"Domestic sounds, home sounds",
+"Sounds of things"
+],
+"description": "Sounds originating from a bowl-shaped plumbing fixture that stores and drains water and that is used for washing hands, dishwashing, and other purposes."
+},
+{
+"idx": 372,
+"mid": "/m/03dnzn",
+"name": "Bathtub (filling or washing)",
+"ancestors": [
+"Domestic sounds, home sounds",
+"Sounds of things"
+],
+"description": "Sounds originating from a large container for holding water in which a person may bathe."
+},
+{
+"idx": 373,
+"mid": "/m/03wvsk",
+"name": "Hair dryer",
+"ancestors": [
+"Domestic sounds, home sounds",
+"Sounds of things"
+],
+"description": "The sound of an electromechanical device designed to blow normal or hot air over damp hair, in order to dry the hair."
+},
+{
+"idx": 374,
+"mid": "/m/01jt3m",
+"name": "Toilet flush",
+"ancestors": [
+"Domestic sounds, home sounds",
+"Sounds of things"
+],
+"description": "The sound of a toilet flushing water along with any waste through a drainpipe."
+},
+{
+"idx": 375,
+"mid": "/m/012xff",
+"name": "Toothbrush",
+"ancestors": [
+"Domestic sounds, home sounds",
+"Sounds of things"
+],
+"description": "Sounds of an instrument used to clean the teeth and gums consisting of a head of tightly clustered bristles mounted on a handle."
+},
+{
+"idx": 376,
+"mid": "/m/04fgwm",
+"name": "Electric toothbrush",
+"ancestors": [
+"Toothbrush",
+"Domestic sounds, home sounds",
+"Sounds of things"
+],
+"description": "The sound of a toothbrush that makes rapid, automatic bristle motions driven by an electric motor in order to clean teeth."
+},
+{
+"idx": 377,
+"mid": "/m/0d31p",
+"name": "Vacuum cleaner",
+"ancestors": [
+"Domestic sounds, home sounds",
+"Sounds of things"
+],
+"description": "The sound of a device that uses an air pump to create a partial vacuum to suck up dust and dirt, usually from floors and other surfaces such as upholstery and draperies."
+},
+{
+"idx": 378,
+"mid": "/m/01s0vc",
+"name": "Zipper (clothing)",
+"ancestors": [
+"Domestic sounds, home sounds",
+"Sounds of things"
+],
+"description": "The sound of a device consisting of two rows of small interlocking teeth for binding the edges of an opening of fabric or other flexible material, like on a garment or a bag."
+},
+{
+"idx": 379,
+"mid": "/m/03v3yw",
+"name": "Keys jangling",
+"ancestors": [
+"Domestic sounds, home sounds",
+"Sounds of things"
+],
+"description": "Sounds made by the mutual collision of small pieces of metal, which are often linked on a ring, used to operate locks."
+},
+{
+"idx": 380,
+"mid": "/m/0242l",
+"name": "Coin (dropping)",
+"ancestors": [
+"Domestic sounds, home sounds",
+"Sounds of things"
+],
+"description": "The sound of a small, flat, round piece of hard material such as metal or plastic colliding with or bouncing on a hard surface."
+},
+{
+"idx": 381,
+"mid": "/m/01lsmm",
+"name": "Scissors",
+"ancestors": [
+"Domestic sounds, home sounds",
+"Sounds of things"
+],
+"description": "The sound of hand-operated shearing tools consisting of a pair of metal blades pivoted so that the sharpened edges slide against each other when the handles opposite to the pivot are closed."
+},
+{
+"idx": 382,
+"mid": "/m/02g901",
+"name": "Electric shaver, electric razor",
+"ancestors": [
+"Domestic sounds, home sounds",
+"Sounds of things"
+],
+"description": "The sound of a bladed tool primarily used in the removal of unwanted body hair where the blades are continually moved by an electric motor."
+},
+{
+"idx": 383,
+"mid": "/m/05rj2",
+"name": "Shuffling cards",
+"ancestors": [
+"Domestic sounds, home sounds",
+"Sounds of things"
+],
+"description": "The sound of playing cards being manually rearranged into a random order."
+},
+{
+"idx": 384,
+"mid": "/m/0316dw",
+"name": "Typing",
+"ancestors": [
+"Domestic sounds, home sounds",
+"Sounds of things"
+],
+"description": "The sound of writing or inputting text by pressing keys on a typewriter, computer keyboard, cell phone, or calculator."
+},
+{
+"idx": 385,
+"mid": "/m/0c2wf",
+"name": "Typewriter",
+"ancestors": [
+"Typing",
+"Domestic sounds, home sounds",
+"Sounds of things"
+],
+"description": "Sounds of a mechanical or electromechanical machine for printing characters by means of keyboard-operated types striking a ribbon to transfer ink or carbon impressions onto paper."
+},
+{
+"idx": 386,
+"mid": "/m/01m2v",
+"name": "Computer keyboard",
+"ancestors": [
+"Typing",
+"Domestic sounds, home sounds",
+"Sounds of things"
+],
+"description": "Sounds created by a typewriter-style device which uses an arrangement of buttons or keys controlling switches to enter text or other information into a computer or other electronic device."
+},
+{
+"idx": 387,
+"mid": "/m/081rb",
+"name": "Writing",
+"ancestors": [
+"Domestic sounds, home sounds",
+"Sounds of things"
+],
+"description": "The sound of inscribing signs and symbols, most often by using a purpose-made hand-held device, such as a pen or pencil, directly upon paper or similar media."
+},
+{
+"idx": 388,
+"mid": "/m/07pp_mv",
+"name": "Alarm",
+"ancestors": [
+"Sounds of things"
+],
+"description": "The sound of an automatic signal warning of danger."
+},
+{
+"idx": 389,
+"mid": "/m/07cx4",
+"name": "Telephone",
+"ancestors": [
+"Alarm",
+"Sounds of things"
+],
+"description": "The sound of a telecommunications device that permits two or more users to conduct a conversation when they are too far apart to be heard directly.  This class covers sounds associated with the device itself, not voice that has been carried"
+},
+{
+"idx": 390,
+"mid": "/m/07pp8cl",
+"name": "Telephone bell ringing",
+"ancestors": [
+"Telephone",
+"Alarm",
+"Sounds of things"
+],
+"description": "The sound of a physical or synthesized electric bell ringing to signal an incoming telephone call."
+},
+{
+"idx": 391,
+"mid": "/m/01hnzm",
+"name": "Ringtone",
+"ancestors": [
+"Telephone",
+"Alarm",
+"Sounds of things"
+],
+"description": "The synthesized or pre-recorded sounds made by contemporary electronic telephones to indicate an incoming call or text message."
+},
+{
+"idx": 392,
+"mid": "/m/02c8p",
+"name": "Telephone dialing, DTMF",
+"ancestors": [
+"Telephone",
+"Alarm",
+"Sounds of things"
+],
+"description": "The sound of a telephony signaling system where short combinations of tones within the frequency range of human speech are used to transmit individual digits."
+},
+{
+"idx": 393,
+"mid": "/m/015jpf",
+"name": "Dial tone",
+"ancestors": [
+"Telephone",
+"Alarm",
+"Sounds of things"
+],
+"description": "The sound of a signal that a telephone exchange or other switching equipment sends to a telephone to confirm that it is ready to initiate a connection."
+},
+{
+"idx": 394,
+"mid": "/m/01z47d",
+"name": "Busy signal",
+"ancestors": [
+"Telephone",
+"Alarm",
+"Sounds of things"
+],
+"description": "A sound (usually a simple repeating tone) played over a telephone line to indicate that the requested connection could not be completed, for instance because the remote party is already engaged in a different call."
+},
+{
+"idx": 395,
+"mid": "/m/046dlr",
+"name": "Alarm clock",
+"ancestors": [
+"Alarm",
+"Sounds of things"
+],
+"description": "Sounds made by a clock that is designed to make an audible signal at a specific time. The primary use of alarm clocks is to awaken people from their night's sleep."
+},
+{
+"idx": 396,
+"mid": "/m/03kmc9",
+"name": "Siren",
+"ancestors": [
+"Alarm",
+"Sounds of things"
+],
+"description": "The sound of a loud noise-making device used to provide warnings to people nearby. A siren typically consists of a single pitch that changes either smoothly or abruptly on timescales around one second."
+},
+{
+"idx": 397,
+"mid": "/m/0dgbq",
+"name": "Civil defense siren",
+"ancestors": [
+"Siren",
+"Alarm",
+"Sounds of things"
+],
+"description": "The sound of a siren used to provide emergency population warning of approaching danger such as hurricanes, earthquakes, or military attacks."
+},
+{
+"idx": 398,
+"mid": "/m/030rvx",
+"name": "Buzzer",
+"ancestors": [
+"Alarm",
+"Sounds of things"
+],
+"description": "Sounds of a mechanical, electromechanical, or piezoelectric signaling device that emits a steady, highly-audible tone with a spectrum extending to high frequencies."
+},
+{
+"idx": 399,
+"mid": "/m/01y3hg",
+"name": "Smoke detector, smoke alarm",
+"ancestors": [
+"Alarm",
+"Sounds of things"
+],
+"description": "Sounds emitted by a device that senses smoke, typically to warn of a fire."
+},
+{
+"idx": 400,
+"mid": "/m/0c3f7m",
+"name": "Fire alarm",
+"ancestors": [
+"Alarm",
+"Sounds of things"
+],
+"description": "Sounds of a system designed to warn people when smoke, fire, carbon monoxide or other emergencies are present. Alarms can be either motorized bells or wall-mountable sounders or horns."
+},
+{
+"idx": 401,
+"mid": "/m/04fq5q",
+"name": "Foghorn",
+"ancestors": [
+"Alarm",
+"Sounds of things"
+],
+"description": "A signaling sound used primarily in foggy conditions to warn watercraft of the presence of nearby vessels or other navigational hazards."
+},
+{
+"idx": 402,
+"mid": "/m/0l156k",
+"name": "Whistle",
+"ancestors": [
+"Alarm",
+"Sounds of things"
+],
+"description": "The sound of an instrument that produces sound from a stream of forced air."
+},
+{
+"idx": 403,
+"mid": "/m/06hck5",
+"name": "Steam whistle",
+"ancestors": [
+"Whistle",
+"Alarm",
+"Sounds of things"
+],
+"description": "The sound of a device used to produce sound with the aid of live steam, which acts as a vibrating system."
+},
+{
+"idx": 404,
+"mid": "/t/dd00077",
+"name": "Mechanisms",
+"ancestors": [
+"Sounds of things"
+],
+"description": "Sounds that originate from human-created machinery and devices."
+},
+{
+"idx": 405,
+"mid": "/m/02bm9n",
+"name": "Ratchet, pawl",
+"ancestors": [
+"Mechanisms",
+"Sounds of things"
+],
+"description": "The sound of a mechanical device that allows continuous linear or rotary motion in only one direction while preventing motion in the opposite direction."
+},
+{
+"idx": 406,
+"mid": "/m/01x3z",
+"name": "Clock",
+"ancestors": [
+"Mechanisms",
+"Sounds of things"
+],
+"description": "Sounds made by an instrument designed to keep and indicate time."
+},
+{
+"idx": 407,
+"mid": "/m/07qjznt",
+"name": "Tick",
+"ancestors": [
+"Clock",
+"Mechanisms",
+"Sounds of things",
+"Clicking",
+"Onomatopoeia",
+"Source-ambiguous sounds"
+],
+"description": "A metallic tapping sound."
+},
+{
+"idx": 408,
+"mid": "/m/07qjznl",
+"name": "Tick-tock",
+"ancestors": [
+"Clock",
+"Mechanisms",
+"Sounds of things"
+],
+"description": "A steady recurrent ticking sound as made by a clock."
+},
+{
+"idx": 409,
+"mid": "/m/0l7xg",
+"name": "Gears",
+"ancestors": [
+"Mechanisms",
+"Sounds of things"
+],
+"description": "Sounds of rotating machine parts having cut teeth, or cogs, which mesh with other toothed parts to transmit torque."
+},
+{
+"idx": 410,
+"mid": "/m/05zc1",
+"name": "Pulleys",
+"ancestors": [
+"Mechanisms",
+"Sounds of things"
+],
+"description": "Sounds of a wheel on an axle or shaft that is designed to support movement and change of direction of a taut cable or belt along its circumference."
+},
+{
+"idx": 411,
+"mid": "/m/0llzx",
+"name": "Sewing machine",
+"ancestors": [
+"Mechanisms",
+"Sounds of things"
+],
+"description": "Sounds of a machine used to stitch fabric and other materials together with thread."
+},
+{
+"idx": 412,
+"mid": "/m/02x984l",
+"name": "Mechanical fan",
+"ancestors": [
+"Mechanisms",
+"Sounds of things"
+],
+"description": "Sounds of a machine used to create air flow via the motion of a rotating arrangement of vanes or blades."
+},
+{
+"idx": 413,
+"mid": "/m/025wky1",
+"name": "Air conditioning",
+"ancestors": [
+"Mechanisms",
+"Sounds of things"
+],
+"description": "The sound of a device that removes heat from the air inside a building or vehicle, thus lowering the air temperature."
+},
+{
+"idx": 414,
+"mid": "/m/024dl",
+"name": "Cash register",
+"ancestors": [
+"Mechanisms",
+"Sounds of things"
+],
+"description": "Sounds of a mechanical or electronic device for registering and calculating transactions, usually attached to a drawer for storing cash."
+},
+{
+"idx": 415,
+"mid": "/m/01m4t",
+"name": "Printer",
+"ancestors": [
+"Mechanisms",
+"Sounds of things"
+],
+"description": "Sounds of a computer peripheral which makes a persistent human readable representation of graphics or text on paper or similar physical media."
+},
+{
+"idx": 416,
+"mid": "/m/0dv5r",
+"name": "Camera",
+"ancestors": [
+"Mechanisms",
+"Sounds of things"
+],
+"description": "Sounds of mechanical or electronic instruments that employ optics to record or capture images."
+},
+{
+"idx": 417,
+"mid": "/m/07bjf",
+"name": "Single-lens reflex camera",
+"ancestors": [
+"Camera",
+"Mechanisms",
+"Sounds of things"
+],
+"description": "Sounds of camera that uses a mirror and prism system to permit the photographer to view through the lens and see exactly what will be captured."
+},
+{
+"idx": 418,
+"mid": "/m/07k1x",
+"name": "Tools",
+"ancestors": [
+"Sounds of things"
+],
+"description": "Sounds associated with any physical item that can be used to achieve a goal, especially if the item is not consumed in the process."
+},
+{
+"idx": 419,
+"mid": "/m/03l9g",
+"name": "Hammer",
+"ancestors": [
+"Tools",
+"Sounds of things"
+],
+"description": "Sounds made by a tool or device that delivers a blow to an object. Most hammers are hand tools used to drive nails, fit parts, forge metal, and break apart objects."
+},
+{
+"idx": 420,
+"mid": "/m/03p19w",
+"name": "Jackhammer",
+"ancestors": [
+"Tools",
+"Sounds of things"
+],
+"description": "The sound of a pneumatic or electro-mechanical tool that combines a hammer directly with a chisel, usually used to break up rock, pavement, and concrete."
+},
+{
+"idx": 421,
+"mid": "/m/01b82r",
+"name": "Sawing",
+"ancestors": [
+"Tools",
+"Sounds of things"
+],
+"description": "Sounds of a tool consisting of a tough blade, wire, or chain with a hard toothed edge, used to cut through material, most often wood.  Includes both manual and motorized saws."
+},
+{
+"idx": 422,
+"mid": "/m/02p01q",
+"name": "Filing (rasp)",
+"ancestors": [
+"Tools",
+"Sounds of things"
+],
+"description": "Sounds of a common wood- and metal-working tool used to remove fine amounts of material from a workpiece."
+},
+{
+"idx": 423,
+"mid": "/m/023vsd",
+"name": "Sanding",
+"ancestors": [
+"Tools",
+"Sounds of things"
+],
+"description": "The sounds of a surface being scraped by an abrasive material affixed to sheets of paper or cloth, either to make the surface smoother, remove a layer of material, or sometimes to make the surface rougher."
+},
+{
+"idx": 424,
+"mid": "/m/0_ksk",
+"name": "Power tool",
+"ancestors": [
+"Tools",
+"Sounds of things"
+],
+"description": "Sounds of tools that employ a power source other than the manual labor used with hand tools. The most common types of power tools use electric motors."
+},
+{
+"idx": 425,
+"mid": "/m/01d380",
+"name": "Drill",
+"ancestors": [
+"Power tool",
+"Tools",
+"Sounds of things"
+],
+"description": "Sounds of a tool used for making holes in various materials via a rotating drill bit."
+},
+{
+"idx": 426,
+"mid": "/m/014zdl",
+"name": "Explosion",
+"ancestors": [
+"Sounds of things"
+],
+"description": "The sound of a rapid increase in volume and release of energy in an extreme manner, usually with the generation of high temperatures and the release of gases."
+},
+{
+"idx": 427,
+"mid": "/m/032s66",
+"name": "Gunshot, gunfire",
+"ancestors": [
+"Explosion",
+"Sounds of things"
+],
+"description": "The sound of the discharge of a firearm, or multiple such discharges."
+},
+{
+"idx": 428,
+"mid": "/m/04zjc",
+"name": "Machine gun",
+"ancestors": [
+"Gunshot, gunfire",
+"Explosion",
+"Sounds of things"
+],
+"description": "Sounds of a fully automatic mounted or portable firearm, designed to fire bullets in quick succession from an ammunition belt or magazine, typically at a rate of 300 to 1800 rounds per minute."
+},
+{
+"idx": 429,
+"mid": "/m/02z32qm",
+"name": "Fusillade",
+"ancestors": [
+"Gunshot, gunfire",
+"Explosion",
+"Sounds of things"
+],
+"description": "The sound of the simultaneous and continuous firing of a group of firearms on command."
+},
+{
+"idx": 430,
+"mid": "/m/0_1c",
+"name": "Artillery fire",
+"ancestors": [
+"Gunshot, gunfire",
+"Explosion",
+"Sounds of things"
+],
+"description": "The sound of large military weapons built to fire munitions far beyond the range and power of infantry's small arms."
+},
+{
+"idx": 431,
+"mid": "/m/073cg4",
+"name": "Cap gun",
+"ancestors": [
+"Gunshot, gunfire",
+"Explosion",
+"Sounds of things"
+],
+"description": "The sound of a toy gun that creates a loud sound simulating a gunshot and a puff of smoke when a small percussion cap is exploded."
+},
+{
+"idx": 432,
+"mid": "/m/0g6b5",
+"name": "Fireworks",
+"ancestors": [
+"Explosion",
+"Sounds of things"
+],
+"description": "Sounds of a class of low explosive pyrotechnic devices used for aesthetic and entertainment purposes."
+},
+{
+"idx": 433,
+"mid": "/g/122z_qxw",
+"name": "Firecracker",
+"ancestors": [
+"Fireworks",
+"Explosion",
+"Sounds of things"
+],
+"description": "The sound of a small explosive device primarily designed to produce a large amount of noise, especially in the form of a loud bang."
+},
+{
+"idx": 434,
+"mid": "/m/07qsvvw",
+"name": "Burst, pop",
+"ancestors": [
+"Explosion",
+"Sounds of things"
+],
+"description": "The sound of an enclosure holding gas or liquid coming open suddenly and violently."
+},
+{
+"idx": 435,
+"mid": "/m/07pxg6y",
+"name": "Eruption",
+"ancestors": [
+"Explosion",
+"Sounds of things"
+],
+"description": "The sound of a volcano violently ejecting ash and lava, or a similar event in which large volumes of material are explosively released."
+},
+{
+"idx": 436,
+"mid": "/m/07qqyl4",
+"name": "Boom",
+"ancestors": [
+"Explosion",
+"Sounds of things"
+],
+"description": "A deep prolonged loud noise."
+},
+{
+"idx": 437,
+"mid": "/m/083vt",
+"name": "Wood",
+"ancestors": [
+"Sounds of things"
+],
+"description": "Sounds associated with the porous and fibrous structural tissue found in the stems and roots of trees, and other woody plants."
+},
+{
+"idx": 438,
+"mid": "/m/07pczhz",
+"name": "Chop",
+"ancestors": [
+"Wood",
+"Sounds of things"
+],
+"description": "The sound of cutting a solid material such as wood into smaller pieces by using an ax or other hacking tool."
+},
+{
+"idx": 439,
+"mid": "/m/07pl1bw",
+"name": "Splinter",
+"ancestors": [
+"Wood",
+"Sounds of things"
+],
+"description": "The sound of a rigid fibrous material, typically wood, breaking up into splinters or slivers."
+},
+{
+"idx": 440,
+"mid": "/m/07qs1cx",
+"name": "Crack",
+"ancestors": [
+"Wood",
+"Sounds of things",
+"Onomatopoeia",
+"Source-ambiguous sounds"
+],
+"description": "Abrupt sounds of individual ruptures in a rigid substance under stress."
+},
+{
+"idx": 441,
+"mid": "/m/039jq",
+"name": "Glass",
+"ancestors": [
+"Sounds of things"
+],
+"description": "Sounds associated with the non-crystalline amorphous solid that is often transparent and has widespread practical, technological, and decorative uses."
+},
+{
+"idx": 442,
+"mid": "/m/07q7njn",
+"name": "Chink, clink",
+"ancestors": [
+"Glass",
+"Sounds of things"
+],
+"description": "A short light metallic sound."
+},
+{
+"idx": 443,
+"mid": "/m/07rn7sz",
+"name": "Shatter",
+"ancestors": [
+"Glass",
+"Sounds of things"
+],
+"description": "The sound of a brittle rigid substance rapidly breaking into many pieces."
+},
+{
+"idx": 444,
+"mid": "/m/04k94",
+"name": "Liquid",
+"ancestors": [
+"Sounds of things"
+],
+"description": "Sounds of a fluid that conforms to the shape of its container but retains a constant volume independent of pressure."
+},
+{
+"idx": 445,
+"mid": "/m/07rrlb6",
+"name": "Splash, splatter",
+"ancestors": [
+"Liquid",
+"Sounds of things"
+],
+"description": "The sound of a liquid colliding with a hard surface."
+},
+{
+"idx": 446,
+"mid": "/m/07p6mqd",
+"name": "Slosh",
+"ancestors": [
+"Splash, splatter",
+"Liquid",
+"Sounds of things"
+],
+"description": "The sound of small waves of liquid held in a container breaking against the edges."
+},
+{
+"idx": 447,
+"mid": "/m/07qlwh6",
+"name": "Squish",
+"ancestors": [
+"Liquid",
+"Sounds of things",
+"Onomatopoeia",
+"Source-ambiguous sounds"
+],
+"description": "Sounds made by a liquid-saturated material being squeezed."
+},
+{
+"idx": 448,
+"mid": "/m/07r5v4s",
+"name": "Drip",
+"ancestors": [
+"Liquid",
+"Sounds of things"
+],
+"description": "The sound of liquid falling in drops."
+},
+{
+"idx": 449,
+"mid": "/m/07prgkl",
+"name": "Pour",
+"ancestors": [
+"Liquid",
+"Sounds of things"
+],
+"description": "The sound of liquid being transferred in a steady stream."
+},
+{
+"idx": 450,
+"mid": "/m/07pqc89",
+"name": "Trickle, dribble",
+"ancestors": [
+"Pour",
+"Liquid",
+"Sounds of things"
+],
+"description": "The sound of a liquid flowing slowly in an unsteady stream or drops."
+},
+{
+"idx": 451,
+"mid": "/t/dd00088",
+"name": "Gush",
+"ancestors": [
+"Pour",
+"Liquid",
+"Sounds of things"
+],
+"description": "The sound of a liquid coming out of a pipe or other opening rapidly and in large volumes."
+},
+{
+"idx": 452,
+"mid": "/m/07p7b8y",
+"name": "Fill (with liquid)",
+"ancestors": [
+"Liquid",
+"Sounds of things"
+],
+"description": "The sound of a container being filled with liquid."
+},
+{
+"idx": 453,
+"mid": "/m/07qlf79",
+"name": "Spray",
+"ancestors": [
+"Liquid",
+"Sounds of things"
+],
+"description": "The sound of a liquid being transferred in a scatter or jet of droplets."
+},
+{
+"idx": 454,
+"mid": "/m/07ptzwd",
+"name": "Pump (liquid)",
+"ancestors": [
+"Liquid",
+"Sounds of things"
+],
+"description": "The sound of a liquid being drawn or poured with a pump."
+},
+{
+"idx": 455,
+"mid": "/m/07ptfmf",
+"name": "Stir",
+"ancestors": [
+"Liquid",
+"Sounds of things"
+],
+"description": "The sound of moving an implement through a fluid substance."
+},
+{
+"idx": 456,
+"mid": "/m/0dv3j",
+"name": "Boiling",
+"ancestors": [
+"Liquid",
+"Sounds of things"
+],
+"description": "The sound of a liquid that is reaching the temperature at which it transitions to a vapor, resulting in bubbles emerging at the surface."
+},
+{
+"idx": 457,
+"mid": "/m/0790c",
+"name": "Sonar",
+"ancestors": [
+"Miscellaneous sources",
+"Sounds of things"
+],
+"description": "Sounds associated with underwater sensing via acoustic signals. A classic sonar sound involves reverberant reflections of an emitted tone pip."
+},
+{
+"idx": 458,
+"mid": "/m/0dl83",
+"name": "Arrow",
+"ancestors": [
+"Miscellaneous sources",
+"Sounds of things"
+],
+"description": "Sounds of a shafted projectile that is shot with a bow."
+},
+{
+"idx": 459,
+"mid": "/m/07rqsjt",
+"name": "Whoosh, swoosh, swish",
+"ancestors": [
+"Arrow",
+"Miscellaneous sources",
+"Sounds of things",
+"Onomatopoeia",
+"Source-ambiguous sounds"
+],
+"description": "A sibilant sound caused by a rigid object sweeping through the air."
+},
+{
+"idx": 460,
+"mid": "/m/07qnq_y",
+"name": "Thump, thud",
+"ancestors": [
+"Arrow",
+"Miscellaneous sources",
+"Sounds of things",
+"Generic impact sounds",
+"Source-ambiguous sounds"
+],
+"description": "A heavy dull sound, as made by impact of heavy objects with a relatively soft point of contact."
+},
+{
+"idx": 461,
+"mid": "/m/07rrh0c",
+"name": "Thunk",
+"ancestors": [
+"Thump, thud",
+"Arrow",
+"Miscellaneous sources",
+"Sounds of things",
+"Generic impact sounds",
+"Source-ambiguous sounds"
+],
+"description": "A partly dull hollow sound with a damped resonance."
+},
+{
+"idx": 462,
+"mid": "/m/0b_fwt",
+"name": "Electronic tuner",
+"ancestors": [
+"Sound equipment",
+"Miscellaneous sources",
+"Sounds of things"
+],
+"description": "Sounds produced by an electronic device whose purpose is to aid in the tuning of musical instruments."
+},
+{
+"idx": 463,
+"mid": "/m/02rr_",
+"name": "Effects unit",
+"ancestors": [
+"Sound equipment",
+"Miscellaneous sources",
+"Sounds of things"
+],
+"description": "Sounds associated with an electronic device that alters how a musical instrument or other audio source sounds. Some effects subtly \"color\" a sound while others transform it dramatically."
+},
+{
+"idx": 464,
+"mid": "/m/07m2kt",
+"name": "Chorus effect",
+"ancestors": [
+"Effects unit",
+"Sound equipment",
+"Miscellaneous sources",
+"Sounds of things"
+],
+"description": "The ensemble sound produced by an electronic effects unit which outputs simultaneous versions of the input source with small variations in pitch and timbre."
+},
+{
+"idx": 465,
+"mid": "/m/018w8",
+"name": "Basketball bounce",
+"ancestors": [
+"Specific impact sounds",
+"Sounds of things"
+],
+"description": "The sound of a basketball bouncing on a hard surface, such as a basketball court."
+},
+{
+"idx": 466,
+"mid": "/m/07pws3f",
+"name": "Bang",
+"ancestors": [
+"Generic impact sounds",
+"Source-ambiguous sounds"
+],
+"description": "A brief and loud noise."
+},
+{
+"idx": 467,
+"mid": "/m/07ryjzk",
+"name": "Slap, smack",
+"ancestors": [
+"Generic impact sounds",
+"Source-ambiguous sounds"
+],
+"description": "The sharp sound of a flat object striking another (e.g., an open hand hitting a face)."
+},
+{
+"idx": 468,
+"mid": "/m/07rdhzs",
+"name": "Whack, thwack",
+"ancestors": [
+"Generic impact sounds",
+"Source-ambiguous sounds"
+],
+"description": "The sound of a partially rigid object forcefully striking another object, which may be preceded by the sound of the rapid, driven motion of one object (as of a baseball bat hitting a ball)."
+},
+{
+"idx": 469,
+"mid": "/m/07pjjrj",
+"name": "Smash, crash",
+"ancestors": [
+"Generic impact sounds",
+"Source-ambiguous sounds"
+],
+"description": "The sound of a rigid structure violently breaking into many pieces."
+},
+{
+"idx": 470,
+"mid": "/m/07pc8lb",
+"name": "Breaking",
+"ancestors": [
+"Generic impact sounds",
+"Source-ambiguous sounds"
+],
+"description": "The sound of a rigid object become separated into pieces or fragments."
+},
+{
+"idx": 471,
+"mid": "/m/07pqn27",
+"name": "Bouncing",
+"ancestors": [
+"Generic impact sounds",
+"Source-ambiguous sounds"
+],
+"description": "The sound of an elastic, non-destructive collision in which one or both objects spring back. Depending on the situation, there may be multiple such collisions in a characteristic pattern, as of a ball bouncing."
+},
+{
+"idx": 472,
+"mid": "/m/07rbp7_",
+"name": "Whip",
+"ancestors": [
+"Generic impact sounds",
+"Source-ambiguous sounds"
+],
+"description": "The sound of whipping, i.e., the greatly accelerated motion of the tip of a flexible structure, as the result of concentrated angular momentum."
+},
+{
+"idx": 473,
+"mid": "/m/07pyf11",
+"name": "Flap",
+"ancestors": [
+"Generic impact sounds",
+"Source-ambiguous sounds"
+],
+"description": "The noisy sound of a flexible surface, such as a flag, moving back-and-forth in the air and optionally coming into contact with an adjacent hard surface."
+},
+{
+"idx": 474,
+"mid": "/m/07qb_dv",
+"name": "Scratch",
+"ancestors": [
+"Surface contact",
+"Source-ambiguous sounds"
+],
+"description": "The sound of a hard, sharp point of contact leaving a permanent groove in a hard surface."
+},
+{
+"idx": 475,
+"mid": "/m/07qv4k0",
+"name": "Scrape",
+"ancestors": [
+"Surface contact",
+"Source-ambiguous sounds"
+],
+"description": "The sound of a hard edge dragging across a surface."
+},
+{
+"idx": 476,
+"mid": "/m/07pdjhy",
+"name": "Rub",
+"ancestors": [
+"Surface contact",
+"Source-ambiguous sounds"
+],
+"description": "The sound of two surfaces moving smoothly over each other with pressure but without excessive friction."
+},
+{
+"idx": 477,
+"mid": "/m/07s8j8t",
+"name": "Roll",
+"ancestors": [
+"Surface contact",
+"Source-ambiguous sounds"
+],
+"description": "The sound of an object moving by turning over or rotating."
+},
+{
+"idx": 478,
+"mid": "/m/07plct2",
+"name": "Crushing",
+"ancestors": [
+"Deformable shell",
+"Source-ambiguous sounds"
+],
+"description": "The sound of a brittle, rigid structure breaking into small pieces or catastrophically deforming."
+},
+{
+"idx": 479,
+"mid": "/t/dd00112",
+"name": "Crumpling, crinkling",
+"ancestors": [
+"Deformable shell",
+"Source-ambiguous sounds"
+],
+"description": "The sound of a rigid but flexible sheet, such as paper or aluminum, buckling into a smaller volume."
+},
+{
+"idx": 480,
+"mid": "/m/07qcx4z",
+"name": "Tearing",
+"ancestors": [
+"Deformable shell",
+"Source-ambiguous sounds"
+],
+"description": "The sound of a flat or smooth surface separating abruptly."
+},
+{
+"idx": 481,
+"mid": "/m/02fs_r",
+"name": "Beep, bleep",
+"ancestors": [
+"Brief tone",
+"Onomatopoeia",
+"Source-ambiguous sounds"
+],
+"description": "A short, single tone, generally made by a computer or other machine and typically high-pitched."
+},
+{
+"idx": 482,
+"mid": "/m/07qwdck",
+"name": "Ping",
+"ancestors": [
+"Brief tone",
+"Onomatopoeia",
+"Source-ambiguous sounds"
+],
+"description": "A sharp high-pitched resonant sound with a clear decay."
+},
+{
+"idx": 483,
+"mid": "/m/07phxs1",
+"name": "Ding",
+"ancestors": [
+"Brief tone",
+"Onomatopoeia",
+"Source-ambiguous sounds"
+],
+"description": "A high-pitched ringing sound, as of a small metal object being struck."
+},
+{
+"idx": 484,
+"mid": "/m/07rv4dm",
+"name": "Clang",
+"ancestors": [
+"Brief tone",
+"Onomatopoeia",
+"Source-ambiguous sounds"
+],
+"description": "A loud, resonant, discordant noise, as of a large and partly hollow metal structure begin struck."
+},
+{
+"idx": 485,
+"mid": "/m/07s02z0",
+"name": "Squeal",
+"ancestors": [
+"Brief tone",
+"Onomatopoeia",
+"Source-ambiguous sounds"
+],
+"description": "A short, high-pitched tone without a sharp attack and with a perceptible variation in pitch."
+},
+{
+"idx": 486,
+"mid": "/m/07qh7jl",
+"name": "Creak",
+"ancestors": [
+"Onomatopoeia",
+"Source-ambiguous sounds"
+],
+"description": "A high-pitched noise with a perceptible variation in pitch as a result of pressure being shifted or applied on a surface, most commonly on wood."
+},
+{
+"idx": 487,
+"mid": "/m/07qwyj0",
+"name": "Rustle",
+"ancestors": [
+"Onomatopoeia",
+"Source-ambiguous sounds"
+],
+"description": "A sound of light, thin objects, such as dried leaves, rubbing against one another."
+},
+{
+"idx": 488,
+"mid": "/m/07s34ls",
+"name": "Whir",
+"ancestors": [
+"Onomatopoeia",
+"Source-ambiguous sounds"
+],
+"description": "A quiet sound of a small object, typically mechanical, in rapid, cyclic motion."
+},
+{
+"idx": 489,
+"mid": "/m/07qmpdm",
+"name": "Clatter",
+"ancestors": [
+"Onomatopoeia",
+"Source-ambiguous sounds"
+],
+"description": "An irregular rattling noise, often produced by rapid movement, consisting of a cluster of transient sounds."
+},
+{
+"idx": 490,
+"mid": "/m/07p9k1k",
+"name": "Sizzle",
+"ancestors": [
+"Onomatopoeia",
+"Source-ambiguous sounds"
+],
+"description": "The sound of many small bubbles bursting, most often caused by fat vaporizing as it is heated."
+},
+{
+"idx": 491,
+"mid": "/m/07qc9xj",
+"name": "Clicking",
+"ancestors": [
+"Onomatopoeia",
+"Source-ambiguous sounds"
+],
+"description": "A short, pitchless, transient sound, as of a gentle impact between small hard objects."
+},
+{
+"idx": 492,
+"mid": "/m/07rwm0c",
+"name": "Clickety-clack",
+"ancestors": [
+"Clicking",
+"Onomatopoeia",
+"Source-ambiguous sounds"
+],
+"description": "The sound of fast and rhythmic clicking of machinery, such as keystrokes on a typewriter or steel wheels running on tracks.  Does not include the sound of horses feet (use /m/07rv9rh)."
+},
+{
+"idx": 493,
+"mid": "/m/07phhsh",
+"name": "Rumble",
+"ancestors": [
+"Onomatopoeia",
+"Source-ambiguous sounds"
+],
+"description": "A loud, low-pitched, dull, continuous noise."
+},
+{
+"idx": 494,
+"mid": "/m/07qyrcz",
+"name": "Plop",
+"ancestors": [
+"Onomatopoeia",
+"Source-ambiguous sounds"
+],
+"description": "The sound of a small object dropping into a liquid without a splash."
+},
+{
+"idx": 495,
+"mid": "/m/07qfgpx",
+"name": "Jingle, tinkle",
+"ancestors": [
+"Onomatopoeia",
+"Source-ambiguous sounds"
+],
+"description": "An irregular pattern of short metallic sounds, especially from small metal objects such as keys or coins shaking against each other."
+},
+{
+"idx": 496,
+"mid": "/m/07rcgpl",
+"name": "Hum",
+"ancestors": [
+"Onomatopoeia",
+"Source-ambiguous sounds"
+],
+"description": "A continuous, dull tone."
+},
+{
+"idx": 497,
+"mid": "/m/07p78v5",
+"name": "Zing",
+"ancestors": [
+"Onomatopoeia",
+"Source-ambiguous sounds"
+],
+"description": "A brief high-pitched buzzing or humming sound."
+},
+{
+"idx": 498,
+"mid": "/t/dd00121",
+"name": "Boing",
+"ancestors": [
+"Onomatopoeia",
+"Source-ambiguous sounds"
+],
+"description": "A bouncing or spring-like sound with a tonal component that sweeps upwards."
+},
+{
+"idx": 499,
+"mid": "/m/07s12q4",
+"name": "Crunch",
+"ancestors": [
+"Onomatopoeia",
+"Source-ambiguous sounds"
+],
+"description": "The sound of a brittle substance being crushed."
+},
+{
+"idx": 500,
+"mid": "/m/028v0c",
+"name": "Silence",
+"ancestors": [
+"Source-ambiguous sounds"
+],
+"description": "The absence of audible sound or presence of sounds of very low intensity."
+},
+{
+"idx": 501,
+"mid": "/m/01v_m0",
+"name": "Sine wave",
+"ancestors": [
+"Other sourceless",
+"Source-ambiguous sounds"
+],
+"description": "A continuous, pure tone of fixed pitch and amplitude."
+},
+{
+"idx": 502,
+"mid": "/m/0b9m1",
+"name": "Harmonic",
+"ancestors": [
+"Sine wave",
+"Other sourceless",
+"Source-ambiguous sounds"
+],
+"description": "A sine tone whose frequency is an integer multiple of some fundamental tone."
+},
+{
+"idx": 503,
+"mid": "/m/0hdsk",
+"name": "Chirp tone",
+"ancestors": [
+"Sine wave",
+"Other sourceless",
+"Source-ambiguous sounds"
+],
+"description": "A tone whose frequency increases or decreases with time."
+},
+{
+"idx": 504,
+"mid": "/m/0c1dj",
+"name": "Sound effect",
+"ancestors": [
+"Other sourceless",
+"Source-ambiguous sounds"
+],
+"description": "An artificially created or enhanced sound used to emphasize artistic or other content of films, television shows, live performances, animation, video games, music, or other media."
+},
+{
+"idx": 505,
+"mid": "/m/07pt_g0",
+"name": "Pulse",
+"ancestors": [
+"Other sourceless",
+"Source-ambiguous sounds"
+],
+"description": "A sound that is modulated in short, regular bursts at approximately 1 Hz.  This class is not for heartbeat sounds, use /m/01jg02."
+},
+{
+"idx": 506,
+"mid": "/t/dd00125",
+"name": "Inside, small room",
+"ancestors": [
+"Acoustic environment",
+"Channel, environment and background"
+],
+"description": "Sounds that appear to have been recorded within a small room, such as one that can accommodate no more than 15 people."
+},
+{
+"idx": 507,
+"mid": "/t/dd00126",
+"name": "Inside, large room or hall",
+"ancestors": [
+"Acoustic environment",
+"Channel, environment and background"
+],
+"description": "Sounds that appear to have been recorded in a large room or hall, often with clearly perceptible reverberation."
+},
+{
+"idx": 508,
+"mid": "/t/dd00127",
+"name": "Inside, public space",
+"ancestors": [
+"Acoustic environment",
+"Channel, environment and background"
+],
+"description": "Sounds that appear to have been recorded in a public space such as store, restaurant, or travel terminus, often characterized by both reverberation and continuous background noise."
+},
+{
+"idx": 509,
+"mid": "/t/dd00128",
+"name": "Outside, urban or manmade",
+"ancestors": [
+"Acoustic environment",
+"Channel, environment and background"
+],
+"description": "Sounds that appear to have been recorded outdoors in a human-constructed environment."
+},
+{
+"idx": 510,
+"mid": "/t/dd00129",
+"name": "Outside, rural or natural",
+"ancestors": [
+"Acoustic environment",
+"Channel, environment and background"
+],
+"description": "Sounds that appear to have been recorded outdoors in a natural, non-manmade environment."
+},
+{
+"idx": 511,
+"mid": "/m/01b9nn",
+"name": "Reverberation",
+"ancestors": [
+"Acoustic environment",
+"Channel, environment and background"
+],
+"description": "The sound of an acoustic environment that includes substantial reflection from multiple walls or other hard surfaces. Reverberation is generally perceived as being able to 'hear' the presence and size of the room or space in which the sound"
+},
+{
+"idx": 512,
+"mid": "/m/01jnbd",
+"name": "Echo",
+"ancestors": [
+"Acoustic environment",
+"Channel, environment and background"
+],
+"description": "A sound which is a delayed and attenuated repetition of an earlier sound, for example because the sound wave has been reflected back from a distant, planar surface. To be perceived as an echo, the repetion must be delayed by around 100 mill"
+},
+{
+"idx": 513,
+"mid": "/m/096m7z",
+"name": "Noise",
+"ancestors": [
+"Channel, environment and background"
+],
+"description": "A sound that has no perceptible structure and that typically interferes with the perception of more interesting or important sounds."
+},
+{
+"idx": 514,
+"mid": "/m/06_y0by",
+"name": "Environmental noise",
+"ancestors": [
+"Background noise",
+"Noise",
+"Channel, environment and background"
+],
+"description": "The combined sounds of transport, industrial, and recreational activities."
+},
+{
+"idx": 515,
+"mid": "/m/07rgkc5",
+"name": "Static",
+"ancestors": [
+"Background noise",
+"Noise",
+"Channel, environment and background"
+],
+"description": "A crackling or hissing noise caused by electrical interference."
+},
+{
+"idx": 516,
+"mid": "/m/06xkwv",
+"name": "Mains hum",
+"ancestors": [
+"Background noise",
+"Noise",
+"Channel, environment and background"
+],
+"description": "A low, continuous tone caused by electromagnetic interference from the alternating current of the mains electricity. The fundamental frequency of this sound is usually 50 Hz or 60 Hz, depending on the local power-line frequency."
+},
+{
+"idx": 517,
+"mid": "/m/0g12c5",
+"name": "Distortion",
+"ancestors": [
+"Background noise",
+"Noise",
+"Channel, environment and background"
+],
+"description": "A sound that has been modified in a nonlinear fashion, usually in electronic equipment, to introduce sound correlated with the original signal. In many cases, notably with amplified electric musical instruments, distortion is introduced as "
+},
+{
+"idx": 518,
+"mid": "/m/08p9q4",
+"name": "Sidetone",
+"ancestors": [
+"Background noise",
+"Noise",
+"Channel, environment and background"
+],
+"description": "The audible feedback on a telecommunications channel that allows the speaker to know that the channel is operational."
+},
+{
+"idx": 519,
+"mid": "/m/07szfh9",
+"name": "Cacophony",
+"ancestors": [
+"Noise",
+"Channel, environment and background"
+],
+"description": "A loud, confusing, disagreeable sound, such as many voices shouting simultaneously."
+},
+{
+"idx": 520,
+"mid": "/m/0chx_",
+"name": "White noise",
+"ancestors": [
+"Noise",
+"Channel, environment and background"
+],
+"description": "A random, unstructured sound in which the value at any moment provides no information about the value at any other moment. White noise has equal energy in all frequency bands."
+},
+{
+"idx": 521,
+"mid": "/m/0cj0r",
+"name": "Pink noise",
+"ancestors": [
+"Noise",
+"Channel, environment and background"
+],
+"description": "Unstructured noise whose energy decreases with frequency such that equal amounts of energy are distributed in logarithmic bands of frequency, typically octaves.  Pink noise sounds more like a rumble where white noise sounds like a hiss."
+},
+{
+"idx": 522,
+"mid": "/m/07p_0gm",
+"name": "Throbbing",
+"ancestors": [
+"Noise",
+"Channel, environment and background"
+],
+"description": "A dull, continunous sound with a strong rhythmic modulation."
+},
+{
+"idx": 523,
+"mid": "/m/01jwx6",
+"name": "Vibration",
+"ancestors": [
+"Noise",
+"Channel, environment and background"
+],
+"description": "The general class of sounds caused by a periodic mechanical oscillation."
+},
+{
+"idx": 524,
+"mid": "/m/07c52",
+"name": "Television",
+"ancestors": [
+"Sound reproduction",
+"Channel, environment and background"
+],
+"description": "A sound that appears to have been produced by a television set."
+},
+{
+"idx": 525,
+"mid": "/m/06bz3",
+"name": "Radio",
+"ancestors": [
+"Sound reproduction",
+"Channel, environment and background"
+],
+"description": "A sound that appears to have been produced by a radio receiver."
+},
+{
+"idx": 526,
+"mid": "/m/07hvw1",
+"name": "Field recording",
+"ancestors": [
+"Recording",
+"Sound reproduction",
+"Channel, environment and background"
+],
+"description": "A sound that appears to have been recorded in some specific environment, usually with the intention of capturing and representing that environment."
+}
+]
