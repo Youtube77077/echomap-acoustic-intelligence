@@ -1,0 +1,175 @@
+{
+ "generated": "2026-11-12",
+ "dataset": "google/fleurs test split (CC BY 4.0)",
+ "model": "Whisper base LID-only int8 (EchoMap)",
+ "overall_top1": {
+  "full": 0.98,
+  "3s": 0.7,
+  "noisy_5dB": 0.767
+ },
+ "per_language": {
+  "en_us": {
+   "whisper_code": "en",
+   "n": 15,
+   "full": 1.0,
+   "3s": 1.0,
+   "noisy_5dB": 1.0
+  },
+  "de_de": {
+   "whisper_code": "de",
+   "n": 15,
+   "full": 1.0,
+   "3s": 0.667,
+   "noisy_5dB": 0.667
+  },
+  "fr_fr": {
+   "whisper_code": "fr",
+   "n": 15,
+   "full": 1.0,
+   "3s": 0.867,
+   "noisy_5dB": 0.8
+  },
+  "es_419": {
+   "whisper_code": "es",
+   "n": 15,
+   "full": 1.0,
+   "3s": 0.867,
+   "noisy_5dB": 1.0
+  },
+  "nl_nl": {
+   "whisper_code": "nl",
+   "n": 15,
+   "full": 1.0,
+   "3s": 0.667,
+   "noisy_5dB": 0.533
+  },
+  "it_it": {
+   "whisper_code": "it",
+   "n": 15,
+   "full": 1.0,
+   "3s": 0.733,
+   "noisy_5dB": 0.933
+  },
+  "pt_br": {
+   "whisper_code": "pt",
+   "n": 15,
+   "full": 1.0,
+   "3s": 0.8,
+   "noisy_5dB": 1.0
+  },
+  "ru_ru": {
+   "whisper_code": "ru",
+   "n": 15,
+   "full": 1.0,
+   "3s": 0.867,
+   "noisy_5dB": 0.933
+  },
+  "pl_pl": {
+   "whisper_code": "pl",
+   "n": 15,
+   "full": 1.0,
+   "3s": 0.867,
+   "noisy_5dB": 0.6
+  },
+  "tr_tr": {
+   "whisper_code": "tr",
+   "n": 15,
+   "full": 1.0,
+   "3s": 0.533,
+   "noisy_5dB": 0.8
+  },
+  "ar_eg": {
+   "whisper_code": "ar",
+   "n": 15,
+   "full": 1.0,
+   "3s": 1.0,
+   "noisy_5dB": 0.867
+  },
+  "hi_in": {
+   "whisper_code": "hi",
+   "n": 15,
+   "full": 1.0,
+   "3s": 0.733,
+   "noisy_5dB": 0.8
+  },
+  "ja_jp": {
+   "whisper_code": "ja",
+   "n": 15,
+   "full": 1.0,
+   "3s": 0.6,
+   "noisy_5dB": 1.0
+  },
+  "cmn_hans_cn": {
+   "whisper_code": "zh",
+   "n": 15,
+   "full": 1.0,
+   "3s": 0.8,
+   "noisy_5dB": 1.0
+  },
+  "ko_kr": {
+   "whisper_code": "ko",
+   "n": 15,
+   "full": 1.0,
+   "3s": 0.933,
+   "noisy_5dB": 1.0
+  },
+  "sw_ke": {
+   "whisper_code": "sw",
+   "n": 15,
+   "full": 0.667,
+   "3s": 0.067,
+   "noisy_5dB": 0.133
+  },
+  "fi_fi": {
+   "whisper_code": "fi",
+   "n": 15,
+   "full": 1.0,
+   "3s": 0.467,
+   "noisy_5dB": 0.933
+  },
+  "sv_se": {
+   "whisper_code": "sv",
+   "n": 15,
+   "full": 0.933,
+   "3s": 0.333,
+   "noisy_5dB": 0.267
+  },
+  "uk_ua": {
+   "whisper_code": "uk",
+   "n": 15,
+   "full": 1.0,
+   "3s": 0.333,
+   "noisy_5dB": 0.067
+  },
+  "vi_vn": {
+   "whisper_code": "vi",
+   "n": 15,
+   "full": 1.0,
+   "3s": 0.867,
+   "noisy_5dB": 1.0
+  }
+ },
+ "top_confusions": [
+  [
+   "sw->yo",
+   2
+  ],
+  [
+   "sw->ms",
+   1
+  ],
+  [
+   "sw->ja",
+   1
+  ],
+  [
+   "sw->id",
+   1
+  ],
+  [
+   "sv->la",
+   1
+  ]
+ ],
+ "method": "Language-identification evaluation on FLEURS real speech (google/fleurs, CC BY 4.0). CI only.\n\nFor each language: N test utterances, scored on full utterances, 3 s excerpts, and full utterances with white noise\nat 5 dB SNR. Reports top-1 accuracy per condition and the most frequent confusions.\nUsage: python tools/eval_lang.py <models_dir> <out_json> [n_per_lang]"
+}
