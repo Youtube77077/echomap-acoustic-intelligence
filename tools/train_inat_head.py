@@ -170,6 +170,8 @@ def main():
         pa = report["feature_sets"][k]["precision_at"]
         out[f"{k}_thr"] = np.array(min((float(t) for t, v in pa.items() if v["precision"] and v["precision"] >= 0.7),
                                        default=0.8))
+    out["metrics_json"] = np.array(json.dumps({k: {m: v[m] for m in ("top1", "top5", "by_group", "precision_at")}
+                                               for k, v in report["feature_sets"].items()}))
     np.savez_compressed(ROOT / "echomap" / "data" / "inat_head.npz", **out)
     (ROOT / "docs" / "eval").mkdir(parents=True, exist_ok=True)
     (ROOT / "docs" / "eval" / "inat_head.json").write_text(json.dumps(report, indent=1, ensure_ascii=False), encoding="utf-8")

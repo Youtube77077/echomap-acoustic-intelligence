@@ -324,6 +324,15 @@ class Case:
                     "executed", cls="measured")
         except _SkipSpecialists:
             pass
+        # animal species from the iNatSounds head (all modes; skipped when the head is not bundled)
+        from .models import inat_head
+        if inat_head.head() is not None:
+            with h.timed("model.inat_head", "iNatSounds species head on animal-sound intervals"):
+                n_inat = inat_head.add_records(inv, sed, bn, profile)
+            cap.add("inat_head", "Animal species (iNatSounds head, 5,569 species)", "executed",
+                    f"{n_inat} species record(s) added above the 70%-precision threshold", n_added=n_inat)
+        else:
+            cap.add("inat_head", "Animal species (iNatSounds head)", "unavailable", "Head not bundled in this build.")
         # bells: strike analysis + Dove's Guide match
         self._bell = None
         bell_recs = [r for r in inv.records if set(r.get("_audioset_names", [])) &

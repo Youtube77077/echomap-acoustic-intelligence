@@ -50,7 +50,10 @@ def run(x32k: np.ndarray, models_dir: str | Path, hop_s: float = 1.5, progress=N
         if progress:
             progress(min(1.0, (b + 16) / len(starts)))
     st = np.array(starts) / SR
-    return {"starts": st, "ends": np.minimum(st + CHUNK_S, len(x32k) / SR), "scores": np.concatenate(preds).astype(np.float32)}
+    res = {"starts": st, "ends": np.minimum(st + CHUNK_S, len(x32k) / SR), "scores": np.concatenate(preds).astype(np.float32)}
+    if emb:   # 1280-d embeddings, used by the iNatSounds species head (v1.0.9)
+        res["embeddings"] = np.nan_to_num(np.concatenate(emb).reshape(len(st), -1).astype(np.float32))
+    return res
 
 
 @lru_cache(maxsize=2)
