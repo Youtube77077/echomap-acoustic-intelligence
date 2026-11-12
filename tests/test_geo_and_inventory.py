@@ -42,15 +42,21 @@ def test_geo_no_evidence_gives_no_estimate():
     assert r["status"] == "no_estimate" and not r["candidates"]
 
 
-def test_geo_mains_60_favours_americas():
+def test_geo_mains_60_alone_is_not_a_reliable_estimate_but_points_to_60hz_grids():
     r = ge.GeoEngine("nonexistent").run([_rec(label="Mains hum (60 Hz electrical network)", tier="confirmed",
                                               category="electronic_signals")],
                                         {"detected": True, "nominal_hz": 60}, {})
-    assert r["status"] == "estimate"
-    isos = {c["iso2"] for c in r["candidates"][0]["countries"]}
+    # 60 Hz grids cover a large share of the land area: evidence alone narrows it < 2x -> no estimate
+    assert r["status"] == "no_estimate" and not r["candidates"]
+    isos = {c["iso2"] for c in r["weak_candidates"][0]["countries"]}
     assert isos & {"US", "CA", "MX", "BR", "CO", "VE", "PE", "SA", "KR", "TW", "PH"}
-    # coarse evidence must not produce fine precision
-    assert r["candidates"][0]["uncertainty_radius_km"] > 100
+
+
+def test_geo_mains_plus_language_gives_estimate():
+    recs = [_rec(label="Mains hum (60 Hz electrical network)", tier="confirmed", category="electronic_signals"),
+            _rec(id="D0002", language_code="ko", language_name="Korean", confidence=0.9)]
+    r = ge.GeoEngine("nonexistent").run(recs, {"detected": True, "nominal_hz": 60}, {})
+    assert r["status"] == "estimate" and r["candidates"][0]["countries"][0]["iso2"] in ("KR", "KP")
 
 
 def test_geo_language_plus_user_country():

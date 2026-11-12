@@ -26,7 +26,7 @@ def rt60_blind(x: np.ndarray, sr: int, onset_times: list[float], max_events: int
         pk = i + int(np.argmax(env_db[i:j]))
         if env_db[pk] - floor < 22:
             continue
-        pre = env_db[max(0, i - int(0.06 * sr / hop)):max(1, i - int(0.01 * sr / hop))]
+        pre = env_db[max(0, i - int(0.12 * sr / hop)):max(1, i - int(0.06 * sr / hop))]  # beyond STFT window leakage
         if len(pre) == 0 or np.mean(pre) > env_db[pk] - 15:
             continue  # not an impulsive onset out of relative quiet: a decay cannot be observed
         tail = env_db[pk:pk + int(3.0 * sr / hop)]
