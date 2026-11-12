@@ -61,6 +61,41 @@ jobs:
           if ($html.Content -notmatch "Detection inventory") { throw "UI not served" }
           Stop-Process -Id $p.Id -Force
           "Smoke test passed"
+      - name: UI test with real analysis and screenshots (Edge headless, preinstalled on runner)
+        shell: pwsh
+        run: |
+          $env:ECHOMAP_HEADLESS_FILE = "$env:RUNNER_TEMP\echomap_url2.txt"
+          $env:LOCALAPPDATA = "$env:RUNNER_TEMPppdata"
+          New-Item -ItemType Directory -Force "$env:LOCALAPPDATA\EchoMap" | Out-Null
+          '{"models_dir": "' + ("$env:GITHUB_WORKSPACE\ci_models" -replace '\','\') + '"}' | Out-File -Encoding ascii "$env:LOCALAPPDATA\EchoMap\config.json"
+          $p = Start-Process -FilePath "dist\EchoMap\EchoMap.exe" -PassThru
+          for ($i=0; $i -lt 60 -and -not (Test-Path $env:ECHOMAP_HEADLESS_FILE); $i++) { Start-Sleep -Milliseconds 500 }
+          $url, $tok = (Get-Content $env:ECHOMAP_HEADLESS_FILE -Raw).Trim().Split(" ")
+          $h = @{"X-EchoMap-Token"=$tok; "Content-Type"="application/json"}
+          $clip = "$env:GITHUB_WORKSPACE\ci_audio\soundscape.wav"
+          Invoke-RestMethod -Method Post -Uri ($url + "api/open") -Headers $h -Body (@{path=$clip} | ConvertTo-Json) | Out-Null
+          Invoke-RestMethod -Method Post -Uri ($url + "api/analyse") -Headers $h -Body "{}" | Out-Null
+          for ($i=0; $i -lt 240; $i++) { $s = Invoke-RestMethod -Uri ($url + "api/status") -Headers $h; if ($s.state -in @("analysed","error")) { break }; Start-Sleep 1 }
+          if ($s.state -ne "analysed") { throw "analysis state $($s.state): $($s.error)" }
+          $ctx = '{"context": {"date": {"mode": "unknown"}, "location": {"mode": "unknown"}}}'
+          Invoke-RestMethod -Method Post -Uri ($url + "api/context") -Headers $h -Body $ctx | Out-Null
+          for ($i=0; $i -lt 240; $i++) { $s = Invoke-RestMethod -Uri ($url + "api/status") -Headers $h; if ($s.state -in @("complete","error")) { break }; Start-Sleep 1 }
+          if ($s.state -ne "complete") { throw "context state $($s.state): $($s.error)" }
+          $r = Invoke-RestMethod -Uri ($url + "api/result") -Headers $h
+          "Inventory records: $($r.result.inventory.Count); geo: $($r.result.geo.summary)" | Tee-Object -Append $env:GITHUB_STEP_SUMMARY
+          $edge = "${env:ProgramFiles(x86)}\Microsoft\Edge\Application\msedge.exe"
+          New-Item -ItemType Directory -Force screenshots | Out-Null
+          foreach ($tab in @("analysis","inventory","geo","report")) {
+            & $edge --headless=new --disable-gpu --hide-scrollbars --window-size=1480,940 --virtual-time-budget=20000 "--screenshot=$PWD\screenshots\$tab.png" ($url + "#tab=$tab") 2>$null
+            Start-Sleep 2
+          }
+          Get-ChildItem screenshots | Select-Object Name, Length | Format-Table
+          Stop-Process -Id $p.Id -Force
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ui-screenshots
+          path: screenshots/*.png
+          retention-days: 14
       - name: Package
         shell: pwsh
         run: |

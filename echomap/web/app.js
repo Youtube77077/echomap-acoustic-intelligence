@@ -394,3 +394,13 @@ $("#btnModels").onclick = async () => {
 $("#btnModelsDir").onclick = async e => { e.preventDefault(); await api("choose_models_dir", {method: "POST", body: {}}); $("#modelsDlg").close(); $("#btnModels").click(); };
 $("#modelsDlg").addEventListener("close", () => { if ($("#modelsDlg").returnValue !== "close") return;
   api("settings", {method: "POST", body: {allow_online_gbif: $("#setGbif").checked, allow_online_osm: $("#setOsm").checked, allow_online_weather: $("#setWx").checked, list_threshold: +$("#setThr").value}}); });
+
+// ---------------------------------------------------------------- startup: resume an existing case, deep-link tabs
+(async () => {
+  const m = location.hash.match(/tab=(\w+)/);
+  if (m) { const b = $(`.tab[data-tab="${m[1]}"]`); if (b) b.click(); }
+  try {
+    const s = await api("status");
+    if (s.state === "analysed" || s.state === "complete") { await loadResult(); if (m) { const b = $(`.tab[data-tab="${m[1]}"]`); if (b) b.click(); } }
+  } catch (e) { /* no case yet */ }
+})();
