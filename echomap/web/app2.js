@@ -1,7 +1,7 @@
 /* EchoMap v1.0.3 workspace extensions: clue map (2D), 3D map (MapLibre), Intelligence tab, playback tools. */
 "use strict";
-const CLUE_COLORS = ["#4f8cff", "#ffb340", "#2ed3b7", "#ff6b9a", "#c77dff", "#7bd88f", "#f5e13c", "#ff8a4c", "#4dd0e1",
-  "#e57373", "#aed581", "#ba68c8", "#90caf9", "#ffd54f", "#80cbc4"];
+const CLUE_COLORS = ["#e889d6", "#f0937c", "#5cc3c7", "#a99cf0", "#6fb1f0", "#c3d86a", "#f2c45a", "#e57373", "#7fc8a9",
+  "#b39ddb", "#f6a5c0", "#8ecae6", "#ffb703", "#90be6d", "#cdb4db"];
 const GW = 720, GH = 360;
 
 function decodeBits(b64) {
@@ -70,7 +70,8 @@ const Clues = {
 // ---------------------------------------------------------------- 2D clue map
 const ClueMap = (() => {
   const cv = $("#clueCanvas"); let world = null, world10 = null, loading10 = false, proj = null, path = null, tf = d3.zoomIdentity, feats = [];
-  let byNum = new Map();
+  let byNum = new Map(), cities = [];
+  api("major_cities?min_pop=150000").then(c => { cities = c || []; draw(); }).catch(() => {});
   const index = w => { byNum = new Map(); w.features.forEach(f => { if (f.id != null) byNum.set(String(f.id).padStart(3, "0"), f); }); };
   d3.json("/static/vendor/countries-50m.json").then(t => { world = topojson.feature(t, t.objects.countries); feats = world.features; index(world); resize(); });
   function hiRes() {  // sharper borders once zoomed in (Natural Earth 1:10m), loaded on demand
@@ -103,6 +104,21 @@ const ClueMap = (() => {
       (l.shape.numeric || []).forEach(n => { const f = n && byNum.get(String(n).padStart(3, "0")); if (f) path(f); });
     } else ringPath(ctx, l.contour.coordinates.flat());
   }
+  function softContour(l) {   // rounded "blob" outline like an ancestry map; cached per layer
+    if (!l._soft) l._soft = rasterContours(l.raster, 3.2, 0.28);
+    return l._soft;
+  }
+  function heatRings() {     // nested confidence rings from the combined plausibility (relative 0.5 and 0.15)
+    const g = Clues.geo; if (!g?.heat?.length) return null;
+    if (g._rings) return g._rings;
+    const f = new Float64Array(GW * GH);
+    for (const [la, lo, v] of g.heat) { const i = cellOf(lo, la); if (i >= 0) f[i] = Math.max(f[i], v); }
+    if (d3.blur2) d3.blur2({data: f, width: GW, height: GH}, 2.2);
+    let mx = 0; for (let i = 0; i < f.length; i++) if (f[i] > mx) mx = f[i];
+    if (!mx) return null;
+    g._rings = d3.contours().size([GW, GH]).thresholds([0.15 * mx, 0.5 * mx])(f);
+    return g._rings;
+  }
   function draw() {
     if (!proj) return;
     const ctx = cv.getContext("2d"), k = tf.k, dpr = devicePixelRatio;
@@ -110,58 +126,67 @@ const ClueMap = (() => {
     ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, cv.width, cv.height);
     ctx.setTransform(k, 0, 0, k, tf.x * dpr, tf.y * dpr);
     path = d3.geoPath(proj, ctx);
-    const w = world10 || world;
-    ctx.beginPath(); path({type: "Sphere"}); ctx.fillStyle = "#0b1626"; ctx.fill();
-    if (w) { ctx.beginPath(); path(w); ctx.fillStyle = "#26303f"; ctx.fill(); ctx.strokeStyle = "#5a6a84"; ctx.lineWidth = 0.7 / k; ctx.stroke(); }
+    const w = world10 || world, exact = $("#clExact").checked;
+    ctx.beginPath(); path({type: "Sphere"}); ctx.fillStyle = "#dfe8f1"; ctx.fill();
+    if (w) { ctx.beginPath(); path(w); ctx.fillStyle = "#f7f8fa"; ctx.fill(); ctx.strokeStyle = "#c3ccd8"; ctx.lineWidth = 0.7 / k; ctx.stroke(); }
     const g = Clues.geo;
     if (g && $("#clProb").checked) {
       for (const [la, lo, v] of g.heat || []) { const p = proj([lo, la]); if (!p) continue; const s = Math.max(1.5, 3.2 * proj.scale() / 400);
-        const kk = Math.round(80 + 175 * v) * 3; ctx.fillStyle = `rgba(${LUT[kk]},${LUT[kk + 1]},${LUT[kk + 2]},${0.25 + 0.6 * v})`; ctx.fillRect(p[0] - s / 2, p[1] - s / 2, s, s); }
+        ctx.fillStyle = `rgba(31,102,229,${0.08 + 0.45 * v})`; ctx.fillRect(p[0] - s / 2, p[1] - s / 2, s, s); }
     }
     const act = Clues.active(), fa = fillA();
-    // area clues (countries / smooth regions)
+    // area clues: soft rounded regions (default) or exact borders
     act.filter(l => l.shape?.kind !== "points").forEach(l => {
       const a = Clues.alpha(l); if (a <= 0) return;
-      shapePath(ctx, l); ctx.fillStyle = hex(l.color, (l.used ? 0.55 : 0.3) * fa * a); ctx.fill("evenodd");
+      if (exact) shapePath(ctx, l); else { ctx.beginPath(); ringPath(ctx, softContour(l).coordinates.flat()); }
+      ctx.fillStyle = hex(l.color, (l.used ? 0.6 : 0.3) * fa * a); ctx.fill("evenodd");
+      ctx.strokeStyle = hex(l.color, 0.9 * a); ctx.lineWidth = 1 / k; ctx.setLineDash(l.used ? [] : [5 / k, 4 / k]); ctx.stroke(); ctx.setLineDash([]);
     });
+    // point clues (tram networks, mentioned cities, bell towers)
+    act.filter(l => l.shape?.kind === "points").forEach(l => { const a = Clues.alpha(l); if (a <= 0) return;
+      for (const q of l.shape.points) { const p = circle(ctx, q.lon, q.lat, q.r || 3, 2.5); if (!p) continue;
+        ctx.fillStyle = hex(l.color, 0.55 * a); ctx.fill(); ctx.strokeStyle = hex(l.color, a); ctx.lineWidth = 1 / k; ctx.stroke(); } });
+    // where clues agree: navy outline (like the nested outlines of an ancestry map)
     if ($("#clAgree").checked) {
       const ag = Clues.agreement();
       if (ag.max >= 2) {
         const top = new Uint8Array(GW * GH); for (let i = 0; i < top.length; i++) top[i] = ag.cnt[i] >= ag.max ? 1 : 0;
-        const c = rasterContours(top, 1.0, 0.4);
-        ctx.beginPath(); ringPath(ctx, c.coordinates.flat()); ctx.fillStyle = "rgba(255,90,60,0.22)"; ctx.fill("evenodd");
-        ctx.strokeStyle = "#ff5a3c"; ctx.lineWidth = 2.5 / k; ctx.stroke();
-        const lab = largestCentroid(c); if (lab && k < 8) halo(ctx, `Most clues agree here (${ag.max} of ${ag.n})`, lab, 13 / k, "#ffd2c8");
+        const c = rasterContours(top, exact ? 1.0 : 2.4, 0.35);
+        ctx.beginPath(); ringPath(ctx, c.coordinates.flat()); ctx.fillStyle = "rgba(36,55,94,0.10)"; ctx.fill("evenodd");
+        ctx.strokeStyle = "#24375e"; ctx.lineWidth = 2 / k; ctx.stroke();
       }
     }
-    act.filter(l => l.shape?.kind !== "points").forEach(l => { const a = Clues.alpha(l); if (a <= 0) return;
-      shapePath(ctx, l); ctx.setLineDash(l.used ? [] : [6 / k, 4 / k]);
-      ctx.strokeStyle = `rgba(255,255,255,${0.92 * a})`; ctx.lineWidth = (l.used ? 1.6 : 1.1) / k; ctx.stroke(); ctx.setLineDash([]); });
-    // point clues (tram networks, mentioned cities, bell towers): small circles at their real size
-    act.filter(l => l.shape?.kind === "points").forEach(l => { const a = Clues.alpha(l); if (a <= 0) return;
-      for (const q of l.shape.points) { const p = circle(ctx, q.lon, q.lat, q.r || 3, 2.5); if (!p) continue;
-        ctx.fillStyle = hex(l.color, 0.5 * a); ctx.fill(); ctx.strokeStyle = `rgba(255,255,255,${0.8 * a})`; ctx.lineWidth = 1 / k; ctx.stroke();
-        if ($("#clLabels").checked && k >= 12) halo(ctx, q.name, [p[0] + 5 / k, p[1] + 3 / k], 10 / k, l.color, "left"); } });
+    // combined estimate: two nested rings (likely / most likely)
+    if (g && $("#clRings").checked) {
+      const rings = heatRings();
+      if (rings) rings.forEach((r, i) => { ctx.beginPath(); ringPath(ctx, r.coordinates.flat());
+        ctx.strokeStyle = i ? "#16294d" : "#3b5a8f"; ctx.lineWidth = (i ? 2.4 : 1.6) / k; ctx.stroke(); });
+    }
     if ($("#clLabels").checked) {
       ctx.textAlign = "center";
-      for (const f of feats) { const a = path.area(f) * k * k; if (a < 2500 * dpr * dpr) continue; const c = path.centroid(f); if (!isFinite(c[0])) continue;
-        ctx.font = `${Math.min(13, 8 + Math.sqrt(a) / 80) * dpr / k}px Segoe UI`; ctx.fillStyle = "rgba(220,228,240,.55)";
-        ctx.fillText((f.properties.name || "").toUpperCase(), c[0], c[1]); }
-      if (k < 8) act.filter(l => l.shape?.kind !== "points").forEach(l => { const c = largestCentroid(l.contour); if (c && Clues.alpha(l) > 0.3) halo(ctx, l.label.length > 38 ? l.label.slice(0, 36) + "…" : l.label, c, 11 / k, l.color); });
+      for (const f of feats) { const a = path.area(f) * k * k; if (a < 1800 * dpr * dpr) continue; const c = path.centroid(f); if (!isFinite(c[0])) continue;
+        ctx.font = `${Math.min(15, 8 + Math.sqrt(a) / 70) * dpr / k}px Segoe UI`; ctx.fillStyle = "rgba(90,102,122,.9)";
+        ctx.fillText(f.properties.name || "", c[0], c[1]); }
+      const minPop = k < 2 ? 5e6 : k < 4 ? 2e6 : k < 8 ? 7e5 : k < 20 ? 2.5e5 : 1.5e5;
+      ctx.textAlign = "left";
+      const P8 = $("#clPlaces").checked ? Clues.places().slice(0, 8) : [];
+      for (const [nm, la, lo, pop] of cities) { if (pop < minPop || P8.some(q => Math.abs(q.lat - la) < 0.25 && Math.abs(q.lon - lo) < 0.4)) continue;
+        const p = proj([lo, la]); if (!p) continue;
+        ctx.beginPath(); ctx.arc(p[0], p[1], 2.2 * dpr / k, 0, 7); ctx.fillStyle = "#6b778c"; ctx.fill();
+        ctx.font = `${10.5 * dpr / k}px Segoe UI`; ctx.fillStyle = "#4b576b"; ctx.fillText(nm, p[0] + 4 * dpr / k, p[1] - 3 * dpr / k); }
     }
-    if (g && $("#clCand").checked) {   // estimate circles: filled, outlined, labelled with their radius
+    if (g && $("#clCand").checked) {   // estimate circles: navy, labelled with their radius
       (g.candidates || []).forEach(c => { const p = circle(ctx, c.centre.lon, c.centre.lat, c.uncertainty_radius_km, 6); if (!p) return;
-        ctx.fillStyle = c.rank === 1 ? "rgba(255,90,60,0.10)" : "rgba(255,179,64,0.07)"; ctx.fill();
-        ctx.strokeStyle = c.rank === 1 ? "#ff5a3c" : "#ffb340"; ctx.lineWidth = 2 / k; ctx.setLineDash(c.strength === "weaker" ? [5 / k, 4 / k] : []); ctx.stroke(); ctx.setLineDash([]);
-        ctx.beginPath(); ctx.arc(p[0], p[1], 3.5 / k, 0, 7); ctx.fillStyle = "#fff"; ctx.fill();
-        halo(ctx, `#${c.rank} ${c.name} · ±${c.uncertainty_radius_km} km`, [p[0] + 8 / k, p[1] - 8 / k], 11 / k, "#fff", "left"); });
+        ctx.strokeStyle = c.rank === 1 ? "#1f66e5" : "#7d93b8"; ctx.lineWidth = 1.8 / k; ctx.setLineDash([6 / k, 4 / k]); ctx.stroke(); ctx.setLineDash([]);
+        halo(ctx, `Estimate #${c.rank}: ${c.name} · ±${c.uncertainty_radius_km} km`, [p[0] + 8 / k, p[1] - 8 / k], 11 / k, "#16294d", "left"); });
     }
-    if (g && $("#clPlaces").checked) {   // likely places: circles sized to the place, strongest first on top
-      Clues.places().slice().reverse().forEach(q => { const p = circle(ctx, q.lon, q.lat, Math.max(q.radius_km, 3), 5); if (!p) return;
+    if (g && $("#clPlaces").checked) {   // likely places: blue circles sized to the place
+      Clues.places().slice().reverse().forEach(q => { if (q.share < 0.005 && q.rank > 3) return;
+        const p = circle(ctx, q.lon, q.lat, Math.max(q.radius_km, 3), 5); if (!p) return;
         const top = q.rank === 1;
-        ctx.fillStyle = top ? "rgba(255,70,50,0.35)" : `rgba(255,170,60,${0.12 + 0.5 * q.share})`; ctx.fill();
-        ctx.strokeStyle = top ? "#ff4632" : "#ffb340"; ctx.lineWidth = (top ? 2.6 : 1.6) / k; ctx.stroke();
-        if (q.rank <= 5 || k >= 6) halo(ctx, `${q.rank}. ${q.name} ${(q.share * 100).toFixed(0)}%`, [p[0] + 7 / k, p[1] - 6 / k], (top ? 13 : 11) / k, top ? "#ffd2c8" : "#ffe2b0", "left"); });
+        ctx.fillStyle = top ? "rgba(31,102,229,0.45)" : `rgba(31,102,229,${0.12 + 0.4 * q.share})`; ctx.fill();
+        ctx.strokeStyle = top ? "#0f3d99" : "#1f66e5"; ctx.lineWidth = (top ? 2.6 : 1.6) / k; ctx.stroke();
+        if (q.rank <= 5 || k >= 6) halo(ctx, `${q.rank}. ${q.name} ${(q.share * 100).toFixed(0)}%`, [p[0] + 7 / k, p[1] - 6 / k], (top ? 13 : 11) / k, top ? "#0f3d99" : "#16294d", "left"); });
     }
   }
   function largestCentroid(mp) {
@@ -172,7 +197,7 @@ const ClueMap = (() => {
   }
   function halo(ctx, text, [x, y], size, color, align = "center") {
     ctx.font = `600 ${size * devicePixelRatio}px Segoe UI`; ctx.textAlign = align; ctx.lineWidth = 3 * devicePixelRatio / tf.k;
-    ctx.strokeStyle = "rgba(8,12,20,.85)"; ctx.strokeText(text, x, y); ctx.fillStyle = color; ctx.fillText(text, x, y);
+    ctx.strokeStyle = "rgba(255,255,255,.92)"; ctx.strokeText(text, x, y); ctx.fillStyle = color; ctx.fillText(text, x, y);
   }
   const zoom = d3.zoom().scaleExtent([1, 2000]).on("zoom", e => { tf = e.transform; draw(); });
   d3.select(cv).call(zoom).on("dblclick.zoom", null);
@@ -202,7 +227,7 @@ const ClueMap = (() => {
   $("#clZoomIn").onclick = () => d3.select(cv).transition().duration(250).call(zoom.scaleBy, 2);
   $("#clZoomOut").onclick = () => d3.select(cv).transition().duration(250).call(zoom.scaleBy, 0.5);
   $("#clBest").onclick = best;
-  ["#clAgree", "#clProb", "#clCand", "#clLabels", "#clPlaces"].forEach(s => $(s).onchange = draw);
+  ["#clAgree", "#clProb", "#clCand", "#clLabels", "#clPlaces", "#clExact", "#clRings"].forEach(s => $(s).onchange = draw);
   $("#clFill").oninput = draw;
   $("#clLow").onchange = () => { Clues.showLow = $("#clLow").checked; renderClueList(); draw(); Map3D.refresh(); };
   return {resize, draw, focus, focusPlace, best};

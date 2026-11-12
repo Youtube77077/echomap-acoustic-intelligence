@@ -174,6 +174,8 @@ def make_handler(state: AppState):
                 return self._json(vars(state.settings))
             if path == "countries":
                 return self._json(gazetteer.country_list())
+            if path == "major_cities":
+                return self._json(gazetteer.major_cities(int(q.get("min_pop", "150000"))))
             if path == "cities":
                 return self._json(gazetteer.search_city(q.get("q", ""), q.get("cc") or None))
             if path == "report":

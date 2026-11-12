@@ -146,10 +146,10 @@ function drawWave() {
   const peak = Math.max(1e-4, ...w.max.map(Math.abs), ...w.min.map(Math.abs)), g = 0.95 / peak;  // auto-scale to peak
   ctx.fillStyle = "#3d6fd8";
   for (let x = 0; x < c.width; x++) { const i = Math.floor(x / c.width * n); ctx.fillRect(x, mid - w.max[i] * g * mid, 1, Math.max(1, (w.max[i] - w.min[i]) * g * mid)); }
-  ctx.fillStyle = "rgba(255,255,255,.5)"; ctx.font = `${9 * devicePixelRatio}px Consolas`; ctx.fillText(`peak ${(20 * Math.log10(peak)).toFixed(1)} dBFS (display normalised)`, 4, 10 * devicePixelRatio);
+  ctx.fillStyle = "rgba(24,40,63,.6)"; ctx.font = `${9 * devicePixelRatio}px Consolas`; ctx.fillText(`peak ${(20 * Math.log10(peak)).toFixed(1)} dBFS (display normalised)`, 4, 10 * devicePixelRatio);
   const x0 = S.view.t0 / S.duration * c.width, x1 = S.view.t1 / S.duration * c.width;
-  ctx.fillStyle = "rgba(255,179,64,.15)"; ctx.fillRect(x0, 0, x1 - x0, H); ctx.strokeStyle = "#ffb340"; ctx.strokeRect(x0, 0.5, x1 - x0, H - 1);
-  ctx.fillStyle = "#fff"; ctx.fillRect(audio.currentTime / S.duration * c.width, 0, 2, H);
+  ctx.fillStyle = "rgba(31,102,229,.12)"; ctx.fillRect(x0, 0, x1 - x0, H); ctx.strokeStyle = "#1f66e5"; ctx.strokeRect(x0, 0.5, x1 - x0, H - 1);
+  ctx.fillStyle = "#0f3d99"; ctx.fillRect(audio.currentTime / S.duration * c.width, 0, 2, H);
 }
 $("#wave").onclick = e => { if (!S.duration) return; const t = e.offsetX / e.target.clientWidth * S.duration; const w = S.view.t1 - S.view.t0;
   S.view.t0 = Math.max(0, Math.min(S.duration - w, t - w / 2)); S.view.t1 = S.view.t0 + w; audio.currentTime = t; requestSpec(); drawWave(); };
@@ -303,10 +303,10 @@ const Globe = (() => {
   function resize() { cv.width = cv.clientWidth * devicePixelRatio; cv.height = cv.clientHeight * devicePixelRatio; makeProj(); draw(); }
   function draw() {
     if (!proj) return; const ctx = cv.getContext("2d"), path = d3.geoPath(proj, ctx); ctx.clearRect(0, 0, cv.width, cv.height);
-    ctx.beginPath(); path({type: "Sphere"}); ctx.fillStyle = "#0a1630"; ctx.fill();
-    if ($("#lyrGrat").checked) { ctx.beginPath(); path(d3.geoGraticule10()); ctx.strokeStyle = "rgba(120,150,200,.15)"; ctx.lineWidth = 1; ctx.stroke(); }
-    if (world) { ctx.beginPath(); path(world); ctx.fillStyle = "#1c2a44"; ctx.fill();
-      if ($("#lyrBorders").checked) { ctx.strokeStyle = "rgba(160,180,215,.45)"; ctx.lineWidth = 0.6 * devicePixelRatio; ctx.stroke(); } }
+    ctx.beginPath(); path({type: "Sphere"}); ctx.fillStyle = "#dfe8f1"; ctx.fill();
+    if ($("#lyrGrat").checked) { ctx.beginPath(); path(d3.geoGraticule10()); ctx.strokeStyle = "rgba(80,110,160,.18)"; ctx.lineWidth = 1; ctx.stroke(); }
+    if (world) { ctx.beginPath(); path(world); ctx.fillStyle = "#f7f8fa"; ctx.fill();
+      if ($("#lyrBorders").checked) { ctx.strokeStyle = "rgba(120,135,160,.55)"; ctx.lineWidth = 0.6 * devicePixelRatio; ctx.stroke(); } }
     if (geo && $("#lyrHeat").checked && geo.heat) { const c = geo.heat_cell_deg / 2;
       for (const [la, lo, v] of geo.heat) { const k = Math.round(70 + 185 * v) * 3; ctx.beginPath();
         path({type: "Polygon", coordinates: [[[lo - c, la - c], [lo + c, la - c], [lo + c, la + c], [lo - c, la + c], [lo - c, la - c]]]});
@@ -320,7 +320,7 @@ const Globe = (() => {
         ctx.beginPath(); path(circ); ctx.strokeStyle = col; ctx.lineWidth = (c.rank === 1 ? 2.5 : 1.5) * devicePixelRatio; ctx.setLineDash(c.strength === "weaker" ? [6, 4] : []); ctx.stroke(); ctx.setLineDash([]);
         ctx.fillStyle = col + "22"; ctx.fill();
         const p = proj([c.centre.lon, c.centre.lat]); if (p && visible(c.centre)) { ctx.beginPath(); ctx.arc(p[0], p[1], 4 * devicePixelRatio, 0, 7); ctx.fillStyle = col; ctx.fill();
-          ctx.font = `${11 * devicePixelRatio}px Segoe UI`; ctx.fillStyle = "#fff"; ctx.fillText(c._local ? `L${c.rank}` : `#${c.rank}`, p[0] + 6, p[1] - 6); } });
+          ctx.font = `${11 * devicePixelRatio}px Segoe UI`; ctx.fillStyle = "#18283f"; ctx.fillText(c._local ? `L${c.rank}` : `#${c.rank}`, p[0] + 6, p[1] - 6); } });
     }
     if (geo && $("#lyrEvid").checked) {
       const ctxLoc = S.result?.context?.location; if (ctxLoc?.city) marker(ctx, ctxLoc.city.lon, ctxLoc.city.lat, "#2ed3b7", "user city");
@@ -328,7 +328,7 @@ const Globe = (() => {
     }
   }
   function visible(c) { if (!mode3d) return true; const r = proj.rotate(); return d3.geoDistance([c.lon, c.lat], [-r[0], -r[1]]) < Math.PI / 2; }
-  function marker(ctx, lon, lat, col, label) { const p = proj([lon, lat]); if (!p || !visible({lon, lat})) return; ctx.beginPath(); ctx.moveTo(p[0], p[1]); ctx.lineTo(p[0] - 6, p[1] - 14); ctx.lineTo(p[0] + 6, p[1] - 14); ctx.closePath(); ctx.fillStyle = col; ctx.fill(); ctx.fillStyle = "#fff"; ctx.fillText(label, p[0] + 8, p[1] - 10); }
+  function marker(ctx, lon, lat, col, label) { const p = proj([lon, lat]); if (!p || !visible({lon, lat})) return; ctx.beginPath(); ctx.moveTo(p[0], p[1]); ctx.lineTo(p[0] - 6, p[1] - 14); ctx.lineTo(p[0] + 6, p[1] - 14); ctx.closePath(); ctx.fillStyle = col; ctx.fill(); ctx.fillStyle = "#18283f"; ctx.fillText(label, p[0] + 8, p[1] - 10); }
   let dragG = null;
   cv.onmousedown = e => dragG = {x: e.clientX, y: e.clientY, rot: [...rot], panX, panY};
   window.addEventListener("mouseup", () => dragG = null);

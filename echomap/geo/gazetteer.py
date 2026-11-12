@@ -69,5 +69,11 @@ def nearest_city(lat: float, lon: float) -> dict | None:
             "admin1": r[3], "distance_km": round(float(d[i]), 1), "population": r[6]}
 
 
+def major_cities(min_pop: int = 150000) -> list[list]:
+    """[name, lat, lon, population] for cities above min_pop (map labels)."""
+    rows, _, _ = _cities()
+    return [[r[0], r[4], r[5], r[6]] for r in rows if r[6] >= min_pop]
+
+
 def country_list() -> list[dict]:
     return sorted(({"iso2": k, "name": v["name"]} for k, v in countries().items()), key=lambda d: d["name"])

@@ -99,8 +99,8 @@ def test_vector_clue_maps_render_world_and_zoom(nets):
     assert set(views) == {"world", "zoom"}
     z = Image.open(io.BytesIO(base64.b64decode(views["zoom"].split(",", 1)[1]))).convert("RGB")
     a = np.asarray(z)
-    # the #1 place circle is drawn in red somewhere in the zoomed view
-    red = (a[..., 0] > 200) & (a[..., 1] < 110) & (a[..., 2] < 90)
-    assert red.sum() > 50
+    # the #1 place circle is drawn in dark blue somewhere in the zoomed view
+    navy = (a[..., 0] < 70) & (a[..., 1] > 40) & (a[..., 1] < 120) & (a[..., 2] > 130)
+    assert navy.sum() > 50
     x0, y0, x1, y1 = images.default_view(r)
     assert x0 < 14.44 < x1 and y0 < 50.07 < y1 and (x1 - x0) < 20

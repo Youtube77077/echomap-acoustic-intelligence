@@ -99,8 +99,8 @@ def map_png(geo: dict, width: int = 1400, bbox=None) -> str:
     return png_b64(img)
 
 
-CLUE_RGB = [(79, 140, 255), (255, 179, 64), (46, 211, 183), (255, 107, 154), (199, 125, 255), (123, 216, 143), (245, 225, 60),
-            (255, 138, 76), (77, 208, 225), (229, 115, 115)]
+CLUE_RGB = [(232, 137, 214), (240, 147, 124), (92, 195, 199), (169, 156, 240), (111, 177, 240), (195, 216, 106), (242, 196, 90),
+            (229, 115, 115), (127, 200, 169), (179, 157, 219)]   # pastel, as in the app's light map
 
 
 def _font(size: int):
@@ -188,7 +188,7 @@ def clue_map_png(geo: dict, width: int = 1400, bbox=None, title: str | None = No
     S = 2
     W = width * S
     H = int(np.clip(W * (y1 - y0) / ((x1 - x0) * kx), 300 * S, 1100 * S))
-    img = Image.new("RGB", (W, H), (11, 22, 38))
+    img = Image.new("RGB", (W, H), (223, 232, 241))
     d = ImageDraw.Draw(img, "RGBA")   # RGB base + RGBA drawing = alpha blending
 
     def px(lon, lat):
@@ -198,7 +198,7 @@ def clue_map_png(geo: dict, width: int = 1400, bbox=None, title: str | None = No
         for poly in f["polygons"]:
             if len(poly[0]) >= 3:
                 for r in _rings(poly[0]):
-                    d.polygon([px(lo, la) for lo, la in r], fill=(38, 48, 63, 255), outline=(92, 108, 132, 255))
+                    d.polygon([px(lo, la) for lo, la in r], fill=(247, 248, 250, 255), outline=(195, 204, 216, 255))
     by_num = {}
     for f in cs:
         if f["id"] is not None:
@@ -206,6 +206,7 @@ def clue_map_png(geo: dict, width: int = 1400, bbox=None, title: str | None = No
     deg_px = W / (x1 - x0)
 
     def overlay(draw_fn, alpha_fill, color, outline=True):
+        dark = tuple(int(c * 0.7) for c in color)
         mask = Image.new("L", (W, H), 0)
         draw_fn(ImageDraw.Draw(mask))
         cover = float(np.asarray(mask, np.float32).mean() / 255.0)
@@ -214,7 +215,7 @@ def clue_map_png(geo: dict, width: int = 1400, bbox=None, title: str | None = No
         img.paste(Image.new("RGB", (W, H), color), (0, 0), mask.point(lambda v: int(v * alpha_fill)))
         if outline:
             edge = mask.filter(ImageFilter.FIND_EDGES).filter(ImageFilter.MaxFilter(3))
-            img.paste(Image.new("RGB", (W, H), (255, 255, 255)), (0, 0), edge.point(lambda v: 230 if v > 40 else 0))
+            img.paste(Image.new("RGB", (W, H), dark), (0, 0), edge.point(lambda v: 200 if v > 40 else 0))
 
     def circle_pts(lat, lon, r_km, n=96):
         out = []
@@ -264,49 +265,60 @@ def clue_map_png(geo: dict, width: int = 1400, bbox=None, title: str | None = No
                 md.bitmap((0, 0), m, fill=255)
             overlay(fn, 0.42, col)
     f11, f13, f15 = _font(11 * S), _font(13 * S), _font(15 * S)
+    if bbox:
+        from ..geo.gazetteer import major_cities
+        span = x1 - x0
+        min_pop = 3e6 if span > 60 else 8e5 if span > 25 else 2.5e5 if span > 8 else 6e4
+        fc = _font(11 * S)
+        for nm, la, lo, pop in major_cities(int(min_pop)):
+            if x0 <= lo <= x1 and y0 <= la <= y1 and not any(
+                    abs(q["lat"] - la) < 0.25 and abs(q["lon"] - lo) < 0.4 for q in places[:8]):
+                cx, cy = px(lo, la)
+                d.ellipse([cx - 2.5 * S, cy - 2.5 * S, cx + 2.5 * S, cy + 2.5 * S], fill=(107, 119, 140, 255))
+                d.text((cx + 5 * S, cy - 9 * S), nm, fill=(75, 87, 107, 255), font=fc, stroke_width=S, stroke_fill=(255, 255, 255, 220))
 
     def label(xy, text, fill, font):
-        d.text(xy, text, fill=fill, font=font, stroke_width=S + 1, stroke_fill=(8, 12, 20, 230))
+        d.text(xy, text, fill=fill, font=font, stroke_width=S + 1, stroke_fill=(255, 255, 255, 235))
     for c in geo.get("candidates", [])[:3]:
         if not places or c["rank"] == 1:
             pts = circle_pts(c["centre"]["lat"], c["centre"]["lon"], c["uncertainty_radius_km"], 180)
-            col = (255, 90, 60) if c["rank"] == 1 else (255, 179, 64)
-            d.polygon(pts, fill=col + (22,))
-            d.line(pts + [pts[0]], fill=col + (255,), width=2 * S)
+            col = (31, 102, 229) if c["rank"] == 1 else (125, 147, 184)
+            for j in range(0, len(pts), 2):   # dashed ring
+                d.line([pts[j], pts[(j + 1) % len(pts)]], fill=col + (255,), width=2 * S)
             cx, cy = px(c["centre"]["lon"], c["centre"]["lat"])
-            label((cx + 8 * S, cy - 18 * S), f"Estimate #{c['rank']}: {c['name']} (±{c['uncertainty_radius_km']:g} km)", (255, 255, 255, 255), f11)
+            label((cx + 8 * S, cy - 18 * S), f"Estimate #{c['rank']}: {c['name']} (±{c['uncertainty_radius_km']:g} km)", (22, 41, 77, 255), f11)
     for q in reversed([q for q in places[:8] if q["share"] >= 0.005 or q["rank"] <= 3]):
         pts = circle_pts(q["lat"], q["lon"], max(q["radius_km"], 3), 120)
         xs = [p[0] for p in pts]
         cx, cy = px(q["lon"], q["lat"])
         top = q["rank"] == 1
-        col = (255, 70, 50) if top else (255, 179, 64)
+        col = (15, 61, 153) if top else (31, 102, 229)
         if max(xs) - min(xs) < 12 * S:
             r = (9 if top else 6) * S
             pts = [(cx + r * math.cos(t), cy + r * math.sin(t)) for t in np.linspace(0, 2 * math.pi, 48)]
             xs = [p[0] for p in pts]
-        d.polygon(pts, fill=col + (150 if top else 95,))
+        d.polygon(pts, fill=col + (120 if top else 70,))
         d.line(pts + [pts[0]], fill=col + (255,), width=(3 if top else 2) * S)
         if not bbox and not top:
             continue
         label((max(xs) + 6 * S, cy - 10 * S), f"{q['rank']}. {q['name']}  {q['share'] * 100:.0f}%",
-              (255, 225, 205, 255) if top else (255, 230, 180, 255), f15 if top else f13)
+              (15, 61, 153, 255) if top else (22, 41, 77, 255), f15 if top else f13)
     out = img.resize((width, H // S), Image.Resampling.LANCZOS)
     d2 = ImageDraw.Draw(out, "RGBA")
     y = 8
-    rows = [((255, 70, 50), "Likely places (circle = place size, % = relative share)")] if places else []
+    rows = [((15, 61, 153), "Likely places (circle = place size, % = relative share)")] if places else []
     rows += legend[:10]
     if title:
-        d2.rectangle([0, 0, width, 26], fill=(8, 12, 20, 200))
-        d2.text((10, 4), title, fill=(255, 255, 255, 255), font=_font(15))
+        d2.rectangle([0, 0, width, 26], fill=(255, 255, 255, 230))
+        d2.text((10, 4), title, fill=(22, 41, 77, 255), font=_font(15))
         y = 34
-    d2.rectangle([6, y - 4, 470, y + 17 * len(rows) + 2], fill=(8, 12, 20, 170))
+    d2.rectangle([6, y - 4, 470, y + 17 * len(rows) + 2], fill=(255, 255, 255, 220), outline=(216, 225, 238, 255))
     for col, text in rows:
-        d2.rectangle([12, y, 24, y + 12], fill=col + (255,), outline=(255, 255, 255, 255))
-        d2.text((30, y - 2), text[:66], fill=(230, 235, 245, 255), font=_font(12))
+        d2.ellipse([12, y, 24, y + 12], fill=col + (255,), outline=(120, 130, 150, 255))
+        d2.text((30, y - 2), text[:66], fill=(24, 40, 63, 255), font=_font(12))
         y += 17
     d2.text((8, out.height - 18), "Inferred regions, not measured locations. Country clues use exact borders; other areas are smoothed "
-            "0.5° cells; shares are relative, not calibrated.", fill=(200, 210, 225, 255), font=_font(11))
+            "0.5° cells; shares are relative, not calibrated.", fill=(70, 85, 110, 255), font=_font(11))
     return png_b64(out)
 
 
