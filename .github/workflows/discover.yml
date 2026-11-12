@@ -1,0 +1,21 @@
+name: discover
+# Prints the formats of approved external data sources from GitHub's runner (nothing is stored).
+on:
+  workflow_dispatch:
+    inputs:
+      script:
+        description: "Script under tools/ to run"
+        default: "discover_sources.py"
+permissions:
+  contents: read
+jobs:
+  discover:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - run: pip install requests==2.34.2
+      - run: python -u tools/${{ inputs.script }}
