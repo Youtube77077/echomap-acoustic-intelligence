@@ -25,7 +25,8 @@ Last updated: 2026-11-12.
 | Species range and seasonality | Implemented | BirdNET+ Geomodel V3.0.4 | Used in the geo tests on the soundscape | Biased towards well-surveyed regions |
 | Spoken language identification (99 languages) | Tested (CI parity on TTS speech) | Whisper-base, LID-only ONNX | Parity: int8 top-1 equals FP32 top-1. Misidentifies robotic TTS French as Thai and Dutch as German | No real-speech labelled test yet |
 | Engine firing frequency, acceleration, gear-change heuristics | Tested (synthetic) | Harmonic-sum f0 tracking | `test_engine_f0_rising` | Doppler shift also raises f0; events limited to road-engine labels with continuous f0 |
-| Siren pitch pattern (two-tone, wail, yelp) | Tested (synthetic) | Pitch-contour statistics | `test_two_tone_siren`, `test_wail_siren` | Real-clip test pending (ESC-50 siren scored low on the AudioSet "Siren" class) |
+| Siren pitch pattern (two-tone, wail, yelp) | Tested (synthetic + real) | Pitch-contour statistics, plus a whole-recording **siren scanner** independent of AudioSet | `test_two_tone_siren`, `test_wail_siren`, `test_siren_scan_*`. The ESC-50 siren clip, missed by AudioSet (Siren 0.03), is detected by the scanner (yelp-like, 0.55) | Tonal birdsong can produce sweeps: hits during confident animal activity are attributed to the animal |
+| AVAS-like electric-vehicle warning sound | Tested (synthetic) | Co-drifting non-harmonic tones 160 Hz-5 kHz (UN R138 rules) | `test_avas_like_*` (detects co-drifting tones; rejects static tones, sirens, harmonic partials) | No real EV recording tested yet; harmonic AVAS designs are excluded by design |
 | Periodic beeps, ticks, locator tones | Tested (synthetic) | Tone tracking plus regularity | `test_periodic_beeps_1hz_locator_pattern`, `test_click_train` | The source type is an interpretation |
 | Wind gusts (microphone wind noise) | Implemented | Low-frequency envelope with LF-dominance check | Real clips reviewed | No wind speed in m/s |
 | Scene inference (beach, forest, urban, railway, hall, …) | Implemented | Hand-weighted rules over AudioSet scores | Train clip → "Railway environment" | Weights are heuristics, not trained |
@@ -58,7 +59,7 @@ For each gap: what must be detected, prior work, a candidate approach, resources
   - Look for tonal components (from the existing tone tracker) in 160 Hz–5 kHz whose frequency changes slowly and steadily over seconds, without a low-frequency combustion harmonic series.
   - Report "AVAS-like tonal pattern (possible EV at low speed)".
 - **Test:** synthetic AVAS-style sweeps (rule-derived), then real EV pass-by clips from Freesound (needs approval).
-- **Expected:** useful for low-speed pass-bys only. Above ~20–30 km/h tyre noise dominates and AVAS may switch off. **Status: Researched, next to build.**
+- **Expected:** useful for low-speed pass-bys only. Above ~20–30 km/h tyre noise dominates and AVAS may switch off. **Status: Built (pattern detector), tested on synthetic signals. A real EV pass-by test set needs approval.**
 
 ### 2.3 Church bells: identification and geolocation
 - **What must be detected:** which tower (or kind of ring) a bell recording comes from.
