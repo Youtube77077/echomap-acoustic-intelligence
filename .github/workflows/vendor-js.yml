@@ -1,0 +1,32 @@
+name: vendor-js
+# Vendors pinned browser libraries into echomap/web/vendor (integrity-checked against the npm registry).
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  vendor:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch maplibre-gl 6.18.0 (BSD-3-Clause)
+        run: |
+          set -euo pipefail
+          meta=$(curl -sSL https://registry.npmjs.org/maplibre-gl/6.18.0)
+          url=$(echo "$meta" | python3 -c "import sys,json;print(json.load(sys.stdin)['dist']['tarball'])")
+          want=$(echo "$meta" | python3 -c "import sys,json;print(json.load(sys.stdin)['dist']['integrity'])")
+          curl -sSL -o ml.tgz "$url"
+          got="sha512-$(openssl dgst -sha512 -binary ml.tgz | base64 -w0)"
+          [ "$got" = "$want" ] || { echo "INTEGRITY MISMATCH"; exit 1; }
+          mkdir -p x echomap/web/vendor/maplibre
+          tar -xzf ml.tgz -C x package/dist/maplibre-gl.js package/dist/maplibre-gl.css package/LICENSE.txt
+          cp x/package/dist/maplibre-gl.js x/package/dist/maplibre-gl.css echomap/web/vendor/maplibre/
+          cp x/package/LICENSE.txt echomap/web/vendor/maplibre/LICENSE.txt
+          echo "maplibre-gl 6.18.0 $want" > echomap/web/vendor/maplibre/VERSION.txt
+          ls -la echomap/web/vendor/maplibre
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add echomap/web/vendor/maplibre
+          git diff --cached --quiet && echo "no changes" || (git commit -m "Vendor maplibre-gl 6.18.0 (integrity-checked)" && git push)
