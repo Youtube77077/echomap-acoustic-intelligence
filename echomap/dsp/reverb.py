@@ -30,12 +30,17 @@ def rt60_blind(x: np.ndarray, sr: int, onset_times: list[float], max_events: int
         if len(pre) == 0 or np.mean(pre) > env_db[pk] - 15:
             continue  # not an impulsive onset out of relative quiet: a decay cannot be observed
         tail = env_db[pk:pk + int(3.0 * sr / hop)]
+        # truncate the free decay where it reaches the noise floor or a new event starts (envelope rises
+        # > 6 dB above its running minimum), THEN integrate (otherwise later events dominate the integral)
+        run_min = np.minimum.accumulate(tail)
+        stop_idx = np.where((tail < floor + 5) | (tail > run_min + 6))[0]
+        stop = int(stop_idx[0]) if len(stop_idx) else len(tail)
+        tail = tail[:stop]
+        if len(tail) < 8:
+            continue
         lin = 10 ** (tail / 10)
         sch = np.cumsum(lin[::-1])[::-1]
         sch_db = 10 * np.log10(sch / sch[0] + 1e-14)
-        stop = np.where(tail < floor + 5)[0]
-        stop = stop[0] if len(stop) else len(tail)
-        sch_db = sch_db[:stop]
         a = np.where(sch_db <= -5)[0]
         b = np.where(sch_db <= -25)[0]
         if not len(a) or not len(b) or b[0] - a[0] < 4:

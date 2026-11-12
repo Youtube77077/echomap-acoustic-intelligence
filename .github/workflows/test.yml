@@ -33,7 +33,9 @@ jobs:
           key: audio-${{ hashFiles('tests/test_audio_manifest.json') }}
       - run: python tools/fetch_test_audio.py "$ECHOMAP_AUDIO"
       - name: Unit + real-audio tests
-        run: python -m pytest -q -rA --durations=10 tests | tee pytest.txt
+        run: |
+          set -o pipefail
+          python -m pytest -q -rA --durations=10 tests | tee pytest.txt
       - name: Evaluation summary
         if: always()
         run: |
