@@ -1,10 +1,12 @@
-# EchoMap v1.0.3
+# EchoMap v1.0.4
 
 Downloads:
-- `EchoMap-v1.0.3-win64.zip`: the application.
+- `EchoMap-v1.0.4-win64.zip`: the application.
 - `EchoMap-models-v2.zip`: same model pack as v1.0.2 (no change). Extract into `EchoMap\models`.
 
 ## New
+- Bundles the worldwide tram-network dataset, the city transit sound library, the larger reference library and the trained vehicle-type head (car / bus / truck / tram / motorcycle; 67% balanced accuracy on held-out Melbourne sites), where their builds succeeded.
+- (v1.0.3 was not published separately; its features are listed below.)
 - **Circles and likely places.**
   - Point clues are now ranked as concrete **likely places**, each drawn as a circle sized to the place: tram networks, cities named in speech, bell towers. Every place is scored with *all* evidence evaluated at that exact point.
   - Each place shows a relative share. That share is relative among the places considered, not a calibrated probability.
