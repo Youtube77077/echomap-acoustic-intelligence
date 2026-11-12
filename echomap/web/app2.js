@@ -82,7 +82,7 @@ const ClueMap = (() => {
   function resize() {
     if (!cv.clientWidth) return;
     cv.width = cv.clientWidth * devicePixelRatio; cv.height = cv.clientHeight * devicePixelRatio;
-    proj = d3.geoNaturalEarth1().fitExtent([[10, 10], [cv.width - 10, cv.height - 10]], {type: "Sphere"});
+    proj = d3.geoNaturalEarth1().fitExtent([[10, 10], [cv.width - 10, cv.height - 10]], {type: "Sphere"}); pgen++;
     draw();
   }
   function ringPath(ctx, rings) {
@@ -98,10 +98,26 @@ const ClueMap = (() => {
     if (!(px >= minPx)) { ctx.beginPath(); ctx.arc(p[0], p[1], minPx / tf.k, 0, 7); }
     return p;
   }
+  // Outlines are built once per projection as Path2D objects (projected, unzoomed coordinates) and only filled /
+  // stroked on redraw. Building the path was the expensive part (thousands of island rings per frame).
+  let pgen = 0;
+  function cached(obj, key, build) {
+    const c = obj._p2d || (obj._p2d = {}); const kk = key + "@" + pgen;
+    if (!c[kk]) { for (const x in c) if (x.startsWith(key + "@")) delete c[x]; const p2 = new Path2D(); build(p2); c[kk] = p2; }
+    return c[kk];
+  }
+  const worldP2D = w => cached(w, "world", p2 => d3.geoPath(proj, p2)(w));
+  function layerP2D(l, exact) {
+    if (exact && l.shape?.kind === "countries" && byNum.size)
+      return cached(l, "exact" + (world10 ? 10 : 50), p2 => { const gp = d3.geoPath(proj, p2);
+        (l.shape.numeric || []).forEach(n => { const f = n && byNum.get(String(n).padStart(3, "0")); if (f) gp(f); }); });
+    if (exact) return cached(l, "contour", p2 => ringPath(p2, l.contour.coordinates.flat()));
+    return cached(l, "soft", p2 => ringPath(p2, softContour(l).coordinates.flat()));
+  }
   function shapePath(ctx, l) {
     ctx.beginPath();
     if (l.shape?.kind === "countries" && byNum.size) {
-      (l.shape.numeric || []).forEach(n => { const f = n && byNum.get(String(n).padStart(3, "0")); if (f) path(f); });
+      (l.shape.numeric || []).forEach(n => { const f = n && byNum.get(String(n).padStart(3, "0")); if (f && onScreen(f)) path(f); });
     } else ringPath(ctx, l.contour.coordinates.flat());
   }
   function softContour(l) {   // rounded "blob" outline like an ancestry map; cached per layer
@@ -136,17 +152,20 @@ const ClueMap = (() => {
     c.setTransform(s, 0, 0, s, (tf.x - s * bufTf.x) * dpr, (tf.y - s * bufTf.y) * dpr); c.drawImage(buf, 0, 0);
   }
   const fpath = d3.geoPath();   // unscaled projected-area / centroid cache for country labels
-  function labelGeom(f) { if (f._lp !== proj) { fpath.projection(proj); f._la = fpath.area(f); f._lc = fpath.centroid(f); f._lp = proj; } return f; }
+  function labelGeom(f) { if (f._lp !== proj) { fpath.projection(proj); f._la = fpath.area(f); f._lc = fpath.centroid(f); f._lb = fpath.bounds(f); f._lp = proj; } return f; }
+  let vb = null;   // visible box in projected (unzoomed) canvas coordinates, set at the start of each full draw
+  const onScreen = f => { const b = labelGeom(f)._lb; return !vb || !(b[1][0] < vb[0] || b[0][0] > vb[2] || b[1][1] < vb[1] || b[0][1] > vb[3]); };
   function full(ctx) {
     const k = tf.k, dpr = devicePixelRatio;
 
     ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, cv.width, cv.height);
     ctx.setTransform(k, 0, 0, k, tf.x * dpr, tf.y * dpr);
     path = d3.geoPath(proj, ctx);
-    if (k >= 6) hiRes();
-    const w = (k >= 6 && world10) || world, exact = $("#clExact").checked;
+    if (k >= 10) hiRes();
+    const w = (k >= 10 && world10) || world, exact = $("#clExact").checked;
     ctx.beginPath(); path({type: "Sphere"}); ctx.fillStyle = "#dfe8f1"; ctx.fill();
-    if (w) { ctx.beginPath(); path(w); ctx.fillStyle = "#f7f8fa"; ctx.fill(); ctx.strokeStyle = "#c3ccd8"; ctx.lineWidth = 0.7 / k; ctx.stroke(); }
+    vb = [(-tf.x * dpr) / k, (-tf.y * dpr) / k, (cv.width - tf.x * dpr) / k, (cv.height - tf.y * dpr) / k];
+    if (w) { const wp = worldP2D(w); ctx.fillStyle = "#f7f8fa"; ctx.fill(wp); ctx.strokeStyle = "#c3ccd8"; ctx.lineWidth = 0.7 / k; ctx.stroke(wp); }
     const g = Clues.geo;
     if (g && $("#clProb").checked) {
       for (const [la, lo, v] of g.heat || []) { const p = proj([lo, la]); if (!p) continue; const s = Math.max(1.5, 3.2 * proj.scale() / 400);
@@ -156,9 +175,9 @@ const ClueMap = (() => {
     // area clues: soft rounded regions (default) or exact borders
     act.filter(l => l.shape?.kind !== "points").forEach(l => {
       const a = Clues.alpha(l); if (a <= 0) return;
-      if (exact) shapePath(ctx, l); else { ctx.beginPath(); ringPath(ctx, softContour(l).coordinates.flat()); }
-      ctx.fillStyle = hex(l.color, (l.used ? 0.6 : 0.3) * fa * a); ctx.fill("evenodd");
-      ctx.strokeStyle = hex(l.color, 0.9 * a); ctx.lineWidth = 1 / k; ctx.setLineDash(l.used ? [] : [5 / k, 4 / k]); ctx.stroke(); ctx.setLineDash([]);
+      const lp = layerP2D(l, exact);
+      ctx.fillStyle = hex(l.color, (l.used ? 0.6 : 0.3) * fa * a); ctx.fill(lp, "evenodd");
+      ctx.strokeStyle = hex(l.color, 0.9 * a); ctx.lineWidth = 1 / k; ctx.setLineDash(l.used ? [] : [5 / k, 4 / k]); ctx.stroke(lp); ctx.setLineDash([]);
     });
     // point clues (tram networks, mentioned cities, bell towers)
     act.filter(l => l.shape?.kind === "points").forEach(l => { const a = Clues.alpha(l); if (a <= 0) return;
@@ -173,19 +192,20 @@ const ClueMap = (() => {
         if (Clues._agKey !== key) { const top = new Uint8Array(GW * GH); for (let i = 0; i < top.length; i++) top[i] = ag.cnt[i] >= ag.max ? 1 : 0;
           Clues._ag = rasterContours(top, exact ? 1.0 : 2.4, 0.35); Clues._agKey = key; }
         const c = Clues._ag;
-        ctx.beginPath(); ringPath(ctx, c.coordinates.flat()); ctx.fillStyle = "rgba(36,55,94,0.10)"; ctx.fill("evenodd");
-        ctx.strokeStyle = "#24375e"; ctx.lineWidth = 2 / k; ctx.stroke();
+        const ap = cached(c, "ag", p2 => ringPath(p2, c.coordinates.flat()));
+        ctx.fillStyle = "rgba(36,55,94,0.10)"; ctx.fill(ap, "evenodd");
+        ctx.strokeStyle = "#24375e"; ctx.lineWidth = 2 / k; ctx.stroke(ap);
       }
     }
     // combined estimate: two nested rings (likely / most likely)
     if (g && $("#clRings").checked) {
       const rings = heatRings();
-      if (rings) rings.forEach((r, i) => { ctx.beginPath(); ringPath(ctx, r.coordinates.flat());
-        ctx.strokeStyle = i ? "#16294d" : "#3b5a8f"; ctx.lineWidth = (i ? 2.4 : 1.6) / k; ctx.stroke(); });
+      if (rings) rings.forEach((r, i) => { const rp = cached(r, "ring", p2 => ringPath(p2, r.coordinates.flat()));
+        ctx.strokeStyle = i ? "#16294d" : "#3b5a8f"; ctx.lineWidth = (i ? 2.4 : 1.6) / k; ctx.stroke(rp); });
     }
     if ($("#clLabels").checked) {
       ctx.textAlign = "center";
-      for (const f of (w ? w.features : [])) { labelGeom(f); const a = f._la * k * k; if (a < 1800 * dpr * dpr) continue; const c = f._lc; if (!isFinite(c[0])) continue;
+      for (const f of (w ? w.features : [])) { if (!onScreen(f)) continue; const a = f._la * k * k; if (a < 1800 * dpr * dpr) continue; const c = f._lc; if (!isFinite(c[0])) continue;
         ctx.font = `${Math.min(15, 8 + Math.sqrt(a) / 70) * dpr / k}px Segoe UI`; ctx.fillStyle = "rgba(90,102,122,.9)";
         ctx.fillText(f.properties.name || "", c[0], c[1]); }
       const minPop = k < 2 ? 5e6 : k < 4 ? 2e6 : k < 8 ? 7e5 : k < 20 ? 2.5e5 : 1.5e5;
@@ -408,7 +428,7 @@ const Intel = {
     // transcripts
     const tr = r.transcripts;
     $("#trList").innerHTML = !tr ? '<div class="muted">No transcription ran (see Capabilities).</div>' :
-      `<div class="muted">${tr.counts.clear} clear · ${tr.counts.uncertain} uncertain · ${tr.counts["likely spurious"]} likely spurious. Whisper can invent text on noise or very faint audio, so rely only on "clear" lines, and check even those by listening.</div>` +
+      `<div class="muted">${tr.counts?.clear ?? 0} clear · ${tr.counts?.uncertain ?? 0} uncertain · ${tr.counts?.["likely spurious"] ?? 0} likely spurious.${tr.stats?.skipped_for_time?.length ? ` ${tr.stats.skipped_for_time.length} weaker segment(s) not transcribed (time budget).` : ""} Whisper can invent text on noise or very faint audio, so rely only on "clear" lines, and check even those by listening.</div>` +
       tr.segments.map(t => `<div class="cap-row"><span>${playBtn(t.start, t.end)} ${fmtT(t.start)}–${fmtT(t.end).slice(3)}<br>
         <span class="tier ${t.quality === "clear" ? "confirmed" : t.quality === "uncertain" ? "possible" : "unclassified"}">${esc(t.quality)}</span></span>
         <span>${t.text ? `“${esc(t.text)}”` : "<i>(no text)</i>"} <span class="muted">[${esc(t.language)}${t.enhanced ? ", enhanced faint speech" : ""}; no-speech ${t.no_speech_prob}, logprob ${t.avg_logprob}, level ${t.level_dbfs} dBFS]</span></span></div>`).join("");
