@@ -6,27 +6,20 @@ on:
     branches: ["claude/**", "v1.0.8-dev"]
     paths: ["echomap/**", "tools/profile_case.py", "tools/make_real_audio.py", "tests/test_real_pipeline.py", ".github/workflows/realaudio.yml"]
   workflow_dispatch:
-    inputs:
-      modes:
-        description: "Space-separated modes"
-        default: "quick standard deep"
-      files:
-        description: "Space-separated files (dutch_speech.wav street_dutch.wav long_mix.wav)"
-        default: "dutch_speech.wav street_dutch.wav long_mix.wav"
-      assert:
-        description: "Run the pytest assertions (true/false)"
-        default: "true"
 permissions:
   contents: read
 jobs:
-  realaudio:
+  profile:
     runs-on: ubuntu-24.04
-    timeout-minutes: 90
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: [quick, standard, deep]
+        file: [dutch_speech.wav, street_dutch.wav, long_mix.wav]
     env:
       GH_TOKEN: ${{ github.token }}
       LOCALAPPDATA: /home/runner/appdata
-      ECHOMAP_MODELS: /home/runner/appdata/EchoMap/models
-      ECHOMAP_REAL_AUDIO: /home/runner/real
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -47,16 +40,11 @@ jobs:
           path: /home/runner/real
           key: real-audio-${{ hashFiles('tools/make_real_audio.py') }}
       - run: test -f /home/runner/real/long_mix.wav || python tools/make_real_audio.py /home/runner/real
-      - name: Profile
-        run: |
-          set +e
-          mkdir -p /home/runner/out
-          for m in ${{ inputs.modes || 'quick standard deep' }}; do for f in ${{ inputs.files || 'dutch_speech.wav street_dutch.wav long_mix.wav' }}; do
-            echo "::group::$m $f"
-            ECHOMAP_STACKDUMP=240 timeout -s KILL 1200 python -u tools/profile_case.py "/home/runner/real/$f" $m "/home/runner/out/${m}_${f}.json"
-            echo "exit=$?"; echo "::endgroup::"
-          done; done
-          echo "=== SUMMARY ==="; cat /home/runner/out/*.json; echo
+      - name: Profile ${{ matrix.mode }} ${{ matrix.file }}
+        run: ECHOMAP_STACKDUMP=150 timeout -s KILL 600 python -u tools/profile_case.py "/home/runner/real/${{ matrix.file }}" ${{ matrix.mode }} out.json
       - name: End-to-end assertions
-        if: inputs.assert != 'false' && hashFiles('tests/test_real_pipeline.py') != ''
+        if: hashFiles('tests/test_real_pipeline.py') != ''
+        env:
+          ECHOMAP_PROFILE_JSON: out.json
+          ECHOMAP_FILE: ${{ matrix.file }}
         run: python -m pytest -q tests/test_real_pipeline.py -rA

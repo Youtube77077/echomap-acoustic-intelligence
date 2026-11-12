@@ -119,14 +119,32 @@ const ClueMap = (() => {
     g._rings = d3.contours().size([GW, GH]).thresholds([0.15 * mx, 0.5 * mx])(f);
     return g._rings;
   }
+  // Rendering strategy (v1.0.8): the full map is drawn into an offscreen buffer once per view. While the user
+  // drags or zooms, only that bitmap is re-blitted with the relative transform (cheap); a full redraw follows
+  // ~140 ms after the movement stops. 1:10m borders are used only when zoomed in far enough to matter.
+  const buf = document.createElement("canvas"); let bufTf = null;
   function draw() {
     if (!proj) return;
-    const ctx = cv.getContext("2d"), k = tf.k, dpr = devicePixelRatio;
+    if (buf.width !== cv.width || buf.height !== cv.height) { buf.width = cv.width; buf.height = cv.height; }
+    full(buf.getContext("2d")); bufTf = tf;
+    const c = cv.getContext("2d"); c.setTransform(1, 0, 0, 1, 0, 0); c.clearRect(0, 0, cv.width, cv.height); c.drawImage(buf, 0, 0);
+  }
+  function blit() {
+    if (!bufTf) return draw();
+    const dpr = devicePixelRatio, s = tf.k / bufTf.k, c = cv.getContext("2d");
+    c.setTransform(1, 0, 0, 1, 0, 0); c.fillStyle = "#dfe8f1"; c.fillRect(0, 0, cv.width, cv.height);
+    c.setTransform(s, 0, 0, s, (tf.x - s * bufTf.x) * dpr, (tf.y - s * bufTf.y) * dpr); c.drawImage(buf, 0, 0);
+  }
+  const fpath = d3.geoPath();   // unscaled projected-area / centroid cache for country labels
+  function labelGeom(f) { if (f._lp !== proj) { fpath.projection(proj); f._la = fpath.area(f); f._lc = fpath.centroid(f); f._lp = proj; } return f; }
+  function full(ctx) {
+    const k = tf.k, dpr = devicePixelRatio;
 
     ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, cv.width, cv.height);
     ctx.setTransform(k, 0, 0, k, tf.x * dpr, tf.y * dpr);
     path = d3.geoPath(proj, ctx);
-    const w = world10 || world, exact = $("#clExact").checked;
+    if (k >= 6) hiRes();
+    const w = (k >= 6 && world10) || world, exact = $("#clExact").checked;
     ctx.beginPath(); path({type: "Sphere"}); ctx.fillStyle = "#dfe8f1"; ctx.fill();
     if (w) { ctx.beginPath(); path(w); ctx.fillStyle = "#f7f8fa"; ctx.fill(); ctx.strokeStyle = "#c3ccd8"; ctx.lineWidth = 0.7 / k; ctx.stroke(); }
     const g = Clues.geo;
@@ -167,7 +185,7 @@ const ClueMap = (() => {
     }
     if ($("#clLabels").checked) {
       ctx.textAlign = "center";
-      for (const f of feats) { const a = path.area(f) * k * k; if (a < 1800 * dpr * dpr) continue; const c = path.centroid(f); if (!isFinite(c[0])) continue;
+      for (const f of (w ? w.features : [])) { labelGeom(f); const a = f._la * k * k; if (a < 1800 * dpr * dpr) continue; const c = f._lc; if (!isFinite(c[0])) continue;
         ctx.font = `${Math.min(15, 8 + Math.sqrt(a) / 70) * dpr / k}px Segoe UI`; ctx.fillStyle = "rgba(90,102,122,.9)";
         ctx.fillText(f.properties.name || "", c[0], c[1]); }
       const minPop = k < 2 ? 5e6 : k < 4 ? 2e6 : k < 8 ? 7e5 : k < 20 ? 2.5e5 : 1.5e5;
@@ -202,8 +220,9 @@ const ClueMap = (() => {
     ctx.font = `600 ${size * devicePixelRatio}px Segoe UI`; ctx.textAlign = align; ctx.lineWidth = 3 * devicePixelRatio / tf.k;
     ctx.strokeStyle = "rgba(255,255,255,.92)"; ctx.strokeText(text, x, y); ctx.fillStyle = color; ctx.fillText(text, x, y);
   }
-  let queued = false;
-  const redraw = () => { if (queued) return; queued = true; requestAnimationFrame(() => { queued = false; draw(); }); };
+  let queued = false, settle = null;
+  const redraw = () => { if (queued) return; queued = true; requestAnimationFrame(() => { queued = false; blit(); });
+    clearTimeout(settle); settle = setTimeout(draw, 140); };
   const zoom = d3.zoom().scaleExtent([1, 2000]).on("zoom", e => { tf = e.transform; redraw(); });
   d3.select(cv).call(zoom).on("dblclick.zoom", null);
   const toLL = e => { const dpr = devicePixelRatio; return proj.invert([(e.offsetX * dpr - tf.x * dpr) / tf.k, (e.offsetY * dpr - tf.y * dpr) / tf.k]); };
