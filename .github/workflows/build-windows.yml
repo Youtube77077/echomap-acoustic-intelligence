@@ -95,7 +95,7 @@ jobs:
           "Report HTML: $([math]::Round($rep.RawContentLength/1KB)) KB" | Tee-Object -Append $env:GITHUB_STEP_SUMMARY
           $edge = "${env:ProgramFiles(x86)}\Microsoft\Edge\Application\msedge.exe"
           New-Item -ItemType Directory -Force screenshots | Out-Null
-          foreach ($tab in @("analysis","inventory","geo","report")) {
+          foreach ($tab in @("analysis","inventory","geo","intel","report")) {
             & $edge --headless=new --disable-gpu --hide-scrollbars --window-size=1480,940 --virtual-time-budget=60000 --timeout=45000 --run-all-compositor-stages-before-draw "--screenshot=$PWD\screenshots\$tab.png" ($url + "#tab=$tab") 2>$null
             Start-Sleep 2
           }
