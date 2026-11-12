@@ -10,6 +10,7 @@ jobs:
     timeout-minutes: 75
     env:
       GH_TOKEN: ${{ github.token }}
+      WIKIMEDIA_CONTACT: ${{ vars.WIKIMEDIA_CONTACT }}
       REF_BUDGET_MIN: "50"
       REF_CAP: "30"
     steps:

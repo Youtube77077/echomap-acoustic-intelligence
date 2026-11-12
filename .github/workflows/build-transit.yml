@@ -11,6 +11,7 @@ jobs:
     timeout-minutes: 110
     env:
       GH_TOKEN: ${{ github.token }}
+      WIKIMEDIA_CONTACT: ${{ vars.WIKIMEDIA_CONTACT }}
       TRANSIT_BUDGET_MIN: "75"
       TRANSIT_CAP_PER_CITY_KIND: "3"
     steps:

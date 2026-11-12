@@ -41,7 +41,8 @@ from echomap.models import sed  # noqa: E402
 
 API = "https://commons.wikimedia.org/w/api.php"
 S = requests.Session()
-S.headers["User-Agent"] = "EchoMap-transit-library-builder/1.0 (private research tool; low volume; rate-limited)"
+S.headers["User-Agent"] = (f"EchoMap-transit-library-builder/1.0 (one-off open-licence dataset build; rate-limited; "
+                        f"contact: {os.environ.get('WIKIMEDIA_CONTACT', 'not set')})")
 ROOTS = ["Category:Sounds of trams", "Category:Audio files about public transport", "Category:Audio files about rail transport",
          "Category:Voice messages in public transport", "Category:Sounds of trains", "Category:Sounds of rail transport",
          "Category:Sounds of buses", "Category:Sounds of metro", "Category:Sounds of rapid transit",

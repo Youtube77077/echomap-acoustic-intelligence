@@ -25,7 +25,8 @@ from echomap.models import sed  # noqa: E402
 
 API = "https://commons.wikimedia.org/w/api.php"
 S = requests.Session()
-S.headers["User-Agent"] = "EchoMap-reference-builder/1.0 (private research tool; low volume)"
+S.headers["User-Agent"] = (f"EchoMap-reference-builder/1.0 (one-off open-licence dataset build; rate-limited; "
+                        f"contact: {os.environ.get('WIKIMEDIA_CONTACT', 'not set')})")
 QUERIES = {
     "crossing signal": ["pedestrian crossing", "crosswalk signal", "Walk Sign", "audible pedestrian signal", "Akustikkennung Ampel",
                         "semaforo sonoro", "Toryanse", "aŭda piedira semaforo", "Övergångsställe"],
