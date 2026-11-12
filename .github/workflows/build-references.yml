@@ -7,9 +7,11 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-24.04
-    timeout-minutes: 60
+    timeout-minutes: 75
     env:
       GH_TOKEN: ${{ github.token }}
+      REF_BUDGET_MIN: "50"
+      REF_CAP: "30"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

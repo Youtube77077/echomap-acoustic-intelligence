@@ -8,6 +8,7 @@ Only CC0 / public domain / CC BY / CC BY-SA files are used, and every entry keep
 import base64
 import gzip
 import json
+import os
 import re
 import sys
 import time
@@ -71,67 +72,88 @@ def _search(q, limit=25):
     return list((j.get("query") or {}).get("pages", {}).values())
 
 
+def candidates(cat, qs):
+    """Search all queries of a category first (cheap), keep licence/size-eligible files in query order."""
+    out = []
+    for q in qs:
+        for p in search(q):
+            ii = (p.get("imageinfo") or [{}])[0]
+            lic = ii.get("extmetadata", {}).get("LicenseShortName", {}).get("value", "")
+            title = p["title"][5:]
+            if PRONUNCIATION.match(title) or not OK_LIC.match(lic.strip()):
+                continue
+            if not (30_000 <= ii.get("size", 0) <= 15_000_000) or "audio" not in ii.get("mime", "") and "ogg" not in ii.get("mime", ""):
+                continue
+            out.append((q, p))
+    return out
+
+
 def main():
     models, work = sys.argv[1], Path(sys.argv[2])
+    budget_s = float(os.environ.get("REF_BUDGET_MIN", "70")) * 60
+    cap = int(os.environ.get("REF_CAP", "30"))
+    t_start = time.time()
     clips = work / "clips"
     clips.mkdir(parents=True, exist_ok=True)
+    labels = sed.load_labels(models)
     refs, seen = [], set()
-    for cat, qs in QUERIES.items():
-        n_cat = 0
-        for q in qs:
-            for p in search(q):
-                title = p["title"][5:]
-                ii = (p.get("imageinfo") or [{}])[0]
-                em = ii.get("extmetadata", {})
-                lic = em.get("LicenseShortName", {}).get("value", "")
-                if title in seen or PRONUNCIATION.match(title) or not OK_LIC.match(lic.strip()):
-                    continue
-                if not (30_000 <= ii.get("size", 0) <= 15_000_000) or "audio" not in ii.get("mime", "") and "ogg" not in ii.get("mime", ""):
-                    continue
-                seen.add(title)
-                dst = clips / re.sub(r"[^A-Za-z0-9._-]+", "_", title)[:120]
-                try:
-                    body = fetch_file(ii["url"])
-                    if body is None:
-                        print("skip (download refused/throttled)", title)
-                        continue
-                    dst.write_bytes(body)
-                    x, sr, _ = decode_mono(dst, 32000)
-                except Exception as e:  # noqa: BLE001
-                    print("skip", title, e)
-                    dst.unlink(missing_ok=True)
-                    continue
-                dur = len(x) / sr
-                if dur < 0.5 or dur > 300:
-                    dst.unlink(missing_ok=True)
-                    continue
-                r = sed.run(x, models)
-                emb = r["embeddings"].mean(axis=0)
-                emb /= np.linalg.norm(emb) + 1e-9
-                top = np.argsort(-r["scores"].max(axis=0))[:3]
-                labels = sed.load_labels(models)
-                x8 = resample(x, 32000, 8000)
-                tracks = tonal.tone_tracks(x, 32000)
-                pats = tonal.periodic_tone_patterns(tracks)
-                coords = (p.get("coordinates") or [{}])[0]
-                artist = re.sub(r"<[^>]+>", "", em.get("Artist", {}).get("value", ""))[:120]
-                refs.append({"id": f"R{len(refs) + 1:04d}", "title": title, "category": cat, "query": q,
-                             "description": f"Wikimedia Commons recording found for '{q}'",
-                             "source_url": f"https://commons.wikimedia.org/wiki/File:{title.replace(' ', '_')}",
-                             "license": lic, "artist": artist, "lat": coords.get("lat"), "lon": coords.get("lon"),
-                             "coordinate_precision": "Commons file coordinates (uploader supplied)" if coords else None,
-                             "date": em.get("DateTimeOriginal", {}).get("value"), "duration_s": round(dur, 2), "sample_rate_decoded": 32000,
-                             "audioset_top": [labels[i]["name"] for i in top],
-                             "periodic_patterns": pats[:3], "clip_file": dst.name,
-                             "embedding": base64.b64encode(emb.astype(np.float16).tobytes()).decode(),
-                             "fingerprint": fingerprint(x8)[:6000]})
-                n_cat += 1
-                print(f"{cat:16s} {title[:70]:70s} {lic:14s} {dur:6.1f}s coords={bool(coords)}")
-                time.sleep(0.3)
-                if n_cat >= 30:
-                    break
-            if n_cat >= 30:
+    queues = {cat: candidates(cat, qs) for cat, qs in QUERIES.items()}
+    print("eligible candidates:", {c: len(v) for c, v in queues.items()})
+    counts = {c: 0 for c in QUERIES}
+    # round-robin over categories so every category gets clips even if the time budget runs out
+    while any(queues.values()) and time.time() - t_start < budget_s:
+        for cat in QUERIES:
+            if not queues[cat] or counts[cat] >= cap:
+                queues[cat] = []
+                continue
+            if time.time() - t_start >= budget_s:
+                print("time budget reached; writing what has been built")
                 break
+            q, p = queues[cat].pop(0)
+            title = p["title"][5:]
+            if title in seen:
+                continue
+            seen.add(title)
+            ii = (p.get("imageinfo") or [{}])[0]
+            em = ii.get("extmetadata", {})
+            lic = em.get("LicenseShortName", {}).get("value", "")
+            dst = clips / re.sub(r"[^A-Za-z0-9._-]+", "_", title)[:120]
+            try:
+                body = fetch_file(ii["url"])
+                if body is None:
+                    print("skip (download refused/throttled)", title)
+                    continue
+                dst.write_bytes(body)
+                x, sr, _ = decode_mono(dst, 32000)
+            except Exception as e:  # noqa: BLE001
+                print("skip", title, e)
+                dst.unlink(missing_ok=True)
+                continue
+            dur = len(x) / sr
+            if dur < 0.5 or dur > 300:
+                dst.unlink(missing_ok=True)
+                continue
+            r = sed.run(x, models)
+            emb = r["embeddings"].mean(axis=0)
+            emb /= np.linalg.norm(emb) + 1e-9
+            top = np.argsort(-r["scores"].max(axis=0))[:3]
+            x8 = resample(x, 32000, 8000)
+            pats = tonal.periodic_tone_patterns(tonal.tone_tracks(x, 32000))
+            coords = (p.get("coordinates") or [{}])[0]
+            artist = re.sub(r"<[^>]+>", "", em.get("Artist", {}).get("value", ""))[:120]
+            refs.append({"id": f"R{len(refs) + 1:04d}", "title": title, "category": cat, "query": q,
+                         "description": f"Wikimedia Commons recording found for '{q}'",
+                         "source_url": f"https://commons.wikimedia.org/wiki/File:{title.replace(' ', '_')}",
+                         "license": lic, "artist": artist, "lat": coords.get("lat"), "lon": coords.get("lon"),
+                         "coordinate_precision": "Commons file coordinates (uploader supplied)" if coords else None,
+                         "date": em.get("DateTimeOriginal", {}).get("value"), "duration_s": round(dur, 2), "sample_rate_decoded": 32000,
+                         "audioset_top": [labels[i]["name"] for i in top],
+                         "periodic_patterns": pats[:3], "clip_file": dst.name,
+                         "embedding": base64.b64encode(emb.astype(np.float16).tobytes()).decode(),
+                         "fingerprint": fingerprint(x8)[:6000]})
+            counts[cat] += 1
+            print(f"{cat:16s} {title[:70]:70s} {lic:14s} {dur:6.1f}s coords={bool(coords)} t={int(time.time() - t_start)}s")
+            time.sleep(0.3)
     meta = {"built": time.strftime("%Y-%m-%d"), "n": len(refs), "source": "Wikimedia Commons (per-file licences recorded)",
             "categories": {c: sum(1 for r in refs if r["category"] == c) for c in QUERIES},
             "with_coordinates": sum(1 for r in refs if r["lat"] is not None),
