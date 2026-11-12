@@ -1,0 +1,306 @@
+"""Narrowband / tonal analysis: mains hum (ENF), tone tracking, siren patterns, periodic signals, engine f0."""
+from __future__ import annotations
+
+import numpy as np
+
+from .spectral import stft_power
+
+
+def _interp_peak(spec: np.ndarray, k: int) -> float:
+    """Quadratic interpolation of a spectral peak (on log power). Returns a fractional bin."""
+    if k <= 0 or k >= len(spec) - 1:
+        return float(k)
+    a, b, c = np.log(spec[k - 1] + 1e-20), np.log(spec[k] + 1e-20), np.log(spec[k + 1] + 1e-20)
+    d = a - 2 * b + c
+    return float(k + (0.5 * (a - c) / d if d != 0 else 0.0))
+
+
+# ----------------------------------------------------------------------------- mains hum / ENF
+def mains_hum(x_2k: np.ndarray, sr: int = 2000) -> dict:
+    """Detect 50 vs 60 Hz mains hum (and harmonics) and extract an ENF trace.
+
+    x_2k: audio resampled to `sr` (2 kHz is enough for harmonics up to 240 Hz).
+    """
+    seg = int(8 * sr)
+    if len(x_2k) < seg:
+        seg = int(2 ** np.floor(np.log2(max(len(x_2k), 256))))
+    hop = seg // 2
+    p = stft_power(x_2k, seg, hop, center=False)
+    psd = np.median(p, axis=1)  # median over time = robust to transients
+    df = sr / seg
+    freqs = np.arange(len(psd)) * df
+    out = {"freq_resolution_hz": round(df, 4), "families": {}}
+    for nominal in (50, 60):
+        harm = []
+        for h in (1, 2, 3, 4):
+            f0 = nominal * h
+            if f0 + 3 > sr / 2:
+                break
+            pk = (freqs >= f0 - 0.6 * h ** 0.5) & (freqs <= f0 + 0.6 * h ** 0.5)
+            bg = ((freqs >= f0 - 4) & (freqs <= f0 - 1.5)) | ((freqs >= f0 + 1.5) & (freqs <= f0 + 4))
+            if not pk.any() or not bg.any():
+                continue
+            k = np.where(pk)[0][np.argmax(psd[pk])]
+            snr = 10 * np.log10(psd[k] / (np.median(psd[bg]) + 1e-20) + 1e-20)
+            fpk = _interp_peak(psd, k) * df
+            harm.append({"harmonic": h, "freq_hz": round(fpk, 3), "snr_db": round(float(snr), 1)})
+        strong = [hh for hh in harm if hh["snr_db"] >= 6]
+        score = sum(max(0.0, hh["snr_db"] - 6) for hh in harm)
+        out["families"][nominal] = {"harmonics": harm, "n_strong": len(strong), "score": round(score, 1)}
+    f50, f60 = out["families"][50], out["families"][60]
+    best = 50 if f50["score"] >= f60["score"] else 60
+    fb, fo = out["families"][best], out["families"][110 - best]
+    fund = next((h for h in fb["harmonics"] if h["harmonic"] == 1), None)
+    detected = (fb["n_strong"] >= 2 or (fund and fund["snr_db"] >= 12)) and fb["score"] > 2 * fo["score"] + 3
+    out["detected"] = bool(detected)
+    out["nominal_hz"] = best if detected else None
+    # ENF trace from the strongest harmonic of the winning family
+    if detected:
+        h = max(fb["harmonics"], key=lambda r: r["snr_db"])
+        fc = best * h["harmonic"]
+        band = (freqs >= fc - 1.0) & (freqs <= fc + 1.0)
+        idx = np.where(band)[0]
+        trace = []
+        for t in range(p.shape[1]):
+            col = p[:, t]
+            k = idx[np.argmax(col[idx])]
+            trace.append(_interp_peak(col, k) * df / h["harmonic"])
+        trace = np.array(trace)
+        out["enf_trace"] = {"t_s": [round(i * hop / sr + seg / sr / 2, 2) for i in range(len(trace))],
+                            "freq_hz": [round(float(v), 4) for v in trace], "harmonic_used": h["harmonic"]}
+        dev = trace - best
+        out["enf_stats"] = {"median_offset_hz": round(float(np.median(dev)), 4), "std_hz": round(float(dev.std()), 4)}
+        out["mains_consistent"] = bool(abs(np.median(dev)) < 0.25 and dev.std() < 0.15)
+        out["confidence_note"] = ("Peak SNRs over the harmonic series are deterministic measurements. A stable tone "
+                                  "within ±0.25 Hz of nominal is consistent with mains interference, but motors, "
+                                  "transformers in imported devices, or synthetic tones can mimic it.")
+    return out
+
+
+# ----------------------------------------------------------------------------- tone tracking
+def tone_tracks(x: np.ndarray, sr: int, f_lo: float = 250.0, f_hi: float = 8000.0, prom_db: float = 12.0,
+                hop_s: float = 0.01, min_dur: float = 0.04) -> list[dict]:
+    """Link prominent narrowband peaks across frames into tonal tracks."""
+    hop = max(1, int(hop_s * sr))
+    n_fft = 2048 if sr >= 32000 else 1024
+    p = stft_power(x, n_fft, hop)
+    db = 10 * np.log10(p + 1e-14)
+    freqs = np.linspace(0, sr / 2, p.shape[0])
+    a, b = np.searchsorted(freqs, f_lo), np.searchsorted(freqs, min(f_hi, sr / 2 - 1))
+    sub = db[a:b]
+    # local background: median over +-15 bins
+    from numpy.lib.stride_tricks import sliding_window_view as swv
+    w = 31
+    pad = np.pad(sub, ((w // 2, w // 2), (0, 0)), mode="edge")
+    bg = np.median(swv(pad, w, axis=0), axis=-1)
+    prom = sub - bg
+    active: list[dict] = []
+    done: list[dict] = []
+    df = freqs[1]
+    for t in range(sub.shape[1]):
+        col = prom[:, t]
+        pk = np.where((col > prom_db) & (col >= np.roll(col, 1)) & (col >= np.roll(col, -1)))[0]
+        pk = pk[np.argsort(-col[pk])][:6]
+        used = set()
+        for tr in active:
+            best, bd = None, 1e9
+            for k in pk:
+                if k in used:
+                    continue
+                d = abs((k + a) * df - tr["f"][-1])
+                if d < bd and d <= max(40.0, 0.06 * tr["f"][-1]):
+                    best, bd = k, d
+            if best is not None:
+                used.add(best)
+                tr["f"].append((best + a) * df)
+                tr["db"].append(float(sub[best, t]))
+                tr["end"] = t
+                tr["miss"] = 0
+            else:
+                tr["miss"] += 1
+        for k in pk:
+            if k not in used:
+                active.append({"start": t, "end": t, "f": [(k + a) * df], "db": [float(sub[k, t])], "miss": 0})
+        still = []
+        for tr in active:
+            (still if tr["miss"] <= 2 else done).append(tr)
+        active = still
+    done.extend(active)
+    out = []
+    for tr in done:
+        dur = (tr["end"] - tr["start"] + 1) * hop / sr
+        if dur >= min_dur:
+            f = np.array(tr["f"])
+            out.append({"start": round(tr["start"] * hop / sr, 3), "end": round((tr["end"] + 1) * hop / sr, 3),
+                        "duration": round(dur, 3), "f_median": round(float(np.median(f)), 1),
+                        "f_min": round(float(f.min()), 1), "f_max": round(float(f.max()), 1),
+                        "level_db": round(float(np.median(tr["db"])), 1),
+                        "contour": [round(float(v), 1) for v in f[:: max(1, len(f) // 200)]],
+                        "contour_hop_s": hop / sr * max(1, len(f) // 200)})
+    return sorted(out, key=lambda r: r["start"])
+
+
+def periodic_tone_patterns(tracks: list[dict], tol_f: float = 0.04, max_cv: float = 0.12, min_count: int = 4):
+    """Find repeating short tones (beeps) with stable pitch and regular period."""
+    short = [t for t in tracks if t["duration"] <= 0.6]
+    used = set()
+    patterns = []
+    for i, t in enumerate(short):
+        if i in used:
+            continue
+        grp = [i] + [j for j in range(i + 1, len(short))
+                     if j not in used and abs(short[j]["f_median"] - t["f_median"]) <= tol_f * t["f_median"]]
+        if len(grp) < min_count:
+            continue
+        starts = np.array([short[j]["start"] for j in grp])
+        # de-duplicate harmonics / overlaps
+        keep = [0]
+        for k in range(1, len(starts)):
+            if starts[k] - starts[keep[-1]] > 0.08:
+                keep.append(k)
+        starts = starts[keep]
+        if len(starts) < min_count:
+            continue
+        iv = np.diff(starts)
+        med = np.median(iv)
+        regular = iv[np.abs(iv - med) < 0.25 * med]
+        if len(regular) < min_count - 1:
+            continue
+        cv = regular.std() / (regular.mean() + 1e-9)
+        if cv > max_cv:
+            continue
+        used.update(grp)
+        durs = [short[grp[k]]["duration"] for k in keep]
+        patterns.append({"kind": "periodic_tone", "f_hz": round(float(np.median([short[j]["f_median"] for j in grp])), 1),
+                         "period_s": round(float(regular.mean()), 3), "rate_hz": round(float(1 / regular.mean()), 3),
+                         "period_cv": round(float(cv), 3), "pulse_duration_s": round(float(np.median(durs)), 3),
+                         "count": int(len(starts)), "start": float(starts[0]),
+                         "end": round(float(starts[-1] + np.median(durs)), 3)})
+    return patterns
+
+
+def click_trains(onset_times: list[float], min_count: int = 5, max_cv: float = 0.1):
+    """Regularly spaced transients (e.g. ticking pedestrian signals, clocks, turn indicators)."""
+    t = np.array(onset_times)
+    out = []
+    if len(t) < min_count:
+        return out
+    i = 0
+    while i < len(t) - min_count + 1:
+        best = None
+        for j in range(i + min_count, len(t) + 1):
+            iv = np.diff(t[i:j])
+            cv = iv.std() / (iv.mean() + 1e-9)
+            if cv <= max_cv and 0.08 <= iv.mean() <= 3.0:
+                best = (j, iv.mean(), cv)
+            elif best:
+                break
+        if best:
+            j, per, cv = best
+            out.append({"kind": "click_train", "start": round(float(t[i]), 3), "end": round(float(t[j - 1]), 3),
+                        "period_s": round(float(per), 3), "rate_hz": round(float(1 / per), 3),
+                        "period_cv": round(float(cv), 3), "count": int(j - i)})
+            i = j
+        else:
+            i += 1
+    return out
+
+
+def siren_pattern(x: np.ndarray, sr: int, t0: float, t1: float) -> dict:
+    """Classify a siren's pitch pattern: two-tone alternation, slow sweep (wail), fast sweep (yelp)."""
+    seg = x[int(t0 * sr):int(t1 * sr)]
+    if len(seg) < sr // 2:
+        return {"pattern": "undetermined", "reason": "segment too short"}
+    hop = int(0.01 * sr)
+    n_fft = 4096 if sr >= 32000 else 2048
+    p = stft_power(seg, n_fft, hop)
+    freqs = np.linspace(0, sr / 2, p.shape[0])
+    m = (freqs >= 300) & (freqs <= 2000)
+    f = freqs[m][np.argmax(p[m], axis=0)]
+    f = np.convolve(f, np.ones(5) / 5, mode="same")
+    if len(f) < 50:
+        return {"pattern": "undetermined", "reason": "segment too short"}
+    lo, hi = np.percentile(f, 10), np.percentile(f, 90)
+    if hi / max(lo, 1) < 1.08:
+        return {"pattern": "steady tone", "f_hz": round(float(np.median(f)), 1)}
+    hist, edges = np.histogram(f, bins=24, range=(lo * 0.95, hi * 1.05))
+    mid = (lo + hi) / 2
+    frac_mid = np.mean((f > lo + 0.25 * (hi - lo)) & (f < hi - 0.25 * (hi - lo)))
+    crossings = np.where(np.diff(np.sign(f - mid)) != 0)[0]
+    if len(crossings) < 2:
+        return {"pattern": "single sweep", "f_range_hz": [round(float(lo), 1), round(float(hi), 1)]}
+    cycle = 2 * np.median(np.diff(crossings)) * hop / sr
+    res = {"f_range_hz": [round(float(lo), 1), round(float(hi), 1)], "cycle_s": round(float(cycle), 3),
+           "fraction_time_in_transition": round(float(frac_mid), 3)}
+    if frac_mid < 0.15:
+        res["pattern"] = "two-tone alternation (hi-lo)"
+        res["interval_ratio"] = round(float(hi / lo), 3)
+    elif cycle < 0.8:
+        res["pattern"] = "fast sweep (yelp-like)"
+    else:
+        res["pattern"] = "slow sweep (wail-like)"
+    return res
+
+
+# ----------------------------------------------------------------------------- engine harmonics
+def engine_f0_track(x_4k: np.ndarray, sr: int = 4000, t0: float = 0.0, t1: float | None = None,
+                    f_lo: float = 12.0, f_hi: float = 250.0) -> dict:
+    """Harmonic-sum fundamental tracking for engine sounds (firing frequency)."""
+    t1 = t1 if t1 is not None else len(x_4k) / sr
+    seg = x_4k[int(t0 * sr):int(t1 * sr)]
+    if len(seg) < sr // 2:
+        return {"available": False, "reason": "segment shorter than 0.5 s"}
+    n_fft, hop = 4096, int(0.05 * sr)
+    p = stft_power(seg, n_fft, hop)
+    lp = np.log(p + 1e-12)
+    lp -= np.median(lp, axis=0, keepdims=True)
+    df = sr / n_fft
+    cands = np.arange(f_lo, f_hi, 0.5)
+    H = 8
+    w = 1.0 / np.arange(1, H + 1) ** 0.5
+    score = np.zeros((len(cands), p.shape[1]))
+    for h in range(1, H + 1):
+        k = np.clip(np.round(cands * h / df).astype(int), 0, p.shape[0] - 1)
+        score += w[h - 1] * lp[k]
+    # subharmonic penalty: prefer the highest f0 among near-equal octave candidates
+    best = np.argmax(score, axis=0)
+    f0 = cands[best]
+    sal = (score.max(axis=0) - np.median(score, axis=0)) / (score.std(axis=0) + 1e-9)
+    good = sal > 2.5
+    if good.sum() < 5:
+        return {"available": False, "reason": "no stable harmonic series found (broadband or masked sound)"}
+    t = t0 + np.arange(len(f0)) * hop / sr
+    f0s = f0.astype(float)
+    f0s[~good] = np.nan
+    # median smoothing
+    sm = np.array([np.nanmedian(f0s[max(0, i - 3):i + 4]) if np.isfinite(f0s[max(0, i - 3):i + 4]).any() else np.nan
+                   for i in range(len(f0s))])
+    valid = np.isfinite(sm)
+    fv, tv = sm[valid], t[valid]
+    # local slopes (% per second) over 1 s windows
+    states = []
+    win = int(1.0 / (hop / sr))
+    for i in range(0, len(fv) - win, max(1, win // 2)):
+        a, b = fv[i:i + win], tv[i:i + win]
+        if len(a) < win // 2:
+            continue
+        sl = np.polyfit(b, a, 1)[0] / (np.mean(a) + 1e-9) * 100
+        lab = "accelerating" if sl > 3 else ("decelerating" if sl < -3 else "steady")
+        states.append({"start": round(float(b[0]), 2), "end": round(float(b[-1]), 2), "slope_pct_per_s": round(float(sl), 1),
+                       "state": lab})
+    gear = []
+    for i in range(1, len(fv)):
+        if tv[i] - tv[i - 1] < 0.3 and fv[i] < 0.85 * fv[i - 1]:
+            pre = fv[max(0, i - 10):i]
+            post = fv[i:i + 10]
+            if len(pre) > 4 and len(post) > 4 and np.polyfit(range(len(pre)), pre, 1)[0] > 0 and np.polyfit(range(len(post)), post, 1)[0] > 0:
+                gear.append(round(float(tv[i]), 2))
+    med = float(np.nanmedian(fv))
+    rpm = {f"{c}-cyl 4-stroke": round(med * 120 / c) for c in (2, 3, 4, 6, 8)}
+    return {"available": True, "f0_median_hz": round(med, 1), "f0_range_hz": [round(float(np.nanmin(fv)), 1), round(float(np.nanmax(fv)), 1)],
+            "t_s": [round(float(v), 2) for v in tv[::2]], "f0_hz": [round(float(v), 1) for v in fv[::2]],
+            "states": states, "possible_gear_changes_s": gear,
+            "rpm_if": rpm,
+            "note": ("f0 is the strongest harmonic-series fundamental, usually the engine firing frequency. RPM values "
+                     "are conditional on an assumed cylinder count (RPM = f0 x 120 / cylinders for 4-stroke) and are "
+                     "not identifications. Gear-change times are heuristic: a sudden >15% f0 drop between rising segments.")}
