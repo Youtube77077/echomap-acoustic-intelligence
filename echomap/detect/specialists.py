@@ -321,6 +321,11 @@ def add_siren_scan(inv: Inventory, hits: list[dict], profile_fn) -> None:
                 r["corroborated_by"].append("Siren-pattern scanner (EchoMap DSP)")
                 r["tier"] = tier_for(r["confidence"], True)
             continue
+        animals = inv.find_overlapping(h["start"], h["end"], lambda r: r["category"] == "birds_wildlife" and r["confidence"] >= 0.5, 0.2)
+        if animals:
+            for r in animals:
+                r["evidence"].setdefault("tonal_sweeps", []).append(h)
+            continue  # tonal sweeps during confident animal vocal activity are attributed to the animal
         conf = 0.55 if h["tonal_fraction"] >= 0.85 else 0.4
         rec = inv.add(category="bells_alarms", label="Siren-like tonal pattern", specific=f"Pitch pattern: {h['pattern']}",
                       start=h["start"], end=h["end"], confidence=conf, tier=tier_for(conf, False), kind="measurement",
