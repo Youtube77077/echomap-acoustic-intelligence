@@ -143,9 +143,16 @@ def tone_tracks(x: np.ndarray, sr: int, f_lo: float = 250.0, f_hi: float = 8000.
     return sorted(out, key=lambda r: r["start"])
 
 
-def periodic_tone_patterns(tracks: list[dict], tol_f: float = 0.04, max_cv: float = 0.12, min_count: int = 4):
-    """Find repeating short tones (beeps) with stable pitch and regular period."""
-    short = sorted([t for t in tracks if t["duration"] <= 0.6], key=lambda r: -r["level_db"])[:1500]
+def periodic_tone_patterns(tracks: list[dict], tol_f: float = 0.03, max_cv: float = 0.08, min_count: int = 5):
+    """Find repeating short tones (beeps) with stable pitch, regular period and clear gaps.
+
+    Conditions (all must hold): each pulse is pitch-stable (f_max/f_min ≤ 1.04), pulses repeat with
+    period CV ≤ max_cv, duty cycle ≤ 0.7, and at least `min_count` pulses. Harmonically related
+    patterns with the same timing are merged and the strongest is kept, so a single beeper does not
+    produce one pattern per harmonic.
+    """
+    short = [t for t in tracks if t["duration"] <= 0.6 and t["f_max"] <= 1.04 * max(t["f_min"], 1)]
+    short = sorted(short, key=lambda r: -r["level_db"])[:1500]
     short.sort(key=lambda r: r["start"])
     used = set()
     patterns = []
@@ -157,30 +164,46 @@ def periodic_tone_patterns(tracks: list[dict], tol_f: float = 0.04, max_cv: floa
         if len(grp) < min_count:
             continue
         starts = np.array([short[j]["start"] for j in grp])
-        # de-duplicate harmonics / overlaps
+        durs_all = np.array([short[j]["duration"] for j in grp])
         keep = [0]
         for k in range(1, len(starts)):
             if starts[k] - starts[keep[-1]] > 0.08:
                 keep.append(k)
-        starts = starts[keep]
+        starts, durs = starts[keep], durs_all[keep]
         if len(starts) < min_count:
             continue
         iv = np.diff(starts)
         med = np.median(iv)
-        regular = iv[np.abs(iv - med) < 0.25 * med]
-        if len(regular) < min_count - 1:
+        regular = iv[np.abs(iv - med) < 0.2 * med]
+        if len(regular) < min_count - 1 or len(regular) < 0.75 * len(iv):
             continue
         cv = regular.std() / (regular.mean() + 1e-9)
-        if cv > max_cv:
+        duty = float(np.median(durs) / regular.mean())
+        if cv > max_cv or duty > 0.7:
             continue
         used.update(grp)
-        durs = [short[grp[k]]["duration"] for k in keep]
         patterns.append({"kind": "periodic_tone", "f_hz": round(float(np.median([short[j]["f_median"] for j in grp])), 1),
                          "period_s": round(float(regular.mean()), 3), "rate_hz": round(float(1 / regular.mean()), 3),
                          "period_cv": round(float(cv), 3), "pulse_duration_s": round(float(np.median(durs)), 3),
-                         "count": int(len(starts)), "start": float(starts[0]),
-                         "end": round(float(starts[-1] + np.median(durs)), 3)})
-    return patterns
+                         "duty_cycle": round(duty, 2), "count": int(len(starts)), "start": float(starts[0]),
+                         "end": round(float(starts[-1] + np.median(durs)), 3),
+                         "level_db": round(float(np.median([short[j]["level_db"] for j in grp])), 1)})
+    # merge harmonics / duplicates sharing timing
+    patterns.sort(key=lambda p: -p["level_db"])
+    merged = []
+    for p in patterns:
+        dup = None
+        for q in merged:
+            same_t = abs(p["period_s"] - q["period_s"]) < 0.03 * q["period_s"] and min(p["end"], q["end"]) - max(p["start"], q["start"]) > 0.5 * (p["end"] - p["start"])
+            ratio = max(p["f_hz"], q["f_hz"]) / max(1.0, min(p["f_hz"], q["f_hz"]))
+            if same_t and abs(ratio - round(ratio)) < 0.06:
+                dup = q
+                break
+        if dup:
+            dup.setdefault("harmonics_hz", []).append(p["f_hz"])
+        else:
+            merged.append(p)
+    return sorted(merged, key=lambda p: p["start"])
 
 
 def click_trains(onset_times: list[float], min_count: int = 5, max_cv: float = 0.1, max_len: int = 400):

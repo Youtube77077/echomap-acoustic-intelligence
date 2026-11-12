@@ -26,6 +26,9 @@ def rt60_blind(x: np.ndarray, sr: int, onset_times: list[float], max_events: int
         pk = i + int(np.argmax(env_db[i:j]))
         if env_db[pk] - floor < 22:
             continue
+        pre = env_db[max(0, i - int(0.06 * sr / hop)):max(1, i - int(0.01 * sr / hop))]
+        if len(pre) == 0 or np.mean(pre) > env_db[pk] - 15:
+            continue  # not an impulsive onset out of relative quiet: a decay cannot be observed
         tail = env_db[pk:pk + int(3.0 * sr / hop)]
         lin = 10 ** (tail / 10)
         sch = np.cumsum(lin[::-1])[::-1]
@@ -47,7 +50,7 @@ def rt60_blind(x: np.ndarray, sr: int, onset_times: list[float], max_events: int
             est.append(r)
         if len(est) >= max_events:
             break
-    if len(est) < 3:
+    if len(est) < 5:
         return {"rt60_s": None, "n_decays": len(est),
                 "interpretation": "Not estimable: too few clean impulsive decays with sufficient dynamic range."}
     med = float(np.median(est))

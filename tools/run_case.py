@@ -35,6 +35,8 @@ g = r["geo"]
 print("GEO:", g.get("status"), g.get("summary"))
 for cnd in g.get("candidates", []):
     print("  cand", cnd["rank"], cnd["name"], cnd["centre"], cnd["resolution"], cnd["uncertainty_radius_km"], cnd["strength"], "mass", cnd["relative_mass"])
+print("SED top:", [(t["label"], t["max"]) for t in r["sed_raw"]["top"][:10]])
+if "birdnet_raw" in r: print("BirdNET top:", [(t["label"], t["max"]) for t in r["birdnet_raw"]["top"][:6]])
 print("SCENE:", [(t["scene"], t["score"]) for t in r["scene"]["top"]], r["scene"]["indoor_outdoor"]["estimate"])
 print("MAINS:", r["signal"]["mains"].get("detected"), r["signal"]["mains"].get("nominal_hz"))
 print("TIME:", r["time"]["estimated"].get("season_from_species", {}).get("interpretation"))

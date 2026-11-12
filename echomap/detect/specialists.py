@@ -147,13 +147,23 @@ def classify_periodic(p: dict) -> tuple[str, list[dict], str]:
 
 def add_periodic(inv: Inventory, patterns: list[dict], profile_fn) -> list[dict]:
     recs = []
+    SIRENISH = {"Siren", "Police car (siren)", "Ambulance (siren)", "Fire engine, fire truck (siren)", "Emergency vehicle",
+                "Civil defense siren", "Music", "Musical instrument"}
     for p in patterns:
+        host = inv.find_overlapping(p["start"], p["end"], lambda r: bool(set(r.get("_audioset_names", [])) & SIRENISH), 0.5)
+        if host:
+            for h in host:
+                h["evidence"].setdefault("periodic_components", []).append(p)
+            continue  # part of a siren or music, not a separate signal
         label, cands, geo = classify_periodic(p)
+        birds = inv.find_overlapping(p["start"], p["end"], lambda r: r["category"] == "birds_wildlife", 0.3)
+        if birds and p.get("f_hz", 0) > 1000:
+            cands = [{"label": "Repetitive bird song/call element (overlaps bird activity)", "score": None}] + cands
         sed = inv.find_overlapping(p["start"], p["end"], lambda r: any(
             n in ("Reversing beeps", "Beep, bleep", "Tick", "Tick-tock", "Clock", "Alarm", "Buzzer")
             for n in r.get("_audioset_names", [])), 0.2)
-        regular = p["period_cv"] <= 0.06 and p["count"] >= 6
-        conf = 0.6 if regular else 0.35
+        regular = p["period_cv"] <= 0.04 and p["count"] >= 8
+        conf = 0.6 if regular and not birds else 0.3
         desc = (f"{p['count']} pulses, period {p['period_s']} s (CV {p['period_cv']})" +
                 (f", tone {p['f_hz']} Hz, pulse {p['pulse_duration_s']} s" if "f_hz" in p else ", broadband clicks"))
         recs.append(inv.add(
