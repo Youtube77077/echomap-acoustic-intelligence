@@ -40,13 +40,26 @@ OK_LIC = re.compile(r"^(CC0|Public domain|PD|CC BY(-SA)? [0-9.]+.*)$", re.I)
 PRONUNCIATION = re.compile(r"^(LL-|[A-Z][a-z]{1,3}-)")
 
 
+def fetch_file(url, tries=5):
+    """Download one file politely: honour HTTP 429 / Retry-After and back off; reject HTML error pages."""
+    for attempt in range(tries):
+        r = S.get(url, timeout=120)
+        if r.status_code == 200 and not r.headers.get("content-type", "").startswith("text/"):
+            time.sleep(2.5)
+            return r.content
+        wait = float(r.headers.get("Retry-After", 0) or 0) or 10 * (attempt + 1)
+        print("download status", r.status_code, "waiting", wait)
+        time.sleep(min(wait, 120))
+    return None
+
+
 def search(q, limit=25):
     for attempt in range(4):
         try:
             return _search(q, limit)
         except Exception as e:  # noqa: BLE001 - Commons may throttle or return HTML errors
             print("search retry", q, attempt, e)
-            time.sleep(5 * (attempt + 1))
+            time.sleep(10 * (attempt + 1))
     return []
 
 
@@ -78,7 +91,11 @@ def main():
                 seen.add(title)
                 dst = clips / re.sub(r"[^A-Za-z0-9._-]+", "_", title)[:120]
                 try:
-                    dst.write_bytes(S.get(ii["url"], timeout=120).content)
+                    body = fetch_file(ii["url"])
+                    if body is None:
+                        print("skip (download refused/throttled)", title)
+                        continue
+                    dst.write_bytes(body)
                     x, sr, _ = decode_mono(dst, 32000)
                 except Exception as e:  # noqa: BLE001
                     print("skip", title, e)
