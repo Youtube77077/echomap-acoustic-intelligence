@@ -65,9 +65,9 @@ jobs:
         shell: pwsh
         run: |
           $env:ECHOMAP_HEADLESS_FILE = "$env:RUNNER_TEMP\echomap_url2.txt"
-          $env:LOCALAPPDATA = "$env:RUNNER_TEMPppdata"
+          $env:LOCALAPPDATA = Join-Path $env:RUNNER_TEMP "appdata"
           New-Item -ItemType Directory -Force "$env:LOCALAPPDATA\EchoMap" | Out-Null
-          '{"models_dir": "' + ("$env:GITHUB_WORKSPACE\ci_models" -replace '\','\') + '"}' | Out-File -Encoding ascii "$env:LOCALAPPDATA\EchoMap\config.json"
+          @{models_dir = (Join-Path $env:GITHUB_WORKSPACE "ci_models")} | ConvertTo-Json | Out-File -Encoding ascii (Join-Path $env:LOCALAPPDATA "EchoMap\config.json")
           $p = Start-Process -FilePath "dist\EchoMap\EchoMap.exe" -PassThru
           for ($i=0; $i -lt 60 -and -not (Test-Path $env:ECHOMAP_HEADLESS_FILE); $i++) { Start-Sleep -Milliseconds 500 }
           $url, $tok = (Get-Content $env:ECHOMAP_HEADLESS_FILE -Raw).Trim().Split(" ")
