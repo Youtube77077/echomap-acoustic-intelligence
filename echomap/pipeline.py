@@ -342,7 +342,12 @@ class Case:
                     rec["specific"] = (f"{ana['ring_size_observed']} bell(s) reconstructed, tenor nominal "
                                        f"{ana['tenor_nominal_hz']} Hz; {m['n_compatible']} compatible Dove rings")
                 conf = min(0.6, 0.15 + 0.05 * ana.get("ring_size_observed", 0) + (0.1 if ana.get("diatonic_like") else 0))
-                self._bell = {"bell_match": m, "bell_record_obj": rec, "bell_confidence": conf}
+                # one or two bells match hundreds of towers: only a ring of 3+ bells is used as a location clue
+                if ana.get("ring_size_observed", 0) >= 3:
+                    self._bell = {"bell_match": m, "bell_record_obj": rec, "bell_confidence": conf}
+                else:
+                    self.result["bells"]["dove_match"]["not_used_for_location"] = (
+                        "Fewer than 3 distinct bells reconstructed; too many towers share one or two bell notes.")
             cap.add("bells", "Bell partial analysis and Dove's Guide tower matching",
                     "executed" if ana.get("bells") else "partial", ana.get("reason", ""), cls="measured",
                     compatible_rings=m.get("n_compatible", 0))

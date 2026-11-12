@@ -62,6 +62,7 @@ def build(result: dict) -> dict:
             where["alternatives"] = [f"weak hint: {x['name']}" for x in weak[:3]]
     else:
         where["headline"] = "Location step not run"
+    places = [p for p in places if float(p.get("share") or 0) >= 0.05]   # a 1% "place" is noise, not a finding
     if places:
         where["places"] = [f"{p['name']} ({_pct(p.get('share'))})" for p in places[:5]]
     out["where"] = where

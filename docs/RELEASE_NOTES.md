@@ -32,14 +32,19 @@ and Deep mode. That end-to-end test now runs on every change (`realaudio` workfl
 - **Laggy 2D clue map.** While dragging or zooming, a cached image of the map is moved instead of redrawing every
   border, label and city; the full redraw follows when you stop. 1:10m borders only load when zoomed in.
 
-## Measured (GitHub 4-core runner)
+## Measured (GitHub 4-core runner, whole job step incl. start-up and profiling)
 | Audio | Quick | Standard | Deep |
 |---|---|---|---|
-| 42 s Dutch speech | 13 s | see Actions | see Actions |
-| 60 s street + Dutch | 14 s | 39 s | see Actions |
-| 300 s mix | 90 s | 62 s | 217 s before the fingerprint fix |
+| 42 s Dutch speech | 31 s | 32 s | 24 s |
+| 60 s street + Dutch | 12 s | 23 s | 25 s |
+| 300 s mix (maximum length) | 98 s | 87 s | 141 s (v1.0.7: 217 s+) |
 
-A home PC can be 2-4x slower than this runner.
+All nine cases: Dutch transcribed and identified; location "The Netherlands, Belgium region" for the speech clips.
+A home PC can be 2-4x slower than this runner; the transcription budget keeps the total bounded.
+- Bells: one or two bell notes match hundreds of towers, so tower matching is now only used as a location clue
+  when at least 3 distinct bells are reconstructed.
+- 2D map: a full redraw went from ~280 ms to ~30 ms (default view) and from ~4 s to ~40 ms (zoomed in), measured
+  in headless Chromium; panning runs at 60 frames/s.
 
 ## Known limits (unchanged)
 - Location from a language alone is country-level (about 300 km). City-level needs strong clues (a spoken place
