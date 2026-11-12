@@ -15,6 +15,7 @@ from pathlib import Path
 import numpy as np
 
 DATA = Path(__file__).resolve().parents[1] / "data" / "vehicle_head.json"
+CONFIDENT_P = 0.4
 VEHICLE_LABELS = {"Vehicle", "Motor vehicle (road)", "Car", "Car passing by", "Bus", "Truck", "Motorcycle", "Rail transport",
                   "Train", "Railroad car, train wagon", "Train wheels squealing", "Subway, metro, underground", "Bicycle",
                   "Traffic noise, roadway noise", "Engine", "Light engine (high frequency)", "Medium engine (mid frequency)",
@@ -38,7 +39,10 @@ def classify(emb: np.ndarray) -> dict | None:
     p = np.exp(z - z.max())
     p /= p.sum()
     order = np.argsort(-p)
-    return {"top": h["classes"][order[0]], "p": round(float(p[order[0]]), 3),
+    p1, p2 = float(p[order[0]]), float(p[order[1]])
+    return {"top": h["classes"][order[0]], "p": round(p1, 3),
+            # near-uniform outputs carry no information: only call it when the head clearly prefers one class
+            "confident": bool(p1 >= CONFIDENT_P and p1 - p2 >= 0.1),
             "probs": {h["classes"][i]: round(float(p[i]), 3) for i in order},
             "model": "vehicle-type head (MELAUDIS, Melbourne)", "held_out_accuracy": h.get("metrics", {}).get("balanced_accuracy")}
 

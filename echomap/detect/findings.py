@@ -27,7 +27,10 @@ def describe(r: dict) -> str:
     vt = ev.get("vehicle_type")
     if vt and vt.get("top"):
         alt = ", ".join(f"{k} {_pct(v)}" for k, v in list(vt.get("probs", {}).items())[1:3])
-        parts.append(f"vehicle type: most likely {vt['top']} ({_pct(vt['p'])}; also {alt})")
+        if vt.get("confident", vt["p"] >= 0.4):
+            parts.append(f"vehicle type: most likely {vt['top']} ({_pct(vt['p'])}; also {alt})")
+        else:
+            parts.append(f"vehicle type uncertain (best guess {vt['top']} {_pct(vt['p'])}, {alt})")
     if r.get("common_name"):
         parts.append(f"species: {r['common_name']}" + (f" ({r['scientific_name']})" if r.get("scientific_name") else ""))
     elif spec and spec not in label:

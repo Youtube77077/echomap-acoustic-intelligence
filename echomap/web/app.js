@@ -299,7 +299,9 @@ function kv(obj) { return `<div class="kv">${Object.entries(obj).filter(([k, v])
 function vehText(d) {
   const v = d.evidence?.vehicle_type; if (!v?.top) return "";
   const alt = Object.entries(v.probs || {}).slice(1, 3).map(([k, p]) => `${k} ${Math.round(p * 100)}%`).join(", ");
-  return `<br><span class="veh">Vehicle type: most likely <b>${esc(v.top)}</b> (${Math.round(v.p * 100)}%${alt ? "; " + esc(alt) : ""})</span>`;
+  const sure = v.confident ?? v.p >= 0.4;
+  return sure ? `<br><span class="veh">Vehicle type: most likely <b>${esc(v.top)}</b> (${Math.round(v.p * 100)}%${alt ? "; " + esc(alt) : ""})</span>`
+    : `<br><span class="veh muted">Vehicle type uncertain (best guess ${esc(v.top)} ${Math.round(v.p * 100)}%${alt ? ", " + esc(alt) : ""})</span>`;
 }
 function renderInventory() {
   const q = $("#invSearch").value.toLowerCase(), tiers = new Set($$(".tierf:checked").map(c => c.value)), sort = $("#invSort").value;

@@ -6,7 +6,7 @@ Two independent matchers:
 2. Embedding similarity (EfficientAT 960-d, cosine). This is acoustic similarity, not identity.
 
 Match tiers (shown with every result):
-- near-exact fingerprint match : ≥ 20 aligned landmark hits with one consistent offset
+- near-exact fingerprint match : ≥ 40 aligned landmark hits with one consistent offset, ≥ 10x the background
 - strong acoustic similarity   : cosine ≥ 0.92
 - category similarity          : cosine ≥ 0.80
 - weak resemblance             : cosine ≥ 0.65
@@ -28,6 +28,9 @@ from ..dsp.spectral import stft_power
 
 DATA = Path(__file__).resolve().parents[1] / "data" / "references.json.gz"
 FP_SR = 8000
+FP_MAX_POSTINGS = 40     # a hash seen more often than this in the library is a stop-hash
+FP_MIN_HITS = 40         # aligned landmark pairs for a near-exact match ...
+FP_BG_FACTOR = 10.0      # ... and at least this many times the reference's mean votes per offset
 
 
 def fingerprint(x8k: np.ndarray, fan: int = 5) -> list[tuple[int, int]]:
@@ -74,10 +77,24 @@ def library() -> dict:
         return {"refs": [], "E": np.zeros((0, 960), np.float32), "fp": {}, "meta": {}}
     E = np.array([np.frombuffer(base64.b64decode(r.pop("embedding")), np.float16).astype(np.float32) for r in refs])
     E /= np.linalg.norm(E, axis=1, keepdims=True) + 1e-9
-    fp: dict[int, list[tuple[int, int]]] = {}
+    hs, ri, ts = [], [], []
     for i, r in enumerate(refs):
         for h, t in r.pop("fingerprint", []):
-            fp.setdefault(h, []).append((i, t))
+            hs.append(h)
+            ri.append(i)
+            ts.append(t)
+    H = np.array(hs, np.int64)
+    R = np.array(ri, np.int32)
+    T = np.array(ts, np.int32)
+    # Stop-hashes (v1.0.8): landmark hashes that occur very often in the library (broadband noise, hum) carry almost no
+    # identity information but made the search take minutes. Like other landmark matchers, they are dropped.
+    if len(H):
+        uh, cnt = np.unique(H, return_counts=True)
+        common = uh[cnt > FP_MAX_POSTINGS]
+        keep = ~np.isin(H, common)
+        H, R, T = H[keep], R[keep], T[keep]
+    o = np.argsort(H, kind="stable")
+    fp = {"H": H[o], "R": R[o], "T": T[o]}
     return {"refs": refs, "E": E, "fp": fp, "meta": meta}
 
 
@@ -109,21 +126,48 @@ def search_embedding(emb: np.ndarray | None, k: int = 5) -> list[dict]:
 
 
 def search_fingerprint(x8k: np.ndarray) -> list[dict]:
+    """Vectorised landmark voting (v1.0.8): sorted posting arrays + numpy counting, processed in chunks."""
     lib = library()
-    if not lib["fp"]:
+    fp = lib["fp"]
+    if not len(fp.get("H", [])):
         return []
-    votes: dict[tuple[int, int], int] = {}
-    for h, t in fingerprint(x8k):
-        for ri, rt in lib["fp"].get(h, []):
-            key = (ri, rt - t)
-            votes[key] = votes.get(key, 0) + 1
+    q = fingerprint(x8k)
+    if not q:
+        return []
+    qh = np.array([h for h, _ in q], np.int64)
+    qt = np.array([t for _, t in q], np.int64)
+    H, R, T = fp["H"], fp["R"].astype(np.int64), fp["T"].astype(np.int64)
     best: dict[int, tuple[int, int]] = {}
-    for (ri, off), n in votes.items():
-        if n > best.get(ri, (0, 0))[0]:
-            best[ri] = (n, off)
+    acc = []
+    for a in range(0, len(qh), 20000):
+        h, t = qh[a:a + 20000], qt[a:a + 20000]
+        lo = np.searchsorted(H, h, "left")
+        hi = np.searchsorted(H, h, "right")
+        n = hi - lo
+        m = n > 0
+        if not m.any():
+            continue
+        lo, n, t = lo[m], n[m], t[m]
+        idx = np.repeat(lo - np.cumsum(n) + n, n) + np.arange(n.sum())   # every posting of every query hash
+        off = T[idx] - np.repeat(t, n)
+        acc.append(R[idx] * (1 << 24) + (off + (1 << 23)))
+    if not acc:
+        return []
+    keys, counts = np.unique(np.concatenate(acc), return_counts=True)
+    refs_of = keys >> 24
+    # background per reference: mean votes per occupied offset. Random landmark collisions pile up on long
+    # recordings, so a real match must stand far above this background, not just pass a fixed count.
+    ur, first, n_offs = np.unique(refs_of, return_index=True, return_counts=True)
+    tot = np.add.reduceat(counts, first)
+    bg = dict(zip(ur.tolist(), (tot / n_offs).tolist()))
+    for k, c in zip(keys[counts >= 5], counts[counts >= 5]):
+        ri, off = int(k >> 24), int((k & ((1 << 24) - 1)) - (1 << 23))
+        if c > best.get(ri, (0, 0, 0))[0]:
+            best[ri] = (int(c), off, bg[ri])
+    best = {ri: (n, off) for ri, (n, off, b) in best.items() if n >= FP_MIN_HITS and n >= FP_BG_FACTOR * b}
     out = []
     for ri, (n, off) in sorted(best.items(), key=lambda kv: -kv[1][0])[:5]:
-        if n >= 20:
+        if n >= FP_MIN_HITS:
             r = lib["refs"][ri]
             out.append({"ref_id": r["id"], "title": r["title"], "category": r["category"], "aligned_hits": n,
                         "offset_s": round(off * 128 / FP_SR, 2), "tier": "near-exact fingerprint match",
