@@ -194,7 +194,7 @@ def make_handler(state: AppState):
                     import webview
                     exts = ";".join(f"*{e}" for e in sorted(config.SUPPORTED_EXT))
                     res = state.window.create_file_dialog(webview.FileDialog.OPEN, allow_multiple=False,
-                                                          file_types=(f"Audio/video ({exts})", "All files (*.*)"))
+                                                          file_types=(f"Audio and video files ({exts})", "All files (*.*)"))
                     p = res[0] if res else None
                 elif not p and state.file_dialog is not None:
                     p = state.file_dialog()

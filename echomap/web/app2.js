@@ -122,7 +122,7 @@ const ClueMap = (() => {
   function draw() {
     if (!proj) return;
     const ctx = cv.getContext("2d"), k = tf.k, dpr = devicePixelRatio;
-    if (k > 5) hiRes();
+
     ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, cv.width, cv.height);
     ctx.setTransform(k, 0, 0, k, tf.x * dpr, tf.y * dpr);
     path = d3.geoPath(proj, ctx);
@@ -148,10 +148,13 @@ const ClueMap = (() => {
         ctx.fillStyle = hex(l.color, 0.55 * a); ctx.fill(); ctx.strokeStyle = hex(l.color, a); ctx.lineWidth = 1 / k; ctx.stroke(); } });
     // where clues agree: navy outline (like the nested outlines of an ancestry map)
     if ($("#clAgree").checked) {
-      const ag = Clues.agreement();
+      const ag = Clues._agCache && Clues._agCacheKey === [...Clues.visible].join() + [...Clues.groupOff].join() + Clues.showLow
+        ? Clues._agCache : (Clues._agCache = Clues.agreement(), Clues._agCacheKey = [...Clues.visible].join() + [...Clues.groupOff].join() + Clues.showLow, Clues._agCache);
       if (ag.max >= 2) {
-        const top = new Uint8Array(GW * GH); for (let i = 0; i < top.length; i++) top[i] = ag.cnt[i] >= ag.max ? 1 : 0;
-        const c = rasterContours(top, exact ? 1.0 : 2.4, 0.35);
+        const key = [...Clues.visible].join() + "|" + [...Clues.groupOff].join() + "|" + exact + "|" + Clues.showLow;
+        if (Clues._agKey !== key) { const top = new Uint8Array(GW * GH); for (let i = 0; i < top.length; i++) top[i] = ag.cnt[i] >= ag.max ? 1 : 0;
+          Clues._ag = rasterContours(top, exact ? 1.0 : 2.4, 0.35); Clues._agKey = key; }
+        const c = Clues._ag;
         ctx.beginPath(); ringPath(ctx, c.coordinates.flat()); ctx.fillStyle = "rgba(36,55,94,0.10)"; ctx.fill("evenodd");
         ctx.strokeStyle = "#24375e"; ctx.lineWidth = 2 / k; ctx.stroke();
       }
@@ -199,7 +202,9 @@ const ClueMap = (() => {
     ctx.font = `600 ${size * devicePixelRatio}px Segoe UI`; ctx.textAlign = align; ctx.lineWidth = 3 * devicePixelRatio / tf.k;
     ctx.strokeStyle = "rgba(255,255,255,.92)"; ctx.strokeText(text, x, y); ctx.fillStyle = color; ctx.fillText(text, x, y);
   }
-  const zoom = d3.zoom().scaleExtent([1, 2000]).on("zoom", e => { tf = e.transform; draw(); });
+  let queued = false;
+  const redraw = () => { if (queued) return; queued = true; requestAnimationFrame(() => { queued = false; draw(); }); };
+  const zoom = d3.zoom().scaleExtent([1, 2000]).on("zoom", e => { tf = e.transform; redraw(); });
   d3.select(cv).call(zoom).on("dblclick.zoom", null);
   const toLL = e => { const dpr = devicePixelRatio; return proj.invert([(e.offsetX * dpr - tf.x * dpr) / tf.k, (e.offsetY * dpr - tf.y * dpr) / tf.k]); };
   cv.addEventListener("click", e => { if (!proj) return; const ll = toLL(e); if (ll && isFinite(ll[0])) Clues.inspect(ll[0], ll[1]); });

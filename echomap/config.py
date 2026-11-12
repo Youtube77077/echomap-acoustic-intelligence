@@ -8,7 +8,7 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
 APP_NAME = "EchoMap"
-APP_VERSION = "1.0.4"
+APP_VERSION = "1.0.5"
 MAX_DURATION_S = 300.0  # five minutes
 SUPPORTED_EXT = {".mp3", ".wav", ".flac", ".ogg", ".m4a", ".aac", ".mp4", ".mov", ".mkv", ".webm"}
 VIDEO_EXT = {".mp4", ".mov", ".mkv", ".webm"}

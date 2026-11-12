@@ -67,7 +67,7 @@ def _open_file_dialog() -> str | None:
     exts = ";".join(f"*{e}" for e in sorted(config.SUPPORTED_EXT))
     ofn = OFN()
     ofn.lStructSize = ctypes.sizeof(OFN)
-    ofn.lpstrFilter = f"Audio/video ({exts})\0{exts}\0All files\0*.*\0\0"
+    ofn.lpstrFilter = f"Audio and video files ({exts})\0{exts}\0All files\0*.*\0\0"
     ofn.lpstrFile = ctypes.cast(buf, wintypes.LPWSTR)
     ofn.nMaxFile = 1024
     ofn.lpstrTitle = "EchoMap: import recording"

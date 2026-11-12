@@ -1,7 +1,12 @@
+# EchoMap v1.0.5
+
+- Fixed: Import failed with "not a valid file filter".
+- Fixed: clue map lag (one redraw per frame, cached overlays).
+
 # EchoMap v1.0.4
 
 Downloads:
-- `EchoMap-v1.0.4-win64.zip`: the application.
+- `EchoMap-v1.0.5-win64.zip`: the application.
 - `EchoMap-models-v2.zip`: same model pack as v1.0.2 (no change). Extract into `EchoMap\models`.
 
 ## New
