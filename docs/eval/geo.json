@@ -1,0 +1,2158 @@
+{
+ "generated": "2026-11-12",
+ "method": "Geolocation evaluation on recordings with known coordinates (CI only).\n\nSources: iNaturalist research-grade observations with CC0/CC BY/CC BY-SA sounds (birds, 8 world regions),\nplus geotagged Wikimedia Commons recordings from the reference manifest (non-bird soundscapes).\nEach recording is analysed twice: date unknown, then with the observation date supplied.\nMetrics: estimate rate, great-circle error of the best candidate centre, whether the truth lies inside the\nbest/any candidate circle (coverage, an uncertainty-calibration check), and whether the truth lies inside the\n\"most clues agree\" region.\nCaveat (data leakage): the BirdNET geomodel is trained on citizen-science occurrences that may include these\nobservations, so biogeographic results can be optimistic.\nUsage: python tools/eval_geo.py <models_dir> <work_dir> <out_json> [per_region]",
+ "summary": {
+  "iNaturalist_date_unknown": {
+   "n_analysed": 47,
+   "n_estimates": 21,
+   "estimate_rate": 0.447,
+   "median_error_km": 1003.7,
+   "p25_error_km": 705.1,
+   "p75_error_km": 1689.2,
+   "coverage_best": 0.429,
+   "coverage_any": 0.714,
+   "truth_in_max_agreement_rate": 0.733,
+   "median_best_radius_km": 900.0
+  },
+  "iNaturalist_date_known": {
+   "n_analysed": 47,
+   "n_estimates": 22,
+   "estimate_rate": 0.468,
+   "median_error_km": 985.6,
+   "p25_error_km": 494.0,
+   "p75_error_km": 2746.4,
+   "coverage_best": 0.409,
+   "coverage_any": 0.682,
+   "truth_in_max_agreement_rate": 0.711,
+   "median_best_radius_km": 800.0
+  },
+  "commons_date_unknown": {
+   "n_analysed": 1,
+   "n_estimates": 0,
+   "estimate_rate": 0.0,
+   "median_error_km": null,
+   "p25_error_km": null,
+   "p75_error_km": null,
+   "coverage_best": 0.0,
+   "coverage_any": 0.0,
+   "truth_in_max_agreement_rate": 0.0,
+   "median_best_radius_km": null
+  },
+  "by_region": {
+   "North America": {
+    "n_analysed": 6,
+    "n_estimates": 3,
+    "estimate_rate": 0.5,
+    "median_error_km": 567.8,
+    "p25_error_km": 236.5,
+    "p75_error_km": 795.8,
+    "coverage_best": 1.0,
+    "coverage_any": 1.0,
+    "truth_in_max_agreement_rate": 0.833,
+    "median_best_radius_km": 900.0
+   },
+   "South America": {
+    "n_analysed": 6,
+    "n_estimates": 4,
+    "estimate_rate": 0.667,
+    "median_error_km": 2538.5,
+    "p25_error_km": 1105.8,
+    "p75_error_km": 3549.3,
+    "coverage_best": 0.25,
+    "coverage_any": 0.5,
+    "truth_in_max_agreement_rate": 0.5,
+    "median_best_radius_km": 900.0
+   },
+   "Europe": {
+    "n_analysed": 5,
+    "n_estimates": 2,
+    "estimate_rate": 0.4,
+    "median_error_km": 2947.0,
+    "p25_error_km": 750.3,
+    "p75_error_km": 2947.0,
+    "coverage_best": 0.5,
+    "coverage_any": 1.0,
+    "truth_in_max_agreement_rate": 0.8,
+    "median_best_radius_km": 1300.0
+   },
+   "Africa": {
+    "n_analysed": 6,
+    "n_estimates": 2,
+    "estimate_rate": 0.333,
+    "median_error_km": 1689.2,
+    "p25_error_km": 1160.2,
+    "p75_error_km": 1689.2,
+    "coverage_best": 0.0,
+    "coverage_any": 0.5,
+    "truth_in_max_agreement_rate": 1.0,
+    "median_best_radius_km": 1100.0
+   },
+   "South Asia": {
+    "n_analysed": 6,
+    "n_estimates": 2,
+    "estimate_rate": 0.333,
+    "median_error_km": 1250.4,
+    "p25_error_km": 1144.4,
+    "p75_error_km": 1250.4,
+    "coverage_best": 0.0,
+    "coverage_any": 0.5,
+    "truth_in_max_agreement_rate": 0.833,
+    "median_best_radius_km": 1000.0
+   },
+   "East Asia": {
+    "n_analysed": 6,
+    "n_estimates": 1,
+    "estimate_rate": 0.167,
+    "median_error_km": 741.7,
+    "p25_error_km": 741.7,
+    "p75_error_km": 741.7,
+    "coverage_best": 0.0,
+    "coverage_any": 1.0,
+    "truth_in_max_agreement_rate": 0.4,
+    "median_best_radius_km": 600.0
+   },
+   "Australia": {
+    "n_analysed": 6,
+    "n_estimates": 3,
+    "estimate_rate": 0.5,
+    "median_error_km": 677.5,
+    "p25_error_km": 590.8,
+    "p75_error_km": 705.1,
+    "coverage_best": 0.667,
+    "coverage_any": 1.0,
+    "truth_in_max_agreement_rate": 0.667,
+    "median_best_radius_km": 800.0
+   },
+   "Middle East": {
+    "n_analysed": 6,
+    "n_estimates": 4,
+    "estimate_rate": 0.667,
+    "median_error_km": 2737.9,
+    "p25_error_km": 1003.7,
+    "p75_error_km": 3701.6,
+    "coverage_best": 0.5,
+    "coverage_any": 0.5,
+    "truth_in_max_agreement_rate": 0.833,
+    "median_best_radius_km": 1200.0
+   }
+  }
+ },
+ "rows": [
+  {
+   "source": "iNaturalist",
+   "region": "North America",
+   "id": 213895214,
+   "url": "https://static.inaturalist.org/sounds/1021250.wav?1714966268",
+   "license": "cc0",
+   "attribution": "no rights reserved",
+   "lat": 40.5969114893,
+   "lon": -79.9958305962,
+   "date": "2024-04-28",
+   "taxon": "Polioptila caerulea",
+   "common": "Blue-gray Gnatcatcher",
+   "date_unknown": {
+    "status": "estimate",
+    "n_footprints": 15,
+    "species": [
+     "Tufted Titmouse",
+     "Song Sparrow",
+     "Baltimore Oriole",
+     "Blue-grey Gnatcatcher",
+     "Mangrove Warbler",
+     "Warbling Vireo",
+     "Tufted Titmouse",
+     "Blue-grey Gnatcatcher"
+    ],
+    "best_error_km": 795.8,
+    "best_radius_km": 900.0,
+    "inside_best": true,
+    "inside_any": true,
+    "min_error_km": 508.3,
+    "clues_covering_truth": 8,
+    "clues_total": 8,
+    "truth_in_max_agreement": true
+   },
+   "date_known": {
+    "status": "estimate",
+    "n_footprints": 15,
+    "species": [
+     "Tufted Titmouse",
+     "Song Sparrow",
+     "Baltimore Oriole",
+     "Blue-grey Gnatcatcher",
+     "Mangrove Warbler",
+     "Warbling Vireo",
+     "Tufted Titmouse",
+     "Blue-grey Gnatcatcher"
+    ],
+    "best_error_km": 341.3,
+    "best_radius_km": 800.0,
+    "inside_best": true,
+    "inside_any": true,
+    "min_error_km": 341.3,
+    "clues_covering_truth": 8,
+    "clues_total": 8,
+    "truth_in_max_agreement": true
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "North America",
+   "id": 398220784,
+   "url": "https://static.inaturalist.org/sounds/2150453.wav?1788811065",
+   "license": "cc-by",
+   "attribution": "(c) deefinder200, some rights reserved (CC BY)",
+   "lat": 42.9436455948,
+   "lon": -89.587895249,
+   "date": "2026-09-05",
+   "taxon": "Colaptes auratus",
+   "common": "Northern Flicker",
+   "date_unknown": {
+    "status": "no_estimate",
+    "n_footprints": 2,
+    "species": [
+     "Northern Flicker"
+    ],
+    "clues_covering_truth": 1,
+    "clues_total": 1,
+    "truth_in_max_agreement": true
+   },
+   "date_known": {
+    "status": "no_estimate",
+    "n_footprints": 2,
+    "species": [
+     "Northern Flicker"
+    ],
+    "clues_covering_truth": 1,
+    "clues_total": 1,
+    "truth_in_max_agreement": true
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "North America",
+   "id": 164197938,
+   "url": "https://static.inaturalist.org/sounds/716000.wav?1685281311",
+   "license": "cc-by",
+   "attribution": "(c) Scott Harris, some rights reserved (CC BY)",
+   "lat": 39.0877857887,
+   "lon": -77.6664281264,
+   "date": "2023-05-28",
+   "taxon": "Spizella pusilla",
+   "common": "Field Sparrow",
+   "date_unknown": {
+    "status": "no_estimate",
+    "n_footprints": 5,
+    "species": [
+     "American Goldfinch",
+     "Field Sparrow",
+     "Eastern Towhee"
+    ],
+    "clues_covering_truth": 3,
+    "clues_total": 3,
+    "truth_in_max_agreement": true
+   },
+   "date_known": {
+    "status": "estimate",
+    "n_footprints": 5,
+    "species": [
+     "American Goldfinch",
+     "Field Sparrow",
+     "Eastern Towhee"
+    ],
+    "best_error_km": 520.1,
+    "best_radius_km": 800.0,
+    "inside_best": true,
+    "inside_any": true,
+    "min_error_km": 520.1,
+    "clues_covering_truth": 3,
+    "clues_total": 3,
+    "truth_in_max_agreement": true
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "North America",
+   "id": 157950411,
+   "url": "https://static.inaturalist.org/sounds/667436.wav?1682830092",
+   "license": "cc0",
+   "attribution": "no rights reserved",
+   "lat": 48.51725202,
+   "lon": -123.5907544431,
+   "date": "2023-04-29",
+   "taxon": "Empidonax hammondii",
+   "common": "Hammond's Flycatcher",
+   "date_unknown": {
+    "status": "no_estimate",
+    "n_footprints": 6,
+    "species": [
+     "Hammond's Flycatcher",
+     "Golden-crowned Kinglet",
+     "Blackburnian Warbler",
+     "Hammond's Flycatcher",
+     "Myrtle Warbler"
+    ],
+    "clues_covering_truth": 3,
+    "clues_total": 4,
+    "truth_in_max_agreement": false
+   },
+   "date_known": {
+    "status": "no_estimate",
+    "n_footprints": 6,
+    "species": [
+     "Hammond's Flycatcher",
+     "Golden-crowned Kinglet",
+     "Blackburnian Warbler",
+     "Hammond's Flycatcher",
+     "Myrtle Warbler"
+    ],
+    "clues_covering_truth": 3,
+    "clues_total": 4,
+    "truth_in_max_agreement": false
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "North America",
+   "id": 268058409,
+   "url": "https://static.inaturalist.org/sounds/1357717.wav?1743532930",
+   "license": "cc0",
+   "attribution": "no rights reserved",
+   "lat": 33.9107975131,
+   "lon": -86.7873207852,
+   "date": "2025-04-01",
+   "taxon": "Mniotilta varia",
+   "common": "Black-and-white Warbler",
+   "date_unknown": {
+    "status": "estimate",
+    "n_footprints": 9,
+    "species": [
+     "Tufted Titmouse",
+     "American Crow",
+     "Carolina Chickadee",
+     "White-eyed Vireo",
+     "Field Sparrow",
+     "Black-and-white Warbler",
+     "Northern Cardinal",
+     "Blue-grey Gnatcatcher"
+    ],
+    "best_error_km": 236.5,
+    "best_radius_km": 800.0,
+    "inside_best": true,
+    "inside_any": true,
+    "min_error_km": 236.5,
+    "clues_covering_truth": 8,
+    "clues_total": 8,
+    "truth_in_max_agreement": true
+   },
+   "date_known": {
+    "status": "estimate",
+    "n_footprints": 9,
+    "species": [
+     "Tufted Titmouse",
+     "American Crow",
+     "Carolina Chickadee",
+     "White-eyed Vireo",
+     "Field Sparrow",
+     "Black-and-white Warbler",
+     "Northern Cardinal",
+     "Blue-grey Gnatcatcher"
+    ],
+    "best_error_km": 238.7,
+    "best_radius_km": 700.0,
+    "inside_best": true,
+    "inside_any": true,
+    "min_error_km": 238.7,
+    "clues_covering_truth": 8,
+    "clues_total": 8,
+    "truth_in_max_agreement": true
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "North America",
+   "id": 255698904,
+   "url": "https://static.inaturalist.org/sounds/1270344.wav?1734720357",
+   "license": "cc-by",
+   "attribution": "(c) Liam Steele, some rights reserved (CC BY)",
+   "lat": 48.7539651139,
+   "lon": -123.6390726546,
+   "date": "2024-11-27",
+   "taxon": "Mareca americana",
+   "common": "American Wigeon",
+   "date_unknown": {
+    "status": "estimate",
+    "n_footprints": 3,
+    "species": [
+     "American Wigeon",
+     "Northern Raven",
+     "Belted Kingfisher"
+    ],
+    "best_error_km": 567.8,
+    "best_radius_km": 1100.0,
+    "inside_best": true,
+    "inside_any": true,
+    "min_error_km": 567.8,
+    "clues_covering_truth": 3,
+    "clues_total": 3,
+    "truth_in_max_agreement": true
+   },
+   "date_known": {
+    "status": "estimate",
+    "n_footprints": 3,
+    "species": [
+     "American Wigeon",
+     "Northern Raven",
+     "Belted Kingfisher"
+    ],
+    "best_error_km": 494.0,
+    "best_radius_km": 1000.0,
+    "inside_best": true,
+    "inside_any": true,
+    "min_error_km": 494.0,
+    "clues_covering_truth": 3,
+    "clues_total": 3,
+    "truth_in_max_agreement": true
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "South America",
+   "id": 129744464,
+   "url": "https://static.inaturalist.org/sounds/515854.wav?1659825748",
+   "license": "cc-by",
+   "attribution": "(c) Jennifer Rycenga, some rights reserved (CC BY)",
+   "lat": -9.5976225485,
+   "lon": -55.9323993844,
+   "date": "2022-07-15",
+   "taxon": "Xiphorhynchus guttatus guttatoides",
+   "common": "Lafresnaye's Woodcreeper",
+   "date_unknown": {
+    "status": "no_estimate",
+    "n_footprints": 2,
+    "species": [
+     "Swamp Sparrow",
+     "Buff-throated Woodcreeper"
+    ],
+    "clues_covering_truth": 1,
+    "clues_total": 2,
+    "truth_in_max_agreement": true
+   },
+   "date_known": {
+    "status": "no_estimate",
+    "n_footprints": 2,
+    "species": [
+     "Swamp Sparrow",
+     "Buff-throated Woodcreeper"
+    ],
+    "clues_covering_truth": 1,
+    "clues_total": 2,
+    "truth_in_max_agreement": true
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "South America",
+   "id": 172443551,
+   "url": "https://static.inaturalist.org/sounds/766600.wav?1689127409",
+   "license": "cc-by",
+   "attribution": "(c) Pablo H Capovilla, some rights reserved (CC BY)",
+   "lat": -31.6119738803,
+   "lon": -60.7230416709,
+   "date": "2023-07-11",
+   "taxon": "Phaetusa simplex",
+   "common": "Large-billed Tern",
+   "date_unknown": {
+    "status": "estimate",
+    "n_footprints": 5,
+    "species": [
+     "Large-billed Tern",
+     "Great Kiskadee",
+     "Large-billed Tern",
+     "Great Kiskadee",
+     "Laughing Gull"
+    ],
+    "best_error_km": 3549.3,
+    "best_radius_km": 800.0,
+    "inside_best": false,
+    "inside_any": false,
+    "min_error_km": 3501.6,
+    "clues_covering_truth": 1,
+    "clues_total": 3,
+    "truth_in_max_agreement": false
+   },
+   "date_known": {
+    "status": "estimate",
+    "n_footprints": 5,
+    "species": [
+     "Large-billed Tern",
+     "Great Kiskadee",
+     "Large-billed Tern",
+     "Great Kiskadee",
+     "Laughing Gull"
+    ],
+    "best_error_km": 3440.5,
+    "best_radius_km": 900.0,
+    "inside_best": false,
+    "inside_any": false,
+    "min_error_km": 3440.5,
+    "clues_covering_truth": 1,
+    "clues_total": 3,
+    "truth_in_max_agreement": false
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "South America",
+   "id": 34217645,
+   "url": "https://static.inaturalist.org/sounds/48272.mp3?1570824322",
+   "license": "cc-by",
+   "attribution": "(c) Pedro Henrique Maloso Ramos, some rights reserved (CC BY)",
+   "lat": -23.6417678815,
+   "lon": -46.5642576813,
+   "date": "2019-10-11",
+   "taxon": "Cyclarhis gujanensis",
+   "common": "Rufous-browed Peppershrike",
+   "date_unknown": {
+    "status": "estimate",
+    "n_footprints": 5,
+    "species": [
+     "Rufous-browed Peppershrike",
+     "Great Kiskadee",
+     "Bananaquit",
+     "Rufous-browed Peppershrike"
+    ],
+    "best_error_km": 2538.5,
+    "best_radius_km": 1100.0,
+    "inside_best": false,
+    "inside_any": false,
+    "min_error_km": 2538.5,
+    "clues_covering_truth": 3,
+    "clues_total": 4,
+    "truth_in_max_agreement": false
+   },
+   "date_known": {
+    "status": "estimate",
+    "n_footprints": 5,
+    "species": [
+     "Rufous-browed Peppershrike",
+     "Great Kiskadee",
+     "Bananaquit",
+     "Rufous-browed Peppershrike"
+    ],
+    "best_error_km": 2953.9,
+    "best_radius_km": 800.0,
+    "inside_best": false,
+    "inside_any": false,
+    "min_error_km": 2953.9,
+    "clues_covering_truth": 3,
+    "clues_total": 4,
+    "truth_in_max_agreement": false
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "South America",
+   "id": 153370830,
+   "url": "https://static.inaturalist.org/sounds/631321.m4a?1680555884",
+   "license": "cc-by",
+   "attribution": "(c) Eduardo Luis Beltrocco, some rights reserved (CC BY)",
+   "lat": -31.5817059164,
+   "lon": -60.7058084084,
+   "date": "2023-04-03",
+   "taxon": "Saltator coerulescens",
+   "common": "Bluish-gray Saltator",
+   "date_unknown": {
+    "status": "estimate",
+    "n_footprints": 9,
+    "species": [
+     "Monk Parakeet",
+     "Great Kiskadee",
+     "Bluish-grey Saltator",
+     "Southern Lapwing",
+     "Monk Parakeet",
+     "Great Kiskadee",
+     "Bluish-grey Saltator",
+     "Southern House Wren"
+    ],
+    "best_error_km": 1105.8,
+    "best_radius_km": 900.0,
+    "inside_best": false,
+    "inside_any": true,
+    "min_error_km": 274.4,
+    "clues_covering_truth": 5,
+    "clues_total": 5,
+    "truth_in_max_agreement": true
+   },
+   "date_known": {
+    "status": "estimate",
+    "n_footprints": 9,
+    "species": [
+     "Monk Parakeet",
+     "Great Kiskadee",
+     "Bluish-grey Saltator",
+     "Southern Lapwing",
+     "Monk Parakeet",
+     "Great Kiskadee",
+     "Bluish-grey Saltator",
+     "Southern House Wren"
+    ],
+    "best_error_km": 985.6,
+    "best_radius_km": 800.0,
+    "inside_best": false,
+    "inside_any": true,
+    "min_error_km": 267.0,
+    "clues_covering_truth": 5,
+    "clues_total": 5,
+    "truth_in_max_agreement": true
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "South America",
+   "id": 98870407,
+   "url": "https://static.inaturalist.org/sounds/318954.wav?1634813780",
+   "license": "cc-by",
+   "attribution": "(c) Jose Luis Navarro, some rights reserved (CC BY)",
+   "lat": -27.7058988509,
+   "lon": -64.2579446733,
+   "date": "2021-10-17",
+   "taxon": "Tarphonomus certhioides",
+   "common": "Chaco Earthcreeper",
+   "date_unknown": {
+    "status": "estimate",
+    "n_footprints": 4,
+    "species": [
+     "Picui Ground Dove",
+     "Caatinga Puffbird",
+     "Chaco Earthcreeper",
+     "Chaco Earthcreeper"
+    ],
+    "best_error_km": 423.1,
+    "best_radius_km": 600.0,
+    "inside_best": true,
+    "inside_any": true,
+    "min_error_km": 423.1,
+    "clues_covering_truth": 3,
+    "clues_total": 3,
+    "truth_in_max_agreement": true
+   },
+   "date_known": {
+    "status": "estimate",
+    "n_footprints": 4,
+    "species": [
+     "Picui Ground Dove",
+     "Caatinga Puffbird",
+     "Chaco Earthcreeper",
+     "Chaco Earthcreeper"
+    ],
+    "best_error_km": 287.9,
+    "best_radius_km": 700.0,
+    "inside_best": true,
+    "inside_any": true,
+    "min_error_km": 287.9,
+    "clues_covering_truth": 3,
+    "clues_total": 3,
+    "truth_in_max_agreement": true
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "South America",
+   "id": 232415328,
+   "url": "https://static.inaturalist.org/sounds/1146651.mp3?1722220397",
+   "license": "cc-by",
+   "attribution": "(c) Nico Fernandez-Sauleda, some rights reserved (CC BY)",
+   "lat": -34.697489945,
+   "lon": -55.3103807856,
+   "date": "2024-07-18",
+   "taxon": "Turdus rufiventris",
+   "common": "Rufous-bellied Thrush",
+   "date_unknown": {
+    "status": "no_estimate",
+    "n_footprints": 3,
+    "species": [
+     "Clay-colored Thrush"
+    ],
+    "clues_covering_truth": 0,
+    "clues_total": 1,
+    "truth_in_max_agreement": false
+   },
+   "date_known": {
+    "status": "no_estimate",
+    "n_footprints": 3,
+    "species": [
+     "Clay-colored Thrush"
+    ],
+    "clues_covering_truth": 0,
+    "clues_total": 1,
+    "truth_in_max_agreement": false
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "Europe",
+   "id": 356830419,
+   "url": "https://static.inaturalist.org/sounds/1914727.m4a?1777553645",
+   "license": "cc-by",
+   "attribution": "(c) Miriam Sokhet, some rights reserved (CC BY)",
+   "lat": 49.7774348433,
+   "lon": 24.0344196931,
+   "date": "2026-04-25",
+   "taxon": "Phylloscopus trochilus",
+   "common": "Willow Warbler",
+   "date_unknown": {
+    "status": "estimate",
+    "n_footprints": 2,
+    "species": [
+     "Lesser Whitethroat",
+     "Lesser Whitethroat",
+     "Willow Warbler",
+     "Lesser Whitethroat"
+    ],
+    "best_error_km": 2947.0,
+    "best_radius_km": 1300.0,
+    "inside_best": false,
+    "inside_any": true,
+    "min_error_km": 720.4,
+    "clues_covering_truth": 2,
+    "clues_total": 2,
+    "truth_in_max_agreement": true
+   },
+   "date_known": {
+    "status": "estimate",
+    "n_footprints": 2,
+    "species": [
+     "Lesser Whitethroat",
+     "Lesser Whitethroat",
+     "Willow Warbler",
+     "Lesser Whitethroat"
+    ],
+    "best_error_km": 2931.8,
+    "best_radius_km": 1300.0,
+    "inside_best": false,
+    "inside_any": true,
+    "min_error_km": 566.7,
+    "clues_covering_truth": 2,
+    "clues_total": 2,
+    "truth_in_max_agreement": true
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "Europe",
+   "id": 363416312,
+   "url": "https://static.inaturalist.org/sounds/1965768.wav?1779300295",
+   "license": "cc-by",
+   "attribution": "(c) Eliass T\u0101re, some rights reserved (CC BY)",
+   "lat": 57.0397,
+   "lon": 24.0113277833,
+   "date": "2026-05-12",
+   "taxon": "Phylloscopus trochilus",
+   "common": "Willow Warbler",
+   "date_unknown": {
+    "status": "no_estimate",
+    "n_footprints": 4,
+    "species": [
+     "Common Reed Bunting",
+     "Common Reed Bunting"
+    ],
+    "clues_covering_truth": 0,
+    "clues_total": 2,
+    "truth_in_max_agreement": false
+   },
+   "date_known": {
+    "status": "no_estimate",
+    "n_footprints": 4,
+    "species": [
+     "Common Reed Bunting",
+     "Common Reed Bunting"
+    ],
+    "clues_covering_truth": 0,
+    "clues_total": 2,
+    "truth_in_max_agreement": false
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "Europe",
+   "id": 263995125,
+   "url": "https://static.inaturalist.org/sounds/1323803.m4a?1741194197",
+   "license": "cc-by",
+   "attribution": "(c) E. A., some rights reserved (CC BY)",
+   "lat": 47.2789102038,
+   "lon": 14.7767399473,
+   "date": "2025-03-05",
+   "taxon": "Certhia familiaris",
+   "common": "Eurasian Treecreeper",
+   "date_unknown": {
+    "status": "no_estimate",
+    "n_footprints": 3,
+    "species": [
+     "Eurasian Treecreeper",
+     "Mangrove Warbler"
+    ],
+    "clues_covering_truth": 1,
+    "clues_total": 1,
+    "truth_in_max_agreement": true
+   },
+   "date_known": {
+    "status": "no_estimate",
+    "n_footprints": 3,
+    "species": [
+     "Eurasian Treecreeper",
+     "Mangrove Warbler"
+    ],
+    "clues_covering_truth": 1,
+    "clues_total": 1,
+    "truth_in_max_agreement": true
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "Europe",
+   "id": 284064125,
+   "url": "https://static.inaturalist.org/sounds/1484682.wav?1748204325",
+   "license": "cc-by",
+   "attribution": "(c) Ezatars, some rights reserved (CC BY)",
+   "lat": 56.79225,
+   "lon": 24.19242,
+   "date": "2025-05-25",
+   "taxon": "Cuculus canorus",
+   "common": "Common Cuckoo",
+   "date_unknown": {
+    "status": "no_estimate",
+    "n_footprints": 4,
+    "species": [
+     "Common Cuckoo",
+     "Common Blackbird"
+    ],
+    "clues_covering_truth": 2,
+    "clues_total": 2,
+    "truth_in_max_agreement": true
+   },
+   "date_known": {
+    "status": "no_estimate",
+    "n_footprints": 4,
+    "species": [
+     "Common Cuckoo",
+     "Common Blackbird"
+    ],
+    "clues_covering_truth": 2,
+    "clues_total": 2,
+    "truth_in_max_agreement": true
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "Europe",
+   "id": 165542186,
+   "url": "https://static.inaturalist.org/sounds/725312.wav?1685898021",
+   "license": "cc-by",
+   "attribution": "(c) Ois\u00edn, some rights reserved (CC BY)",
+   "lat": 51.078295222,
+   "lon": 13.8164522499,
+   "date": "2023-06-04",
+   "taxon": "Dryocopus martius",
+   "common": "Black Woodpecker",
+   "date_unknown": {
+    "status": "estimate",
+    "n_footprints": 2,
+    "species": [
+     "Black Woodpecker",
+     "Eurasian Chaffinch"
+    ],
+    "best_error_km": 750.3,
+    "best_radius_km": 1100.0,
+    "inside_best": true,
+    "inside_any": true,
+    "min_error_km": 750.3,
+    "clues_covering_truth": 2,
+    "clues_total": 2,
+    "truth_in_max_agreement": true
+   },
+   "date_known": {
+    "status": "estimate",
+    "n_footprints": 2,
+    "species": [
+     "Black Woodpecker",
+     "Eurasian Chaffinch"
+    ],
+    "best_error_km": 731.4,
+    "best_radius_km": 1100.0,
+    "inside_best": true,
+    "inside_any": true,
+    "min_error_km": 731.4,
+    "clues_covering_truth": 2,
+    "clues_total": 2,
+    "truth_in_max_agreement": true
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "Europe",
+   "id": 260796938,
+   "url": "https://static.inaturalist.org/sounds/1301318.mp3?1738842836",
+   "license": "cc-by",
+   "attribution": "(c) Nigel Bentley, some rights reserved (CC BY)",
+   "lat": 50.8204087971,
+   "lon": 0.1781161129,
+   "date": "2025-02-06",
+   "taxon": "Phasianus colchicus",
+   "common": "Ring-necked Pheasant",
+   "date_unknown": {
+    "error": "InvalidDataError: [Errno 1094995529] Invalid data found when processing input: 'avcodec_send_packet()'"
+   },
+   "date_known": {
+    "error": "InvalidDataError: [Errno 1094995529] Invalid data found when processing input: 'avcodec_send_packet()'"
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "Africa",
+   "id": 390844760,
+   "url": "https://static.inaturalist.org/sounds/2117188.m4a?1786629839",
+   "license": "cc-by",
+   "attribution": "(c) i_c_riddell, some rights reserved (CC BY)",
+   "lat": -17.8452743118,
+   "lon": 31.0837565151,
+   "date": "2026-08-11",
+   "taxon": "Indicator minor",
+   "common": "Lesser Honeyguide",
+   "date_unknown": {
+    "status": "no_estimate",
+    "n_footprints": 11,
+    "species": [
+     "Austral Thrush",
+     "Lesser Honeyguide",
+     "California Towhee",
+     "Black-headed Oriole",
+     "Lesser Honeyguide"
+    ],
+    "clues_covering_truth": 2,
+    "clues_total": 4,
+    "truth_in_max_agreement": true
+   },
+   "date_known": {
+    "status": "no_estimate",
+    "n_footprints": 11,
+    "species": [
+     "Austral Thrush",
+     "Lesser Honeyguide",
+     "California Towhee",
+     "Black-headed Oriole",
+     "Lesser Honeyguide"
+    ],
+    "clues_covering_truth": 2,
+    "clues_total": 4,
+    "truth_in_max_agreement": true
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "Africa",
+   "id": 339709233,
+   "url": "https://static.inaturalist.org/sounds/1774761.m4a?1771755483",
+   "license": "cc-by",
+   "attribution": "(c) i_c_riddell, some rights reserved (CC BY)",
+   "lat": -17.811535173,
+   "lon": 31.0804938644,
+   "date": "2026-02-17",
+   "taxon": "Pternistis natalensis",
+   "common": "Natal Spurfowl",
+   "date_unknown": {
+    "status": "no_estimate",
+    "n_footprints": 2,
+    "species": []
+   },
+   "date_known": {
+    "status": "no_estimate",
+    "n_footprints": 2,
+    "species": []
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "Africa",
+   "id": 258324753,
+   "url": "https://static.inaturalist.org/sounds/1284845.wav?1736731287",
+   "license": "cc-by",
+   "attribution": "(c) Cole Wolf, some rights reserved (CC BY)",
+   "lat": -23.8543627332,
+   "lon": 31.5758491647,
+   "date": "2014-01-05",
+   "taxon": "Turdoides jardineii",
+   "common": "Arrow-marked Babbler",
+   "date_unknown": {
+    "status": "no_estimate",
+    "n_footprints": 2,
+    "species": [
+     "Arrow-marked Babbler"
+    ],
+    "clues_covering_truth": 1,
+    "clues_total": 1,
+    "truth_in_max_agreement": true
+   },
+   "date_known": {
+    "status": "no_estimate",
+    "n_footprints": 2,
+    "species": [
+     "Arrow-marked Babbler"
+    ],
+    "clues_covering_truth": 1,
+    "clues_total": 1,
+    "truth_in_max_agreement": true
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "Africa",
+   "id": 192061552,
+   "url": "https://static.inaturalist.org/sounds/850750.m4a?1700915559",
+   "license": "cc-by",
+   "attribution": "(c) Sun\u010dana Bradley, some rights reserved (CC BY)",
+   "lat": -29.8136083403,
+   "lon": 30.8882551048,
+   "date": "2023-11-25",
+   "taxon": "Camaroptera brachyura",
+   "common": "Green-backed Camaroptera",
+   "date_unknown": {
+    "status": "estimate",
+    "n_footprints": 2,
+    "species": [
+     "Green-backed Camaroptera"
+    ],
+    "best_error_km": 1689.2,
+    "best_radius_km": 900.0,
+    "inside_best": false,
+    "inside_any": true,
+    "min_error_km": 261.9,
+    "clues_covering_truth": 1,
+    "clues_total": 1,
+    "truth_in_max_agreement": true
+   },
+   "date_known": {
+    "status": "estimate",
+    "n_footprints": 2,
+    "species": [
+     "Green-backed Camaroptera"
+    ],
+    "best_error_km": 2155.3,
+    "best_radius_km": 1000.0,
+    "inside_best": false,
+    "inside_any": true,
+    "min_error_km": 334.9,
+    "clues_covering_truth": 1,
+    "clues_total": 1,
+    "truth_in_max_agreement": true
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "Africa",
+   "id": 188233267,
+   "url": "https://static.inaturalist.org/sounds/833758.wav?1697786124",
+   "license": "cc-by",
+   "attribution": "(c) Ben Costamagna, some rights reserved (CC BY)",
+   "lat": -23.107721692,
+   "lon": 31.4352100343,
+   "date": "2023-10-20",
+   "taxon": "Malaconotus blanchoti",
+   "common": "Grey-headed Bushshrike",
+   "date_unknown": {
+    "status": "estimate",
+    "n_footprints": 3,
+    "species": [
+     "Grey-headed Bushshrike",
+     "Laughing Dove"
+    ],
+    "best_error_km": 1160.2,
+    "best_radius_km": 1100.0,
+    "inside_best": false,
+    "inside_any": false,
+    "min_error_km": 551.9,
+    "clues_covering_truth": 2,
+    "clues_total": 2,
+    "truth_in_max_agreement": true
+   },
+   "date_known": {
+    "status": "estimate",
+    "n_footprints": 3,
+    "species": [
+     "Grey-headed Bushshrike",
+     "Laughing Dove"
+    ],
+    "best_error_km": 1100.9,
+    "best_radius_km": 1000.0,
+    "inside_best": false,
+    "inside_any": false,
+    "min_error_km": 624.5,
+    "clues_covering_truth": 2,
+    "clues_total": 2,
+    "truth_in_max_agreement": true
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "Africa",
+   "id": 136886731,
+   "url": "https://static.inaturalist.org/sounds/542552.m4a?1664430548",
+   "license": "cc-by",
+   "attribution": "(c) suncana, some rights reserved (CC BY)",
+   "lat": -28.7177176411,
+   "lon": 30.0608159844,
+   "date": "2022-09-28",
+   "taxon": "Laniarius ferrugineus",
+   "common": "Southern Boubou",
+   "date_unknown": {
+    "status": "no_estimate",
+    "n_footprints": 1,
+    "species": [
+     "Southern Boubou"
+    ],
+    "clues_covering_truth": 1,
+    "clues_total": 1,
+    "truth_in_max_agreement": true
+   },
+   "date_known": {
+    "status": "no_estimate",
+    "n_footprints": 1,
+    "species": [
+     "Southern Boubou"
+    ],
+    "clues_covering_truth": 1,
+    "clues_total": 1,
+    "truth_in_max_agreement": true
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "South Asia",
+   "id": 277382127,
+   "url": "https://static.inaturalist.org/sounds/1431575.m4a?1746110883",
+   "license": "cc-by",
+   "attribution": "(c) Seema Merchant, some rights reserved (CC BY)",
+   "lat": 9.647263767,
+   "lon": 77.1767577237,
+   "date": "2025-04-21",
+   "taxon": "Dendrocitta leucogastra",
+   "common": "White-bellied Treepie",
+   "date_unknown": {
+    "status": "no_estimate",
+    "n_footprints": 6,
+    "species": [
+     "Black Butcherbird",
+     "Southern Boubou",
+     "Common Hill Myna",
+     "Southern Hill Myna"
+    ],
+    "clues_covering_truth": 1,
+    "clues_total": 4,
+    "truth_in_max_agreement": true
+   },
+   "date_known": {
+    "status": "no_estimate",
+    "n_footprints": 6,
+    "species": [
+     "Black Butcherbird",
+     "Southern Boubou",
+     "Common Hill Myna",
+     "Southern Hill Myna"
+    ],
+    "clues_covering_truth": 1,
+    "clues_total": 4,
+    "truth_in_max_agreement": true
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "South Asia",
+   "id": 303050631,
+   "url": "https://static.inaturalist.org/sounds/1590210.wav?1754113698",
+   "license": "cc-by",
+   "attribution": "(c) Ram Dayal Vaishnav, some rights reserved (CC BY)",
+   "lat": 17.4558138455,
+   "lon": 78.4411610663,
+   "date": "2025-08-02",
+   "taxon": "Pycnonotus cafer",
+   "common": "Red-vented Bulbul",
+   "date_unknown": {
+    "status": "estimate",
+    "n_footprints": 3,
+    "species": [
+     "Red-vented Bulbul",
+     "Red-vented Bulbul",
+     "Asian Koel"
+    ],
+    "best_error_km": 1250.4,
+    "best_radius_km": 1000.0,
+    "inside_best": false,
+    "inside_any": true,
+    "min_error_km": 129.5,
+    "clues_covering_truth": 2,
+    "clues_total": 2,
+    "truth_in_max_agreement": true
+   },
+   "date_known": {
+    "status": "estimate",
+    "n_footprints": 3,
+    "species": [
+     "Red-vented Bulbul",
+     "Red-vented Bulbul",
+     "Asian Koel"
+    ],
+    "best_error_km": 1122.4,
+    "best_radius_km": 1000.0,
+    "inside_best": false,
+    "inside_any": true,
+    "min_error_km": 135.2,
+    "clues_covering_truth": 2,
+    "clues_total": 2,
+    "truth_in_max_agreement": true
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "South Asia",
+   "id": 256469487,
+   "url": "https://static.inaturalist.org/sounds/1274295.wav?1735368618",
+   "license": "cc-by",
+   "attribution": "(c) Ashwin A, some rights reserved (CC BY)",
+   "lat": 12.8821962751,
+   "lon": 80.0884806365,
+   "date": "2024-12-28",
+   "taxon": "Orthotomus sutorius",
+   "common": "Common Tailorbird",
+   "date_unknown": {
+    "status": "no_estimate",
+    "n_footprints": 1,
+    "species": [
+     "Common Tailorbird"
+    ],
+    "clues_covering_truth": 0,
+    "clues_total": 1,
+    "truth_in_max_agreement": false
+   },
+   "date_known": {
+    "status": "no_estimate",
+    "n_footprints": 1,
+    "species": [
+     "Common Tailorbird"
+    ],
+    "clues_covering_truth": 0,
+    "clues_total": 1,
+    "truth_in_max_agreement": false
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "South Asia",
+   "id": 104405369,
+   "url": "https://static.inaturalist.org/sounds/343428.wav?1641390214",
+   "license": "cc-by",
+   "attribution": "(c) Firos AK, some rights reserved (CC BY)",
+   "lat": 12.9836420213,
+   "lon": 77.6797409356,
+   "date": "2022-01-05",
+   "taxon": "Athene brama",
+   "common": "Spotted Owlet",
+   "date_unknown": {
+    "status": "no_estimate",
+    "n_footprints": 1,
+    "species": [
+     "Spotted Owlet"
+    ],
+    "clues_covering_truth": 1,
+    "clues_total": 1,
+    "truth_in_max_agreement": true
+   },
+   "date_known": {
+    "status": "no_estimate",
+    "n_footprints": 1,
+    "species": [
+     "Spotted Owlet"
+    ],
+    "clues_covering_truth": 1,
+    "clues_total": 1,
+    "truth_in_max_agreement": true
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "South Asia",
+   "id": 198147157,
+   "url": "https://static.inaturalist.org/sounds/887986.mp3?1706810400",
+   "license": "cc0",
+   "attribution": "no rights reserved",
+   "lat": 9.3221647168,
+   "lon": 76.8084638907,
+   "date": "2024-01-25",
+   "taxon": "Gallus sonneratii",
+   "common": "Grey Junglefowl",
+   "date_unknown": {
+    "status": "no_estimate",
+    "n_footprints": 8,
+    "species": [
+     "Grey Junglefowl",
+     "White-cheeked Barbet",
+     "Northern Raven",
+     "Grey Junglefowl",
+     "White-cheeked Barbet"
+    ],
+    "clues_covering_truth": 2,
+    "clues_total": 3,
+    "truth_in_max_agreement": true
+   },
+   "date_known": {
+    "status": "no_estimate",
+    "n_footprints": 8,
+    "species": [
+     "Grey Junglefowl",
+     "White-cheeked Barbet",
+     "Northern Raven",
+     "Grey Junglefowl",
+     "White-cheeked Barbet"
+    ],
+    "clues_covering_truth": 2,
+    "clues_total": 3,
+    "truth_in_max_agreement": true
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "South Asia",
+   "id": 111268698,
+   "url": "https://static.inaturalist.org/sounds/391817.m4a?1649815773",
+   "license": "cc-by",
+   "attribution": "(c) Seema Merchant, some rights reserved (CC BY)",
+   "lat": 9.6471123024,
+   "lon": 77.176538699,
+   "date": "2022-04-08",
+   "taxon": "Geokichla citrina cyanota",
+   "common": "Indian Orange-headed Thrush",
+   "date_unknown": {
+    "status": "estimate",
+    "n_footprints": 8,
+    "species": [
+     "Orange-headed Thrush",
+     "Orange-headed Thrush",
+     "Orange-headed Thrush"
+    ],
+    "best_error_km": 1144.4,
+    "best_radius_km": 700.0,
+    "inside_best": false,
+    "inside_any": false,
+    "min_error_km": 1144.4,
+    "clues_covering_truth": 1,
+    "clues_total": 1,
+    "truth_in_max_agreement": true
+   },
+   "date_known": {
+    "status": "estimate",
+    "n_footprints": 8,
+    "species": [
+     "Orange-headed Thrush",
+     "Orange-headed Thrush",
+     "Orange-headed Thrush"
+    ],
+    "best_error_km": 1281.8,
+    "best_radius_km": 700.0,
+    "inside_best": false,
+    "inside_any": false,
+    "min_error_km": 1281.8,
+    "clues_covering_truth": 1,
+    "clues_total": 1,
+    "truth_in_max_agreement": true
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "East Asia",
+   "id": 121125361,
+   "url": "https://static.inaturalist.org/sounds/467231.mp3?1654886819",
+   "license": "cc-by",
+   "attribution": "(c) chiuluan, some rights reserved (CC BY)",
+   "lat": 23.8964755454,
+   "lon": 121.5374239907,
+   "date": "2022-06-11",
+   "taxon": "Rallina eurizonoides",
+   "common": "Slaty-legged Crake",
+   "date_unknown": {
+    "status": "no_estimate",
+    "n_footprints": 2,
+    "species": [
+     "Savanna Nightjar",
+     "Slaty-legged Crake"
+    ],
+    "clues_covering_truth": 0,
+    "clues_total": 2,
+    "truth_in_max_agreement": false
+   },
+   "date_known": {
+    "status": "no_estimate",
+    "n_footprints": 2,
+    "species": [
+     "Savanna Nightjar",
+     "Slaty-legged Crake"
+    ],
+    "clues_covering_truth": 0,
+    "clues_total": 2,
+    "truth_in_max_agreement": false
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "East Asia",
+   "id": 395194744,
+   "url": "https://static.inaturalist.org/sounds/2137400.m4a?1787921864",
+   "license": "cc-by",
+   "attribution": "(c) Yoshihiro Tokue, some rights reserved (CC BY)",
+   "lat": 36.560038427,
+   "lon": 139.8972642508,
+   "date": "2026-08-28",
+   "taxon": "Spodiopsar cineraceus",
+   "common": "White-cheeked Starling",
+   "date_unknown": {
+    "status": "no_estimate",
+    "n_footprints": 8,
+    "species": [
+     "Streak-throated Swallow",
+     "White-cheeked Starling",
+     "White-cheeked Starling",
+     "Cobalt-winged Parakeet"
+    ],
+    "clues_covering_truth": 1,
+    "clues_total": 4,
+    "truth_in_max_agreement": false
+   },
+   "date_known": {
+    "status": "no_estimate",
+    "n_footprints": 8,
+    "species": [
+     "Streak-throated Swallow",
+     "White-cheeked Starling",
+     "White-cheeked Starling",
+     "Cobalt-winged Parakeet"
+    ],
+    "clues_covering_truth": 1,
+    "clues_total": 4,
+    "truth_in_max_agreement": false
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "East Asia",
+   "id": 158433079,
+   "url": "https://static.inaturalist.org/sounds/671923.m4a?1682906409",
+   "license": "cc-by",
+   "attribution": "(c) mami_t_t, some rights reserved (CC BY)",
+   "lat": 35.6350216,
+   "lon": 139.4642379,
+   "date": "2023-05-01",
+   "taxon": "Horornis diphone",
+   "common": "Japanese Bush Warbler",
+   "date_unknown": {
+    "status": "no_estimate",
+    "n_footprints": 1,
+    "species": [
+     "Japanese Bush Warbler"
+    ],
+    "clues_covering_truth": 1,
+    "clues_total": 1,
+    "truth_in_max_agreement": true
+   },
+   "date_known": {
+    "status": "no_estimate",
+    "n_footprints": 1,
+    "species": [
+     "Japanese Bush Warbler"
+    ],
+    "clues_covering_truth": 1,
+    "clues_total": 1,
+    "truth_in_max_agreement": true
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "East Asia",
+   "id": 37542715,
+   "url": "https://static.inaturalist.org/sounds/54720.mp3?1578877599",
+   "license": "cc-by",
+   "attribution": "(c) chiuluan, some rights reserved (CC BY)",
+   "lat": 24.79375375,
+   "lon": 120.98252962,
+   "date": "2020-01-13",
+   "taxon": "Hypsipetes leucocephalus nigerrimus",
+   "common": "Taiwan Black Bulbul",
+   "date_unknown": {
+    "status": "estimate",
+    "n_footprints": 4,
+    "species": [
+     "Black Bulbul",
+     "Taiwan Barbet",
+     "Swinhoe's White-eye",
+     "Taiwan Barbet",
+     "Chestnut Bulbul"
+    ],
+    "best_error_km": 741.7,
+    "best_radius_km": 600.0,
+    "inside_best": false,
+    "inside_any": true,
+    "min_error_km": 134.8,
+    "clues_covering_truth": 0,
+    "clues_total": 4,
+    "truth_in_max_agreement": false
+   },
+   "date_known": {
+    "status": "estimate",
+    "n_footprints": 4,
+    "species": [
+     "Black Bulbul",
+     "Taiwan Barbet",
+     "Swinhoe's White-eye",
+     "Taiwan Barbet",
+     "Chestnut Bulbul"
+    ],
+    "best_error_km": 675.5,
+    "best_radius_km": 600.0,
+    "inside_best": false,
+    "inside_any": true,
+    "min_error_km": 136.2,
+    "clues_covering_truth": 0,
+    "clues_total": 4,
+    "truth_in_max_agreement": false
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "East Asia",
+   "id": 269252979,
+   "url": "https://static.inaturalist.org/sounds/1366191.m4a?1744100021",
+   "license": "cc-by",
+   "attribution": "(c) \u53e4\u570b\u9806, some rights reserved (CC BY)",
+   "lat": 23.5874883333,
+   "lon": 120.6257316667,
+   "date": "2025-04-08",
+   "taxon": "Psilopogon nuchalis",
+   "common": "Taiwan Barbet",
+   "date_unknown": {
+    "status": "no_estimate",
+    "n_footprints": 2,
+    "species": [
+     "Blue-throated Barbet",
+     "Taiwan Barbet"
+    ],
+    "clues_covering_truth": 1,
+    "clues_total": 2,
+    "truth_in_max_agreement": true
+   },
+   "date_known": {
+    "status": "no_estimate",
+    "n_footprints": 2,
+    "species": [
+     "Blue-throated Barbet",
+     "Taiwan Barbet"
+    ],
+    "clues_covering_truth": 1,
+    "clues_total": 2,
+    "truth_in_max_agreement": true
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "East Asia",
+   "id": 202591328,
+   "url": "https://static.inaturalist.org/sounds/930132.m4a?1710546892",
+   "license": "cc-by",
+   "attribution": "(c) IMORI MIHO, some rights reserved (CC BY)",
+   "lat": 35.6334539596,
+   "lon": 139.4593548775,
+   "date": "2024-03-16",
+   "taxon": "Sittiparus varius",
+   "common": "Varied Tit",
+   "date_unknown": {
+    "status": "no_estimate",
+    "n_footprints": 4,
+    "species": []
+   },
+   "date_known": {
+    "status": "no_estimate",
+    "n_footprints": 4,
+    "species": []
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "Australia",
+   "id": 97983496,
+   "url": "https://static.inaturalist.org/sounds/315616.mp3?1634023330",
+   "license": "cc0",
+   "attribution": "no rights reserved",
+   "lat": -33.7469867,
+   "lon": 150.8981832,
+   "date": "2021-10-12",
+   "taxon": "Eudynamys orientalis",
+   "common": "Pacific Koel",
+   "date_unknown": {
+    "status": "no_estimate",
+    "n_footprints": 21,
+    "species": [
+     "Northern Raven",
+     "Pacific Koel",
+     "Northern Raven",
+     "Peregrine Falcon",
+     "Bald Eagle",
+     "Pacific Koel",
+     "Pacific Koel",
+     "Pacific Koel"
+    ],
+    "clues_covering_truth": 2,
+    "clues_total": 4,
+    "truth_in_max_agreement": false
+   },
+   "date_known": {
+    "status": "no_estimate",
+    "n_footprints": 21,
+    "species": [
+     "Northern Raven",
+     "Pacific Koel",
+     "Northern Raven",
+     "Peregrine Falcon",
+     "Bald Eagle",
+     "Pacific Koel",
+     "Pacific Koel",
+     "Pacific Koel"
+    ],
+    "clues_covering_truth": 2,
+    "clues_total": 4,
+    "truth_in_max_agreement": false
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "Australia",
+   "id": 324856453,
+   "url": "https://static.inaturalist.org/sounds/1686035.mp3?1762256973",
+   "license": "cc-by",
+   "attribution": "(c) Will Cornwell, some rights reserved (CC BY)",
+   "lat": -32.4005840155,
+   "lon": 152.4748703598,
+   "date": "2025-11-04",
+   "taxon": "Philemon corniculatus",
+   "common": "Noisy Friarbird",
+   "date_unknown": {
+    "status": "no_estimate",
+    "n_footprints": 2,
+    "species": [
+     "Noisy Friarbird"
+    ],
+    "clues_covering_truth": 1,
+    "clues_total": 2,
+    "truth_in_max_agreement": false
+   },
+   "date_known": {
+    "status": "no_estimate",
+    "n_footprints": 2,
+    "species": [
+     "Noisy Friarbird"
+    ],
+    "clues_covering_truth": 1,
+    "clues_total": 2,
+    "truth_in_max_agreement": false
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "Australia",
+   "id": 99853737,
+   "url": "https://static.inaturalist.org/sounds/323382.m4a?1635663246",
+   "license": "cc-by",
+   "attribution": "(c) Thomas Mesaglio, some rights reserved (CC BY)",
+   "lat": -33.8644244491,
+   "lon": 151.0123104146,
+   "date": "2021-10-31",
+   "taxon": "Coracina novaehollandiae",
+   "common": "Black-faced Cuckooshrike",
+   "date_unknown": {
+    "status": "estimate",
+    "n_footprints": 4,
+    "species": [
+     "Black-faced Cuckooshrike",
+     "Red Wattlebird",
+     "Black-faced Cuckooshrike",
+     "Western Jackdaw"
+    ],
+    "best_error_km": 705.1,
+    "best_radius_km": 800.0,
+    "inside_best": true,
+    "inside_any": true,
+    "min_error_km": 705.1,
+    "clues_covering_truth": 2,
+    "clues_total": 3,
+    "truth_in_max_agreement": true
+   },
+   "date_known": {
+    "status": "estimate",
+    "n_footprints": 4,
+    "species": [
+     "Black-faced Cuckooshrike",
+     "Red Wattlebird",
+     "Black-faced Cuckooshrike",
+     "Western Jackdaw"
+    ],
+    "best_error_km": 687.9,
+    "best_radius_km": 700.0,
+    "inside_best": true,
+    "inside_any": true,
+    "min_error_km": 687.9,
+    "clues_covering_truth": 2,
+    "clues_total": 3,
+    "truth_in_max_agreement": true
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "Australia",
+   "id": 233560022,
+   "url": "https://static.inaturalist.org/sounds/1151758.m4a?1722715443",
+   "license": "cc0",
+   "attribution": "no rights reserved",
+   "lat": -23.64262349,
+   "lon": 150.40400012,
+   "date": "2024-08-04",
+   "taxon": "Dacelo novaeguineae",
+   "common": "Laughing Kookaburra",
+   "date_unknown": {
+    "status": "estimate",
+    "n_footprints": 3,
+    "species": [
+     "Laughing Kookaburra",
+     "Torresian Crow"
+    ],
+    "best_error_km": 590.8,
+    "best_radius_km": 800.0,
+    "inside_best": true,
+    "inside_any": true,
+    "min_error_km": 590.8,
+    "clues_covering_truth": 3,
+    "clues_total": 3,
+    "truth_in_max_agreement": true
+   },
+   "date_known": {
+    "status": "estimate",
+    "n_footprints": 3,
+    "species": [
+     "Laughing Kookaburra",
+     "Torresian Crow"
+    ],
+    "best_error_km": 462.9,
+    "best_radius_km": 800.0,
+    "inside_best": true,
+    "inside_any": true,
+    "min_error_km": 462.9,
+    "clues_covering_truth": 3,
+    "clues_total": 3,
+    "truth_in_max_agreement": true
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "Australia",
+   "id": 96983566,
+   "url": "https://static.inaturalist.org/sounds/312264.wav?1633236617",
+   "license": "cc0",
+   "attribution": "no rights reserved",
+   "lat": -37.8421611633,
+   "lon": 145.3449318185,
+   "date": "2021-10-03",
+   "taxon": "Sericornis frontalis",
+   "common": "White-browed Scrubwren",
+   "date_unknown": {
+    "status": "no_estimate",
+    "n_footprints": 5,
+    "species": [
+     "White-browed Scrubwren"
+    ],
+    "clues_covering_truth": 1,
+    "clues_total": 1,
+    "truth_in_max_agreement": true
+   },
+   "date_known": {
+    "status": "no_estimate",
+    "n_footprints": 5,
+    "species": [
+     "White-browed Scrubwren"
+    ],
+    "clues_covering_truth": 1,
+    "clues_total": 1,
+    "truth_in_max_agreement": true
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "Australia",
+   "id": 137210213,
+   "url": "https://static.inaturalist.org/sounds/542956.wav?1664500554",
+   "license": "cc-by",
+   "attribution": "(c) graeme lunt, some rights reserved (CC BY)",
+   "lat": -37.66489902,
+   "lon": 143.68825274,
+   "date": "2022-09-30",
+   "taxon": "Pardalotus punctatus",
+   "common": "Spotted Pardalote",
+   "date_unknown": {
+    "status": "estimate",
+    "n_footprints": 5,
+    "species": [
+     "Little Raven",
+     "Spotted Pardalote",
+     "Olive-backed Oriole",
+     "Rufous Whistler",
+     "Spotted Pardalote",
+     "Fan-tailed Cuckoo",
+     "Rufous Whistler"
+    ],
+    "best_error_km": 677.5,
+    "best_radius_km": 600.0,
+    "inside_best": false,
+    "inside_any": true,
+    "min_error_km": 138.6,
+    "clues_covering_truth": 5,
+    "clues_total": 5,
+    "truth_in_max_agreement": true
+   },
+   "date_known": {
+    "status": "estimate",
+    "n_footprints": 5,
+    "species": [
+     "Little Raven",
+     "Spotted Pardalote",
+     "Olive-backed Oriole",
+     "Rufous Whistler",
+     "Spotted Pardalote",
+     "Fan-tailed Cuckoo",
+     "Rufous Whistler"
+    ],
+    "best_error_km": 969.7,
+    "best_radius_km": 700.0,
+    "inside_best": false,
+    "inside_any": true,
+    "min_error_km": 138.6,
+    "clues_covering_truth": 5,
+    "clues_total": 5,
+    "truth_in_max_agreement": true
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "Middle East",
+   "id": 153057497,
+   "url": "https://static.inaturalist.org/sounds/629179.m4a?1680366725",
+   "license": "cc0",
+   "attribution": "no rights reserved",
+   "lat": 35.941023358,
+   "lon": 50.4529400051,
+   "date": "2023-03-30",
+   "taxon": "Acrocephalus scirpaceus",
+   "common": "Common Reed Warbler",
+   "date_unknown": {
+    "status": "estimate",
+    "n_footprints": 4,
+    "species": [
+     "Common Reed Warbler",
+     "Marsh Warbler"
+    ],
+    "best_error_km": 1003.7,
+    "best_radius_km": 1200.0,
+    "inside_best": true,
+    "inside_any": true,
+    "min_error_km": 1003.7,
+    "clues_covering_truth": 2,
+    "clues_total": 2,
+    "truth_in_max_agreement": true
+   },
+   "date_known": {
+    "status": "estimate",
+    "n_footprints": 4,
+    "species": [
+     "Common Reed Warbler",
+     "Marsh Warbler"
+    ],
+    "best_error_km": 6507.3,
+    "best_radius_km": 600.0,
+    "inside_best": false,
+    "inside_any": false,
+    "min_error_km": 993.3,
+    "clues_covering_truth": 1,
+    "clues_total": 2,
+    "truth_in_max_agreement": false
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "Middle East",
+   "id": 197716839,
+   "url": "https://static.inaturalist.org/sounds/885067.wav?1706383345",
+   "license": "cc-by",
+   "attribution": "(c) yelena_antipova, some rights reserved (CC BY)",
+   "lat": 32.7674839051,
+   "lon": 35.0262138247,
+   "date": "2024-01-27",
+   "taxon": "Nannus troglodytes",
+   "common": "Eurasian Wren",
+   "date_unknown": {
+    "status": "estimate",
+    "n_footprints": 3,
+    "species": [
+     "Eurasian Wren"
+    ],
+    "best_error_km": 2737.9,
+    "best_radius_km": 1200.0,
+    "inside_best": false,
+    "inside_any": false,
+    "min_error_km": 1839.6,
+    "clues_covering_truth": 1,
+    "clues_total": 1,
+    "truth_in_max_agreement": true
+   },
+   "date_known": {
+    "status": "estimate",
+    "n_footprints": 3,
+    "species": [
+     "Eurasian Wren"
+    ],
+    "best_error_km": 2746.4,
+    "best_radius_km": 1200.0,
+    "inside_best": false,
+    "inside_any": false,
+    "min_error_km": 1968.9,
+    "clues_covering_truth": 1,
+    "clues_total": 1,
+    "truth_in_max_agreement": true
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "Middle East",
+   "id": 277039441,
+   "url": "https://static.inaturalist.org/sounds/1428626.wav?1746027257",
+   "license": "cc0",
+   "attribution": "no rights reserved",
+   "lat": 35.7460619479,
+   "lon": 51.2699139086,
+   "date": "2025-04-28",
+   "taxon": "Passer domesticus",
+   "common": "House Sparrow",
+   "date_unknown": {
+    "status": "estimate",
+    "n_footprints": 9,
+    "species": [
+     "House Sparrow",
+     "Eurasian Tree Sparrow",
+     "Common Nightingale",
+     "Eurasian Tree Sparrow",
+     "House Sparrow",
+     "Spanish Sparrow",
+     "Common Starling",
+     "Eurasian Tree Sparrow"
+    ],
+    "best_error_km": 739.4,
+    "best_radius_km": 1100.0,
+    "inside_best": true,
+    "inside_any": true,
+    "min_error_km": 739.4,
+    "clues_covering_truth": 5,
+    "clues_total": 5,
+    "truth_in_max_agreement": true
+   },
+   "date_known": {
+    "status": "estimate",
+    "n_footprints": 9,
+    "species": [
+     "House Sparrow",
+     "Eurasian Tree Sparrow",
+     "Common Nightingale",
+     "Eurasian Tree Sparrow",
+     "House Sparrow",
+     "Spanish Sparrow",
+     "Common Starling",
+     "Eurasian Tree Sparrow"
+    ],
+    "best_error_km": 378.1,
+    "best_radius_km": 900.0,
+    "inside_best": true,
+    "inside_any": true,
+    "min_error_km": 378.1,
+    "clues_covering_truth": 5,
+    "clues_total": 5,
+    "truth_in_max_agreement": true
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "Middle East",
+   "id": 89189762,
+   "url": "https://static.inaturalist.org/sounds/284410.wav?1627654647",
+   "license": "cc0",
+   "attribution": "no rights reserved",
+   "lat": 32.3687048679,
+   "lon": 34.9024865404,
+   "date": "2021-07-30",
+   "taxon": "Gallinula chloropus",
+   "common": "Eurasian Moorhen",
+   "date_unknown": {
+    "status": "no_estimate",
+    "n_footprints": 2,
+    "species": [
+     "Common Moorhen"
+    ],
+    "clues_covering_truth": 0,
+    "clues_total": 1,
+    "truth_in_max_agreement": false
+   },
+   "date_known": {
+    "status": "no_estimate",
+    "n_footprints": 2,
+    "species": [
+     "Common Moorhen"
+    ],
+    "clues_covering_truth": 0,
+    "clues_total": 1,
+    "truth_in_max_agreement": false
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "Middle East",
+   "id": 319895660,
+   "url": "https://static.inaturalist.org/sounds/1663036.wav?1760070586",
+   "license": "cc0",
+   "attribution": "no rights reserved",
+   "lat": 36.3138044997,
+   "lon": 52.3641228873,
+   "date": "2025-10-03",
+   "taxon": "Garrulus glandarius",
+   "common": "Eurasian Jay",
+   "date_unknown": {
+    "status": "estimate",
+    "n_footprints": 1,
+    "species": [
+     "Eurasian Jay"
+    ],
+    "best_error_km": 3701.6,
+    "best_radius_km": 1200.0,
+    "inside_best": false,
+    "inside_any": false,
+    "min_error_km": 1612.0,
+    "clues_covering_truth": 1,
+    "clues_total": 1,
+    "truth_in_max_agreement": true
+   },
+   "date_known": {
+    "status": "estimate",
+    "n_footprints": 1,
+    "species": [
+     "Eurasian Jay"
+    ],
+    "best_error_km": 3191.6,
+    "best_radius_km": 1100.0,
+    "inside_best": false,
+    "inside_any": false,
+    "min_error_km": 1635.1,
+    "clues_covering_truth": 1,
+    "clues_total": 1,
+    "truth_in_max_agreement": true
+   }
+  },
+  {
+   "source": "iNaturalist",
+   "region": "Middle East",
+   "id": 223076677,
+   "url": "https://static.inaturalist.org/sounds/1096381.wav?1718540733",
+   "license": "cc0",
+   "attribution": "no rights reserved",
+   "lat": 36.049536,
+   "lon": 51.4165229,
+   "date": "2024-06-05",
+   "taxon": "Cettia cetti",
+   "common": "Cetti's Warbler",
+   "date_unknown": {
+    "status": "no_estimate",
+    "n_footprints": 2,
+    "species": [
+     "Cetti's Warbler",
+     "Eastern Kingbird"
+    ],
+    "clues_covering_truth": 1,
+    "clues_total": 2,
+    "truth_in_max_agreement": true
+   },
+   "date_known": {
+    "status": "no_estimate",
+    "n_footprints": 2,
+    "species": [
+     "Cetti's Warbler",
+     "Eastern Kingbird"
+    ],
+    "clues_covering_truth": 1,
+    "clues_total": 2,
+    "truth_in_max_agreement": true
+   }
+  },
+  {
+   "source": "Wikimedia Commons",
+   "region": "commons",
+   "id": "R0001",
+   "title": "Akustikkennung einer Ampel am Lerchenfelder G\u00fcrtel in Wien (2023).ogg",
+   "category": "crossing signal",
+   "url": null,
+   "clip_file": "Akustikkennung_einer_Ampel_am_Lerchenfelder_G_rtel_in_Wien_2023_.ogg",
+   "license": "CC BY-SA 4.0",
+   "lat": 48.208441,
+   "lon": 16.339217,
+   "date": null,
+   "date_unknown": {
+    "status": "no_estimate",
+    "n_footprints": 2,
+    "species": [
+     "American Coot"
+    ],
+    "clues_covering_truth": 0,
+    "clues_total": 1,
+    "truth_in_max_agreement": false
+   }
+  },
+  {
+   "source": "Wikimedia Commons",
+   "region": "commons",
+   "id": "R0003",
+   "title": "Melbourne trams - 2018-09-15 - Andy Mabbett.oga",
+   "category": "crossing signal",
+   "url": null,
+   "clip_file": "Melbourne_trams_-_2018-09-15_-_Andy_Mabbett.oga",
+   "license": "CC BY-SA 4.0",
+   "lat": -37.822,
+   "lon": 144.9693,
+   "date": null,
+   "date_unknown": {
+    "error": "IngestError: Unsupported file type '.oga'. Supported: .aac, .flac, .m4a, .mkv, .mov, .mp3, .mp4, .ogg, .wav, .webm"
+   }
+  },
+  {
+   "source": "Wikimedia Commons",
+   "region": "commons",
+   "id": "R0005",
+   "title": "Chorzow Luther church bell ringing 2021.opus",
+   "category": "bells",
+   "url": null,
+   "clip_file": "Chorzow_Luther_church_bell_ringing_2021.opus",
+   "license": "CC BY-SA 4.0",
+   "lat": 50.294929,
+   "lon": 18.95141,
+   "date": null,
+   "date_unknown": {
+    "error": "IngestError: Unsupported file type '.opus'. Supported: .aac, .flac, .m4a, .mkv, .mov, .mp3, .mp4, .ogg, .wav, .webm"
+   }
+  }
+ ]
+}
