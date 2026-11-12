@@ -248,6 +248,13 @@ const Intel = {
   render(r) {
     const fmtRec = id => { const d = S.inventory.find(x => x.id === id); return d ? `${esc(id)} ${esc(d.label)}` : esc(id); };
     const playBtn = (t0, t1) => `<button class="round mini" data-t0="${t0}" data-t1="${t1}" title="Play">▶</button>`;
+    // transcripts
+    const tr = r.transcripts;
+    $("#trList").innerHTML = !tr ? '<div class="muted">No transcription ran (see Capabilities).</div>' :
+      `<div class="muted">${tr.counts.clear} clear · ${tr.counts.uncertain} uncertain · ${tr.counts["likely spurious"]} likely spurious. Whisper can invent text on noise or very faint audio, so rely only on "clear" lines, and check even those by listening.</div>` +
+      tr.segments.map(t => `<div class="cap-row"><span>${playBtn(t.start, t.end)} ${fmtT(t.start)}–${fmtT(t.end).slice(3)}<br>
+        <span class="tier ${t.quality === "clear" ? "confirmed" : t.quality === "uncertain" ? "possible" : "unclassified"}">${esc(t.quality)}</span></span>
+        <span>${t.text ? `“${esc(t.text)}”` : "<i>(no text)</i>"} <span class="muted">[${esc(t.language)}${t.enhanced ? ", enhanced faint speech" : ""}; no-speech ${t.no_speech_prob}, logprob ${t.avg_logprob}, level ${t.level_dbfs} dBFS]</span></span></div>`).join("");
     // capabilities
     const cap = r.capabilities;
     $("#capList").innerHTML = cap ? `<div class="muted">Analysis mode: <b>${esc(cap.mode_title)}</b></div>` + cap.items.map(i => `<div class="cap-row"><span class="st-${i.status}">${esc(i.status.replaceAll("_", " "))}</span>
@@ -337,6 +344,6 @@ $("#btnAnalyse").onclick = async () => {
     await api("analyse", {method: "POST", body: {}}); startPolling("analysed"); }
   catch (e) { alert(e.message); $("#btnOpen").disabled = false; }
 };
-$("#btnModels").addEventListener("click", async () => { const s = await api("settings"); $("#setMaps").checked = !!s.allow_online_maps; $("#selMode").value = s.analysis_mode || "deep"; });
-$("#modelsDlg").addEventListener("close", () => { if ($("#modelsDlg").returnValue === "close") api("settings", {method: "POST", body: {allow_online_maps: $("#setMaps").checked}}); });
+$("#btnModels").addEventListener("click", async () => { const s = await api("settings"); $("#setMaps").checked = !!s.allow_online_maps; $("#setAsr").checked = s.transcribe_speech !== false; $("#selMode").value = s.analysis_mode || "deep"; });
+$("#modelsDlg").addEventListener("close", () => { if ($("#modelsDlg").returnValue === "close") api("settings", {method: "POST", body: {allow_online_maps: $("#setMaps").checked, transcribe_speech: $("#setAsr").checked}}); });
 api("settings").then(s => { if (s.analysis_mode) $("#selMode").value = s.analysis_mode; }).catch(() => {});

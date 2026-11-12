@@ -1,0 +1,31 @@
+name: convert-asr
+# Converts Whisper speech-to-text to ONNX (int8) on GitHub's runner and publishes release models-asr-v1.
+on:
+  workflow_dispatch:
+    inputs:
+      model:
+        description: "Hugging Face model id"
+        default: "openai/whisper-base"
+permissions:
+  contents: write
+jobs:
+  convert:
+    runs-on: ubuntu-24.04
+    env:
+      ECHOMAP_SRC: ${{ github.workspace }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: |
+          sudo apt-get update && sudo apt-get install -y espeak-ng
+          pip install --index-url https://download.pytorch.org/whl/cpu torch==2.5.1
+          pip install transformers==4.46.3 onnx==1.17.0 onnxruntime==1.20.1 numpy==1.26.4 soundfile==0.12.1 librosa==0.10.2.post1
+      - run: python tools/convert/export_whisper_asr.py "${{ inputs.model }}" "$PWD/out"
+      - run: |
+          cd out && sha256sum * | tee SHA256SUMS_ASR.txt && ls -la && cd ..
+          gh release delete models-asr-v1 -y 2>/dev/null || true
+          gh release create models-asr-v1 out/* --title "EchoMap speech-to-text pack (Whisper, ONNX int8)" \
+            --notes "Converted by convert-asr.yml from ${{ inputs.model }} (MIT, OpenAI). Encoder + no-cache decoder, int8 dynamic quantisation, parity report included." --prerelease

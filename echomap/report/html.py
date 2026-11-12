@@ -181,6 +181,14 @@ def render(case) -> str:
                    _tbl(["ID", "Detection", "Category", "Reason"], [[E(u["record"]), E(u["label"]), E(u["category"]), E(u["reason"])]
                                                                      for u in geo.get("unlocated", [])]))
     # intelligence sections
+    if r.get("transcripts"):
+        trs = r["transcripts"]
+        out.append("<h2>Speech transcripts</h2><p class='muted'>Local Whisper-base transcription of every speech candidate, "
+                   "including faint background speech (enhanced). Quality labels: clear / uncertain / likely spurious. "
+                   "Machine transcripts can be wrong or invented; verify by listening.</p>" +
+                   _tbl(["Start", "End", "Quality", "Language", "Text", "No-speech p", "Avg logprob", "Level dBFS", "Enhanced"],
+                        [[fmt_t(t["start"]), fmt_t(t["end"]), E(t["quality"]), E(t["language"]), E(t["text"]), t["no_speech_prob"],
+                          t["avg_logprob"], t["level_dbfs"], "yes" if t["enhanced"] else "no"] for t in trs["segments"]]))
     if r.get("integrity"):
         it = r["integrity"]
         out.append("<h2>Forensic integrity checks</h2>" + ("<ul>" + "".join(f"<li>{E(f)}</li>" for f in it["summary_flags"]) + "</ul>"

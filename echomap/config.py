@@ -36,6 +36,7 @@ class Settings:
     allow_online_osm: bool = False
     allow_online_weather: bool = False
     allow_online_maps: bool = False   # 3D map tiles from OpenFreeMap / AWS Terrain Tiles / EOX (off by default)
+    transcribe_speech: bool = True   # local Whisper transcription of all speech, including faint background speech
     analysis_mode: str = "deep"  # quick | standard | deep | experimental
     sed_hop_s: float = 0.5
     birdnet_hop_s: float = 1.5

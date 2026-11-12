@@ -49,6 +49,19 @@ MODELS = {
                        "FP32 (parity test). Overlapping speakers are not separated. Related languages are confused "
                        "(e.g. Dutch/German in the CI test on synthetic speech).",
     },
+    "asr": {
+        "name": "Whisper base speech-to-text (99 languages, int8, greedy)",
+        "files": ["whisper_base_asr_encoder_int8.onnx", "whisper_base_asr_decoder_int8.onnx", "whisper_base_asr_tokens.json",
+                  "whisper_base_mel_filters.npy"],
+        "source": "https://huggingface.co/openai/whisper-base, converted by this repository's convert-asr workflow "
+                  "(release models-asr-v1)",
+        "licence": "MIT (c) OpenAI",
+        "published_accuracy": "Whisper paper (Radford et al. 2022): word error rate varies widely by language, noise and "
+                              "distance. The base model is markedly weaker than small/medium/large",
+        "size_mb": 75, "ram_mb": "~400", "required": False,
+        "limitations": "Invents plausible text on noise, music or very faint audio (hallucination). Every transcript "
+                       "carries a quality label. Overlapping speakers are merged into one text. No speaker identification.",
+    },
 }
 
 

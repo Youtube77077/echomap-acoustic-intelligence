@@ -56,6 +56,15 @@ def main():
         if got != want:
             sys.exit(f"CHECKSUM MISMATCH {name}: {got} != {want}")
         print(f"ok {name}")
+    subprocess.run(["gh", "release", "download", "models-asr-v1", "--dir", str(dest), "--clobber"], check=False)
+    asr_sums = dest / "SHA256SUMS_ASR.txt"
+    if asr_sums.exists():
+        for line in asr_sums.read_text().splitlines():
+            if line.strip():
+                h, n = line.split()
+                if digest(dest / n.lstrip("*"), "sha256") != h:
+                    sys.exit(f"CHECKSUM MISMATCH {n}")
+        print("ok speech-to-text pack (models-asr-v1)")
     sums = (dest / "SHA256SUMS.txt").read_text().split("\n")
     for line in sums:
         if line.strip():

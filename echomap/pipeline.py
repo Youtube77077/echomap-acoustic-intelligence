@@ -243,6 +243,32 @@ class Case:
                                        "insufficient speech for language identification.", model="Whisper base LID")
         else:
             h.log("model.langid", "skipped: language pack not installed")
+        if not s.transcribe_speech:
+            cap.add("asr", "Speech transcription (all speech, incl. faint background)", "not_executed", "Disabled in settings.")
+        elif not status.get("asr", {}).get("installed"):
+            cap.add("asr", "Speech transcription (all speech, incl. faint background)", "unavailable",
+                    "Speech-to-text pack (models-asr-v1) not installed.")
+        else:
+            from .models import asr
+            from .detect.taxonomy import SPEECH, class_table
+            sidx = [c["idx"] for c in class_table() if c["name"] in SPEECH]
+            self._p("asr", 0.78, "Transcribing speech (including faint background speech)")
+            langs = [(r["start"], r["end"], r["language_code"]) for r in inv.records if r.get("language_code")]
+
+            def hint(t0, t1):
+                best = max(langs, key=lambda L: min(t1, L[1]) - max(t0, L[0]), default=None)
+                return best[2] if best and min(t1, best[1]) - max(t0, best[0]) > 0 else None
+            with h.timed("asr", "Whisper-base transcription of all speech candidates (low threshold; faint speech enhanced)"):
+                trs = asr.run_all(x16, sed, sidx, md, hint)
+            self.result["transcripts"] = {"segments": trs, "method": asr.__doc__.strip(),
+                                          "counts": {q: sum(1 for t in trs if t["quality"] == q)
+                                                     for q in ("clear", "uncertain", "likely spurious")}}
+            for tr in trs:
+                for r in inv.records:
+                    if r["category"] == "language" and r["start"] < tr["end"] and r["end"] > tr["start"]:
+                        r.setdefault("transcripts", []).append({k: tr[k] for k in ("start", "end", "text", "quality", "language")})
+            cap.add("asr", "Speech transcription (all speech, incl. faint background)", "executed" if trs else "partial",
+                    "" if trs else "No speech candidates found, even at a low threshold.", segments=len(trs))
         self._p("specialists", 0.82, "Engine, siren, bell, signal and wind analysis")
         try:
           with h.timed("detect.specialists", "Engine harmonics, sirens, bells, periodic signals, wind, mains, reverb"):

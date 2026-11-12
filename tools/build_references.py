@@ -41,7 +41,17 @@ PRONUNCIATION = re.compile(r"^(LL-|[A-Z][a-z]{1,3}-)")
 
 
 def search(q, limit=25):
-    j = S.get(API, params={"action": "query", "format": "json", "generator": "search", "gsrsearch": f"filetype:audio {q}",
+    for attempt in range(4):
+        try:
+            return _search(q, limit)
+        except Exception as e:  # noqa: BLE001 - Commons may throttle or return HTML errors
+            print("search retry", q, attempt, e)
+            time.sleep(5 * (attempt + 1))
+    return []
+
+
+def _search(q, limit=25):
+    j = S.get(API, params={"maxlag": 5, "action": "query", "format": "json", "generator": "search", "gsrsearch": f"filetype:audio {q}",
                            "gsrnamespace": 6, "gsrlimit": limit, "prop": "coordinates|imageinfo",
                            "iiprop": "url|mime|size|extmetadata", "iiextmetadatafilter": "LicenseShortName|Artist|DateTimeOriginal"},
               timeout=60).json()

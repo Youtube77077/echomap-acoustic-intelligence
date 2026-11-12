@@ -26,20 +26,20 @@ def bandwidth_cutoff(x: np.ndarray, sr: int) -> dict:
     """Highest frequency with content above the noise floor. A steep cut-off well below Nyquist
     (e.g. ~16 kHz at 44.1/48 kHz) is typical of lossy encoding (MP3/AAC) somewhere in the file's history."""
     n_fft = 8192 if sr >= 32000 else 4096
-    p = stft_power(x, n_fft, n_fft // 2).mean(axis=1)
+    p = np.median(stft_power(x, n_fft, n_fft // 2, center=False), axis=1)  # median: robust to transients
     db = 10 * np.log10(p + 1e-20)
     freqs = np.linspace(0, sr / 2, len(db))
     sm = np.convolve(db, np.ones(9) / 9, mode="same")
     band = (freqs >= 1000) & (freqs <= min(8000, sr / 2 * 0.6))
     ref = float(np.median(sm[band])) if band.any() else float(np.median(sm))
-    above = np.where(sm > ref - 20)[0]
+    above = np.where(sm[: int(len(sm) * 0.995)] > ref - 20)[0]
     fc = float(freqs[above[-1]]) if len(above) else 0.0
-    # steepness: level drop over the 1 kHz above the -20 dB point (brick-wall codec low-pass vs gradual roll-off)
-    i = int(np.searchsorted(freqs, fc))
-    j = int(np.searchsorted(freqs, min(sr / 2, fc + 1000)))
-    steep = float(sm[max(0, i - 2):i + 1].mean() - sm[max(i + 1, j - 2):j + 1].mean()) if j > i + 2 else 0.0
+    # brick-wall test: level drop across +-500 Hz around the cut-off (codec low-pass >= 25 dB, natural roll-off far less)
+    lo = int(np.searchsorted(freqs, max(0.0, fc - 500)))
+    hi = int(np.searchsorted(freqs, min(sr / 2, fc + 500)))
+    steep = float(sm[max(0, lo - 2):lo + 3].mean() - sm[max(0, hi - 2):hi + 3].mean()) if hi > lo + 4 else 0.0
     lossy_like = fc < 0.9 * (sr / 2) and steep > 25 and fc > 4000
-    return {"effective_bandwidth_hz": round(fc), "nyquist_hz": sr / 2, "edge_steepness_db_per_khz": round(steep, 1),
+    return {"effective_bandwidth_hz": round(fc), "nyquist_hz": sr / 2, "drop_across_cutoff_db_per_khz": round(steep, 1),
             "lossy_history_indicated": bool(lossy_like),
             "interpretation": ("Steep spectral cut-off well below Nyquist: consistent with lossy encoding (MP3/AAC/Opus) at "
                                "some point in the file's history." if lossy_like else

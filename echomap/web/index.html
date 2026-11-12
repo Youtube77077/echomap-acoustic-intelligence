@@ -159,6 +159,7 @@
       <div class="rowflex"><input id="txtQ" class="search wide" placeholder="e.g. a church bell ringing, a helicopter overhead">
       <button id="txtGo" class="primary">Search</button></div>
       <div id="txtRes" class="small"></div></div>
+    <div class="card"><h3>Speech transcripts (all speech, including faint background)</h3><div id="trList" class="small muted">-</div></div>
     <div class="card"><h3>Unknown-sound discovery</h3><div id="unkList" class="small muted">-</div></div>
     <div class="card"><h3>Event relationships</h3><div id="relList" class="small muted">-</div></div>
     <div class="card"><h3>Reference matches (signature database)</h3><div id="refList" class="small muted">-</div></div>
@@ -225,6 +226,9 @@
       <label><input type="checkbox" id="setWx"> Open-Meteo historical weather (sends candidate coordinates and date)</label>
       <label><input type="checkbox" id="setMaps"> Online 3D map tiles (OpenFreeMap basemap and buildings, AWS Terrain Tiles,
         EOX Sentinel-2 imagery; requests reveal which map areas you view)</label>
+    </fieldset>
+    <fieldset><legend>Speech</legend>
+      <label><input type="checkbox" id="setAsr"> Transcribe all speech locally, including faint background speech (Whisper base; offline)</label>
     </fieldset>
     <fieldset><legend>Listing threshold</legend>
       <label>Minimum model score listed as an event <input type="number" id="setThr" min="0.05" max="0.9" step="0.05" class="num"> (all scores are still saved in case data)</label>
