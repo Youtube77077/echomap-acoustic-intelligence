@@ -9,6 +9,7 @@ This release fixes the problems reported with v1.0.7. Every change was checked o
 and Deep mode. That end-to-end test now runs on every change (`realaudio` workflow).
 
 ## Fixed
+- **MP4 / video files crashed** at "Extracting audio" (every video). Fixed; an MP4 is now analysed in every CI run.
 - **Analysis never finishing / far too slow.**
   - Deep mode: the reverse sound search (fingerprints) took 108 s of a 217 s run on a 5-minute file. It is now
     vectorised and takes about 2 s.
