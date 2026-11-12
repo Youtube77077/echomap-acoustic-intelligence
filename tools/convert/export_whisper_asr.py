@@ -66,7 +66,7 @@ import onnxruntime as ort  # noqa: E402
 enc_q = enc_p.replace("_fp32", "_int8")
 dec_q = dec_p.replace("_fp32", "_int8")
 quantize_dynamic(enc_p, enc_q, weight_type=QuantType.QInt8, op_types_to_quantize=["MatMul", "Gemm"])
-quantize_dynamic(dec_p, dec_q, weight_type=QuantType.QInt8, op_types_to_quantize=["MatMul", "Gemm"])
+quantize_dynamic(dec_p, dec_q, weight_type=QuantType.QInt8, op_types_to_quantize=["MatMul", "Gemm", "Gather"])
 os.remove(enc_p)
 os.remove(dec_p)
 
