@@ -86,7 +86,8 @@ def build(result: dict) -> dict:
         out["speech"]["note"] = f"{len(skipped)} weaker speech segment(s) were not transcribed (time budget)."
     # --- sounds (plain descriptions, strongest first, one line per distinct label)
     seen, sounds = set(), []
-    for r in sorted(inv, key=lambda r: -float(r.get("confidence") or 0)):
+    # sound sources the models recognised first; DSP measurements (wind gusts, periodic ticks) after them
+    for r in sorted(inv, key=lambda r: (r.get("kind") in ("measurement", "derived"), -float(r.get("confidence") or 0))):
         if r.get("category") in SKIP_CATS or r.get("tier") == "unclassified":
             continue
         key = (r.get("label"), (r.get("evidence") or {}).get("vehicle_type", {}).get("top"), r.get("common_name"))

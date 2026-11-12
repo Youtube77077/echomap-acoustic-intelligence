@@ -75,8 +75,9 @@ jobs:
           $clip = "$env:GITHUB_WORKSPACE\ci_audio\soundscape.wav"
           Invoke-RestMethod -Method Post -Uri ($url + "api/open") -Headers $h -Body (@{path=$clip} | ConvertTo-Json) | Out-Null
           Invoke-RestMethod -Method Post -Uri ($url + "api/analyse") -Headers $h -Body "{}" | Out-Null
-          for ($i=0; $i -lt 240; $i++) { $s = Invoke-RestMethod -Uri ($url + "api/status") -Headers $h; if ($s.state -in @("analysed","error")) { break }; Start-Sleep 1 }
-          if ($s.state -ne "analysed") { throw "analysis state $($s.state): $($s.error)" }
+          for ($i=0; $i -lt 300; $i++) { $s = Invoke-RestMethod -Uri ($url + "api/status") -Headers $h; if ($s.state -in @("analysed","complete","error")) { break }; Start-Sleep 1 }
+          if ($s.state -ne "complete") { throw "analysis (with automatic location step) state $($s.state): $($s.error)" }
+          "Analysis + automatic location step finished in about $i s" | Tee-Object -Append $env:GITHUB_STEP_SUMMARY
           $ctx = '{"context": {"date": {"mode": "unknown"}, "location": {"mode": "unknown"}}}'
           Invoke-RestMethod -Method Post -Uri ($url + "api/context") -Headers $h -Body $ctx | Out-Null
           for ($i=0; $i -lt 240; $i++) { $s = Invoke-RestMethod -Uri ($url + "api/status") -Headers $h; if ($s.state -in @("complete","error")) { break }; Start-Sleep 1 }
@@ -90,6 +91,8 @@ jobs:
           "Spectrogram API: 800x300 bytes, n_fft $($meta.n_fft), non-zero pixels $nonzero" | Tee-Object -Append $env:GITHUB_STEP_SUMMARY
           if ($nonzero -lt 10000) { throw "spectrogram is (nearly) empty" }
           if (-not $r.result.geo.candidates -or $r.result.geo.candidates.Count -lt 1) { throw "no geo candidates for the soundscape" }
+          if (-not $r.result.findings.where.headline) { throw "no findings summary" }
+          "Findings: $($r.result.findings.where.headline)" | Tee-Object -Append $env:GITHUB_STEP_SUMMARY
           $rep = Invoke-WebRequest -UseBasicParsing -Uri ($url + "api/report") -Headers $h
           if ($rep.Content -notmatch "Full processing history") { throw "report incomplete" }
           "Report HTML: $([math]::Round($rep.RawContentLength/1KB)) KB" | Tee-Object -Append $env:GITHUB_STEP_SUMMARY

@@ -1,3 +1,51 @@
+# EchoMap v1.0.8
+
+Downloads:
+- `EchoMap-v1.0.8-win64.zip`: the application.
+- `EchoMap-models-v2.zip`: same model pack as before (no change). If you already have it, keep it.
+
+This release fixes the problems reported with v1.0.7. Every change was checked on GitHub's machines with real audio
+(Dutch read speech from FLEURS, a street mix with that speech under traffic, and a 5-minute clip) in Quick, Standard
+and Deep mode. That end-to-end test now runs on every change (`realaudio` workflow).
+
+## Fixed
+- **Analysis never finishing / far too slow.**
+  - Deep mode: the reverse sound search (fingerprints) took 108 s of a 217 s run on a 5-minute file. It is now
+    vectorised and takes about 2 s.
+  - Speech transcription had no time limit and no progress. It now skips segments that Whisper itself marks as
+    "no speech" (most false candidates), caps the text length to the segment length, transcribes the clearest speech
+    first within a time budget (Quick 20 s + 0.5x length, Standard 30 s + 1x, Deep 45 s + 2x), and shows progress.
+  - Quick mode transcribes clear speech only; Deep also tries faint background speech.
+- **No location shown.** The location step now runs automatically at the end of every analysis. "Recording context"
+  became "Refine location…" (optional: add a date, country or city and re-run).
+- **Dutch (any language) not identified.** Language identification now runs in every mode, and transcribed speech
+  also yields a language record (from Whisper's language token), so speech under traffic noise still counts.
+- **Wrong country for a clear language.** Speech, place names and transit sounds now carry a population prior (people
+  make these sounds where people live). Dutch speech gave "Suriname" first; it now gives "The Netherlands, Belgium".
+- **Sounds not described.**
+  - New **Findings** panel at the top: Where (most likely area, likely places, alternatives, which clues),
+    Language, What was said (transcript lines), What the sounds are (plain descriptions with time and confidence).
+    The same summary opens the report.
+  - Vehicle type (car / bus / truck / tram / motorcycle) now runs in every mode and is shown in the inventory. When
+    the vehicle model is unsure (near-equal scores) it says "uncertain" instead of naming a type.
+  - Clear speech (score 0.74) was shown as "Unclassified sound" and labelled "Speech synthesizer"; fixed.
+- **Laggy 2D clue map.** While dragging or zooming, a cached image of the map is moved instead of redrawing every
+  border, label and city; the full redraw follows when you stop. 1:10m borders only load when zoomed in.
+
+## Measured (GitHub 4-core runner)
+| Audio | Quick | Standard | Deep |
+|---|---|---|---|
+| 42 s Dutch speech | 13 s | see Actions | see Actions |
+| 60 s street + Dutch | 14 s | 39 s | see Actions |
+| 300 s mix | 90 s | 62 s | 217 s before the fingerprint fix |
+
+A home PC can be 2-4x slower than this runner.
+
+## Known limits (unchanged)
+- Location from a language alone is country-level (about 300 km). City-level needs strong clues (a spoken place
+  name, matched bells, an exact announcement match).
+- The vehicle-type model was trained in Melbourne only (67% balanced accuracy there).
+
 # EchoMap v1.0.7
 
 - Fixed: 'Settings' object has no attribute 'save' when starting an analysis (regression in v1.0.6).
