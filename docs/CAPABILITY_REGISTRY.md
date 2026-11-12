@@ -126,3 +126,26 @@ For each gap: what must be detected, prior work, a candidate approach, resources
 | Core models (EfficientAT, BirdNET+, Geomodel, Whisper LID) | ~150 MB | `EchoMap-models-v1.zip` release asset, unpacked next to the exe |
 | App (exe and libraries, no models) | target < 150 MB unpacked | `EchoMap-v*-win64.zip` |
 | Derived datasets | ~2 MB | inside the app |
+
+## 4. v1.0.2 additions
+
+| Capability | Class | Status | Module | Test evidence |
+|---|---|---|---|---|
+| 2D clue map: per-clue footprints, agreement zone, point inspector, unlocated evidence | context | Implemented and tested (unit) | `geo/engine.py` (footprints), `web/app2.js` | `test_geo_footprints_and_unlocated` (Amsterdam cell inside the Dutch-language footprint) |
+| 3D map (MapLibre 6.18, terrain, buildings, imagery; online, opt-in) | context | Implemented | `web/app2.js` | Manual / CI screenshot. Online tiles are not exercised in CI |
+| Speech transcription (all speech incl. faint; quality labels) | model | Implemented | `models/asr.py` | Conversion parity in `convert-asr.yml`; FLEURS LID evaluation in `docs/eval/language.json` |
+| Forensic integrity checks | measured | Tested (synthetic) | `dsp/integrity.py` | lossy cut-off, clipping, dropouts tests |
+| Stereo direction cues (lateral cone; mono unsupported) | measured | Tested (synthetic) | `dsp/spatial.py` | ITD within 0.05 ms on a 12-sample delay |
+| Bell partial analysis + Dove's Guide matching | measured + context | Tested (synthetic ring, Dove self-match); real-bell evaluation in `docs/eval/` | `dsp/bells.py`, `geo/bells_dove.py` | 6-bell synthetic ring recovered within 15 cents |
+| Unknown-sound discovery | model | Experimental; synthetic evaluation in `docs/eval/` | `detect/discovery.py` | FSK / FM out-of-ontology test |
+| Reverse sound search (fingerprints + embeddings) | model | Implemented; library built in CI | `detect/references.py`, `tools/build_references.py` | deterministic fingerprint test |
+| Event relationships and sequence hypotheses | measured | Tested (unit) | `detect/relations.py` | level-crossing hypothesis test |
+| Text search (AudioSet-label based) | model | Tested (unit) | `detect/textsearch.py` | church-bell query test |
+| Analysis modes and capability status | - | Tested | `capabilities.py` | mode test |
+
+### Hardware-required, impossible or deferred (§13, §16, §20, §25, §27)
+- **RF / microwave detection:** requires an SDR receiver and antenna (RTL-SDR, HackRF, SDRplay, Airspy with GNU Radio). A microphone cannot measure RF. Integration plan: optional SDR capture importer (IQ files) analysed separately. Not started.
+- **Neural source separation:** deferred (size and GPU). Band-limited listening and harmonic/periodic attribution are offered, and labelled as filtering, not separation.
+- **Direction and distance:** stereo gives a lateral cone only. Elevation, distance and 3-D position need a calibrated array. Distance is never estimated.
+- **TinyCLAP:** verified at 17.8 MB, Apache-2.0. Teacher-side text embeddings depend on the 2.3 GB MS CLAP 2022 weights with an inconsistent licence. Conversion pending.
+- **Google Photorealistic 3D Tiles / Cesium ion:** need your own key and billing (paid; EEA restrictions). The provider-independent overlays work with MapLibre now.

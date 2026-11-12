@@ -104,3 +104,31 @@ Scores below 0.15 are not listed as events, but they are **kept** in `case.json`
 Total new local footprint for the default configuration: **about 180 MB**, or about 230 MB with the language pack.
 
 Models load only when the step that needs them runs, and they are released when the case finishes. Peak RAM for a 5-minute file is estimated below 1.5 GB.
+
+## v1.0.2 additions
+- **Pipeline order (Stage A):**
+  1. decode (≤ 2 channels kept);
+  2. integrity checks;
+  3. DSP;
+  4. SED (scores + 960-d embeddings);
+  5. BirdNET;
+  6. language ID;
+  7. transcription;
+  8. specialists;
+  9. bells + Dove;
+  10. stereo direction;
+  11. scene;
+  12. inventory;
+  13. reference search;
+  14. relationships;
+  15. discovery;
+  16. capability log.
+
+  The analysis mode (`capabilities.MODES`) decides which steps run, and every skipped step is recorded with a reason.
+- **Geography (Stage B):** evidence items now carry a footprint (`fp`), source and precision. `build_footprints` encodes each footprint as a 720×360 bitset for the clue maps. Detections without footprints are returned as `unlocated`.
+- **Map providers:** rendering is separate from inference.
+  - The offline d3 clue map and globe always work.
+  - MapLibre is the online 3D provider (tiles from OpenFreeMap, AWS Terrain Tiles, EOX).
+  - Overlays are plain GeoJSON derived from the same footprints, so another provider (Cesium, Google 3D Tiles) can be added without touching inference.
+- **New data:** `echomap/data/dove_rings.json.gz` (Dove's Guide), `echomap/data/references.json.gz` (reference signatures, built in CI).
+- **New models:** Whisper-base speech-to-text (`models-asr-v1` release).

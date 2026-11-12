@@ -116,7 +116,7 @@ jobs:
           New-Item -ItemType Directory dist\EchoMap\models | Out-Null
           "Extract EchoMap-models-*.zip here (or choose another folder in Models & settings)." | Out-File dist\EchoMap\models\PUT_MODELS_HERE.txt
           Compress-Archive -Path dist\EchoMap -DestinationPath "EchoMap-v$ver-win64.zip"
-          Compress-Archive -Path ci_models\* -DestinationPath "EchoMap-models-v1.zip"
+          Compress-Archive -Path ci_models\* -DestinationPath "EchoMap-models-v2.zip"
           Get-ChildItem *.zip | Select-Object Name, @{n="MB";e={[math]::Round($_.Length/1MB,1)}} | Format-Table
           $app = (Get-ChildItem "EchoMap-v$ver-win64.zip").Length/1MB
           "App ZIP size: {0:N1} MB" -f $app >> $env:GITHUB_STEP_SUMMARY
@@ -130,4 +130,4 @@ jobs:
         shell: pwsh
         run: |
           $tag = "v$env:VER"
-          gh release create $tag "EchoMap-v$env:VER-win64.zip" "EchoMap-models-v1.zip" --title "EchoMap $tag" --notes-file docs/RELEASE_NOTES.md --target $env:GITHUB_SHA
+          gh release create $tag "EchoMap-v$env:VER-win64.zip" "EchoMap-models-v2.zip" --title "EchoMap $tag" --notes-file docs/RELEASE_NOTES.md --target $env:GITHUB_SHA
