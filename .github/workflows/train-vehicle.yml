@@ -1,0 +1,30 @@
+name: train-vehicle
+# Trains the vehicle-type head (car/bus/truck/tram/motorcycle/bicycle) on MELAUDIS (CC BY 4.0) on GitHub's runner.
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  train:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          cache: pip
+          cache-dependency-path: requirements*.txt
+      - run: pip install -r requirements.txt
+      - uses: actions/cache@v4
+        with:
+          path: /home/runner/models
+          key: models-v1-birdnet31-geo304-asr1
+      - run: python tools/fetch_models.py /home/runner/models
+      - run: python -u tools/train_vehicle_head.py /home/runner/models /home/runner/veh
+      - name: Commit head and evaluation
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add echomap/data/vehicle_head.json docs/eval/vehicle_head.json
+          git diff --cached --quiet && echo "no changes" || (git commit -m "Vehicle-type head trained on MELAUDIS (train-vehicle workflow)" && for i in 1 2 3; do git pull --rebase && git push && break; sleep 5; done)
