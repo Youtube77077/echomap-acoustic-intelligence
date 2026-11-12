@@ -16,10 +16,10 @@
 *.npy
 !echomap/data/*.npy
 tests/recordings/
-cases/
-models/
-build/
-dist/
+/cases/
+/models/
+/build/
+/dist/
 *.spec.bak
 __pycache__/
 *.pyc
