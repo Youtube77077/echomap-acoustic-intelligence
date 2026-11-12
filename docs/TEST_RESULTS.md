@@ -110,3 +110,35 @@ These are listed as *possible* but are **excluded from geolocation**: species ne
 - Real-speech language test set (e.g. FLEURS, CC BY 4.0, streamed in CI). Needs approval.
 - Geolocation evaluation on recordings with known coordinates. Needs approval.
 - Real crossing-signal, EV pass-by, and change-ringing recordings. Need approval.
+
+
+## 9. Cloud evaluations (v1.0.2)
+
+### Language identification: FLEURS real speech (`docs/eval/language.json`)
+20 languages, 15 test utterances each, Whisper-base LID-only int8:
+
+| Condition | Top-1 accuracy |
+|---|---|
+| Full utterances | **98.0%** |
+| First 3 s only | **70.0%** |
+| Full utterance + white noise at 5 dB SNR | **76.7%** |
+
+- **Full utterances:** 18 of 20 languages at 100%. Swedish was 93% and Swahili 67% (confused with Yoruba, Malay, Japanese and Indonesian).
+- **Short or noisy clips:** Swahili, Swedish, Ukrainian and Finnish degrade most.
+- **Caveat:** FLEURS is read speech, cleaner than field audio.
+
+### Geolocation: iNaturalist bird recordings with known coordinates (`docs/eval/geo.json`)
+47 research-grade recordings from 8 world regions (CC0 / CC BY / CC BY-SA), Standard mode:
+
+| Metric | Date unknown | Date known |
+|---|---|---|
+| Recordings given an estimate (others: "no reliable estimate") | 45% | 47% |
+| Median error of best candidate centre | 1,004 km | 986 km |
+| Interquartile range of the error | 705 – 1,689 km | 494 – 2,746 km |
+| Truth inside best circle (raw radii, before calibration) | 43% | 41% |
+| Truth inside any candidate circle | 71% | 68% |
+| Truth inside the "most clues agree" zone | 73% | 71% |
+
+- **Finding:** the raw radii were overconfident. A calibration factor of 1.75 (the 68th percentile of error/radius) is now applied so the best circle is about a 68% region on this data. The sample is small (43 estimates), so treat the factor as provisional.
+- **Leakage caveat:** the BirdNET geomodel is trained on citizen-science occurrences that may include these observations.
+- **What this means:** single-species bird recordings typically localise to a region of about 1,000 km. Combining species, language, mains frequency and bells narrows that. A city prior gives local precision.

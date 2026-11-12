@@ -28,7 +28,11 @@ OUT_OF_RANGE_FLOOR = 0.02      # captive / escaped / vagrant / transported anima
 LANGUAGE_FLOOR = 0.005         # tourists, migrants, broadcast media
 RESOLUTIONS_KM = [1, 5, 10, 25, 50, 100]
 SPECIES_MIN_CONF = 0.4         # species predictions below this are listed but not used for geography
-MIN_INFORMATION_RATIO = 2.0    # evidence must shrink the plausible land area at least 2x to report candidates
+MIN_INFORMATION_RATIO = 2.0
+# Radius calibration: on the iNaturalist evaluation (docs/eval/geo.json, 43 estimates, 2026-11-12) the true location fell
+# inside the best candidate's raw radius only 43% of the time. Scaling by the 68th percentile of error/radius (1.74)
+# makes the best circle a ~68% region on that data. Small sample: re-estimated whenever the evaluation is re-run.
+RADIUS_CALIBRATION = 1.75    # evidence must shrink the plausible land area at least 2x to report candidates
 
 
 @dataclass
@@ -389,6 +393,8 @@ class GeoEngine:
             cw = np.cumsum(wts[o]) / wts.sum()
             r68 = float(dist[o][min(len(o) - 1, np.searchsorted(cw, 0.68))])
             radius = max(r68 + min_cell_km / 2, min_cell_km / 2)
+            if min_cell_km >= 20:  # global grid only; local refinement is driven by the user's own prior
+                radius *= RADIUS_CALIBRATION
             iso_set = set(pts.iso[idx]) - {""}
             res_label, res_km = self._resolution(radius, iso_set)
             ci = int(np.argmin(haversine_km(clat, clon, pts.lat, pts.lon)))
