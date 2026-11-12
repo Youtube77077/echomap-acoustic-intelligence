@@ -209,12 +209,14 @@ def make_handler(state: AppState):
                 c = state.case
                 if not c or c.state != "prepared":
                     return self._json({"error": "no prepared case"}, 400)
+                c.state = "analysing"
                 threading.Thread(target=c.analyse, daemon=True).start()
                 return self._json({"ok": True})
             if path == "context":
                 c = state.case
                 if not c or c.state not in ("analysed", "complete", "error") or not c.result.get("inventory") is not None:
                     return self._json({"error": "analysis not finished"}, 400)
+                c.state = "geolocating"   # set before the thread starts so polling never sees the previous "complete"
                 threading.Thread(target=c.contextualise, args=(body.get("context") or {},), daemon=True).start()
                 return self._json({"ok": True})
             if path == "settings":
