@@ -130,6 +130,8 @@ def build_cities():
     with z.open("cities15000.txt") as fh:
         for line in io.TextIOWrapper(fh, encoding="utf-8"):
             f = line.rstrip("\n").split("\t")
+            if f[7] == "PPLX":  # section of a populated place (e.g. Paris arrondissements)
+                continue
             rows.append([f[1], f[2], f[8], admin1.get(f"{f[8]}.{f[10]}", ""), round(float(f[4]), 4),
                          round(float(f[5]), 4), int(f[14] or 0)])
     rows.sort(key=lambda r: -r[6])

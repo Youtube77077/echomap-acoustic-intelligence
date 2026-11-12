@@ -11,6 +11,7 @@ from .runtime import session
 
 SR = 32000
 CHUNK_S = 3.0
+RESCALED: list[int] = []  # chunks re-run at reduced gain because of non-finite outputs (logged by the pipeline)
 
 
 @lru_cache(maxsize=2)
@@ -35,8 +36,15 @@ def run(x32k: np.ndarray, models_dir: str | Path, hop_s: float = 1.5, progress=N
         for s in starts[b:b + 16]:
             c = x32k[s:s + n]
             batch.append(np.pad(c, (0, n - len(c))))
-        out = sess.run(None, {"input": np.stack(batch).astype(np.float32)})
-        preds.append(out[0])
+        arr = np.stack(batch).astype(np.float32)
+        out = sess.run(None, {"input": arr})
+        pr = out[0]
+        bad = ~np.isfinite(pr).all(axis=1)
+        if bad.any():  # FP16 overflow on very loud input: retry those chunks at reduced gain
+            sub = arr[bad] / max(1e-6, float(np.abs(arr[bad]).max())) * 0.25
+            pr[bad] = sess.run(None, {"input": sub})[0]
+            RESCALED.append(int(bad.sum()))
+        preds.append(np.nan_to_num(pr, nan=0.0, posinf=0.0, neginf=0.0))
         if len(out) > 1:
             emb.append(out[1])
         if progress:

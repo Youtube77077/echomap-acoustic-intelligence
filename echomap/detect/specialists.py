@@ -11,6 +11,9 @@ VEHICLE_NAMES = {"Car", "Bus", "Truck", "Motorcycle", "Motor vehicle (road)", "V
                  "Engine", "Light engine (high frequency)", "Medium engine (mid frequency)", "Heavy engine (low frequency)",
                  "Idling", "Accelerating, revving, vroom", "Engine starting", "Engine knocking", "Boat, Water vehicle",
                  "Motorboat, speedboat", "Train", "Rail transport", "Subway, metro, underground", "Traffic noise, roadway noise"}
+ROAD_ENGINE = {"Car", "Bus", "Truck", "Motorcycle", "Motor vehicle (road)", "Car passing by", "Race car, auto racing",
+               "Engine", "Light engine (high frequency)", "Medium engine (mid frequency)", "Heavy engine (low frequency)",
+               "Idling", "Accelerating, revving, vroom", "Engine starting", "Engine knocking", "Vehicle"}
 NOT_SUPPORTED_VEHICLE = ("Manufacturer, model, generation and exhaust configuration: NOT SUPPORTED. No validated public "
                          "model or reference dataset identifies these from audio. Electric vs combustion and "
                          "diesel vs petrol are not classes of the AudioSet model either.")
@@ -81,6 +84,7 @@ def add_engine_analysis(inv: Inventory, x4k: np.ndarray, f0_fn) -> list[dict]:
             continue
         if not (set(r["_audioset_names"]) & VEHICLE_NAMES):
             continue
+        road_engine = r["label"] in ROAD_ENGINE
         r["identification_detail"] = NOT_SUPPORTED_VEHICLE
         if r["duration"] < 1.0:
             continue
@@ -94,8 +98,17 @@ def add_engine_analysis(inv: Inventory, x4k: np.ndarray, f0_fn) -> list[dict]:
             if "corroborated_by" in r:
                 r["corroborated_by"].append("Harmonic-series measurement (engine-like periodicity)")
                 r["tier"] = tier_for(r["confidence"], True)
-            for s in eng["states"]:
-                if s["state"] == "accelerating" and s["end"] - s["start"] >= 0.9:
+            merged_acc = []
+            for s in eng["states"] if (road_engine and eng.get("continuity", 0) >= 0.8) else []:
+                if s["state"] != "accelerating":
+                    continue
+                if merged_acc and s["start"] <= merged_acc[-1]["end"] + 0.1:
+                    merged_acc[-1]["end"] = s["end"]
+                    merged_acc[-1]["slope_pct_per_s"] = max(merged_acc[-1]["slope_pct_per_s"], s["slope_pct_per_s"])
+                else:
+                    merged_acc.append(dict(s))
+            for s in merged_acc:
+                if s["end"] - s["start"] >= 1.5:
                     new.append(inv.add(
                         category="engines_machinery", label="Engine acceleration event",
                         specific=f"f0 rising {s['slope_pct_per_s']}%/s", start=s["start"], end=s["end"],
@@ -104,7 +117,7 @@ def add_engine_analysis(inv: Inventory, x4k: np.ndarray, f0_fn) -> list[dict]:
                         evidence={"from": r["id"], "segment": s},
                         limitations="Derived from f0 slope. Doppler shift from a passing vehicle also raises f0.",
                         signature="Rising firing frequency"))
-            for g in eng.get("possible_gear_changes_s", []):
+            for g in (eng.get("possible_gear_changes_s", []) if (road_engine and eng.get("continuity", 0) >= 0.9) else []):
                 new.append(inv.add(category="engines_machinery", label="Possible gear change", start=g - 0.2, end=g + 0.2,
                                    confidence=0.3, tier="possible", kind="derived", parent=r["id"],
                                    model="Harmonic f0 tracking (EchoMap DSP)",
@@ -157,8 +170,13 @@ def add_periodic(inv: Inventory, patterns: list[dict], profile_fn) -> list[dict]
             continue  # part of a siren or music, not a separate signal
         label, cands, geo = classify_periodic(p)
         birds = inv.find_overlapping(p["start"], p["end"], lambda r: r["category"] == "birds_wildlife", 0.3)
-        if birds and p.get("f_hz", 0) > 1000:
-            cands = [{"label": "Repetitive bird song/call element (overlaps bird activity)", "score": None}] + cands
+        strong_animal = [b for b in birds if b["confidence"] >= 0.5]
+        if strong_animal:
+            for b in strong_animal:
+                b["evidence"].setdefault("periodic_components", []).append(p)
+            continue  # stridulation or repeated song notes of a detected animal
+        if birds:
+            cands = [{"label": "Repetitive animal call element (overlaps weak animal detection)", "score": None}] + cands
         sed = inv.find_overlapping(p["start"], p["end"], lambda r: any(
             n in ("Reversing beeps", "Beep, bleep", "Tick", "Tick-tock", "Clock", "Alarm", "Buzzer")
             for n in r.get("_audioset_names", [])), 0.2)
@@ -214,7 +232,7 @@ def add_mains(inv: Inventory, mains: dict, duration: float) -> None:
     if not mains.get("detected"):
         return
     fam = mains["families"][mains["nominal_hz"]]
-    strong = fam["n_strong"] >= 3 or any(h["snr_db"] >= 12 for h in fam["harmonics"] if h["harmonic"] == 1)
+    strong = sum(1 for h in fam["harmonics"] if h["snr_db"] >= 10) >= 3 and duration >= 10.0
     desc = ", ".join(f"{h['freq_hz']} Hz ({h['snr_db']} dB)" for h in fam["harmonics"])
     inv.add(category="electronic_signals", label=f"Mains hum ({mains['nominal_hz']} Hz electrical network)",
             specific=desc, start=0.0, end=duration, confidence=min(0.99, 0.5 + fam["score"] / 60),
@@ -250,12 +268,22 @@ def add_reverb(inv: Inventory, rt: dict, duration: float) -> None:
             signature=f"Median of {rt['n_decays']} free decays", limitations=rt["method"] + " Coarse indicator only.")
 
 
-def add_unclassified(inv: Inventory, segments: list[dict], profile_fn) -> None:
+def add_unclassified(inv: Inventory, segments: list[dict], profile_fn, sed: dict | None = None, labels=None) -> None:
     for s in segments:
         if any(overlap(s["start"], s["end"], r["start"], r["end"]) > 0.5 * (s["end"] - s["start"])
                for r in inv.records if r["end"] - r["start"] < inv.duration * 0.9):
             continue
+        hint = None
+        if sed is not None and labels is not None:
+            a = int(s["start"] / sed["hop_s"])
+            b = max(a + 1, int(np.ceil(s["end"] / sed["hop_s"])))
+            seg = sed["frame_scores"][a:b].max(axis=0)
+            top = np.argsort(-seg)[:3]
+            hint = [{"label": labels[i], "score": round(float(seg[i]), 3)} for i in top if seg[i] >= 0.03]
         inv.add(category="unknown", label="Unclassified sound event", start=s["start"], end=s["end"],
+                specific=("Closest model labels (below threshold): " +
+                          ", ".join(f"{h['label']} {h['score']:.2f}" for h in hint)) if hint else None,
+                candidates=hint or [],
                 confidence=0.0, tier="unclassified", kind="measurement", model="Energy segmentation (EchoMap DSP)",
                 frequency=profile_fn(s["start"], s["end"]), evidence={"segment": s},
                 signature=f"{s['peak_db_above_floor']} dB above noise floor",

@@ -189,6 +189,10 @@ class Case:
                 return {"count": len(sub), "times_s": sub[:100],
                         "note": "Broadband onsets inside the interval; may include non-bird transients."}
             add_birdnet(inv, bn, bnm.labels(md), profile, onset_fn=calls)
+            if bnm.RESCALED:
+                h.log("model.birdnet.rescaled", "Chunks re-run at reduced gain after non-finite FP16 outputs",
+                      chunks=sum(bnm.RESCALED))
+                bnm.RESCALED.clear()
             self.result["birdnet_raw"] = {"starts": bn["starts"], "top": self._top_raw(bn["scores"], bnm.labels(md), "common")}
         else:
             h.log("model.birdnet", "skipped: model not installed")
@@ -209,7 +213,7 @@ class Case:
             sp.add_mains(inv, mains, dur)
             sp.add_wind(inv, wind)
             sp.add_reverb(inv, rt, dur)
-            sp.add_unclassified(inv, segs, profile)
+            sp.add_unclassified(inv, segs, profile, sed, [l["name"] for l in labels])
         with h.timed("detect.scene", "Scene inference rules"):
             self.result["scene"] = scene_mod.infer(sed, rt, wind)
         self.result["sed_raw"] = {"frame_t": sed["frame_t"], "hop_s": sed["hop_s"], "win_s": sed["win_s"],

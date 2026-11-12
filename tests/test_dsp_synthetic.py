@@ -126,7 +126,7 @@ def test_snr_estimate_orders():
 
 
 def test_rt60_synthetic_decay():
-    x = rng.normal(0, 1e-4, 12 * SR).astype(np.float32)
+    x = rng.normal(0, 1e-4, 15 * SR).astype(np.float32)
     rt = 0.8
     n = int(2.5 * SR)
     env = 10 ** (-3 * np.arange(n) / SR / rt)  # -60 dB at rt seconds
@@ -140,6 +140,6 @@ def test_rt60_synthetic_decay():
 
 def test_frontend_shapes():
     mb = np.ones((128, 513), np.float32) / 513
-    assert efficientat_mel(tone(1000, 5.0), mb).shape == (128, 501)
+    assert efficientat_mel(tone(1000, 5.0), mb).shape == (128, 500)  # pre-emphasis drops one sample, as in the reference
     mf = np.ones((80, 201), np.float32) / 201
     assert whisper_log_mel(tone(500, 2.0, sr=16000), mf).shape == (80, 3000)

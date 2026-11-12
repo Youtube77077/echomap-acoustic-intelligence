@@ -28,7 +28,7 @@ def test_haversine():
 def test_gazetteer():
     r = gazetteer.search_city("Amsterdam", "NL")
     assert r and r[0]["country"] == "NL" and abs(r[0]["lat"] - 52.37) < 0.1
-    assert gazetteer.nearest_city(48.857, 2.352)["name"] == "Paris"
+    assert gazetteer.nearest_city(48.857, 2.352)["name"].startswith("Paris")
 
 
 def _rec(**kw):

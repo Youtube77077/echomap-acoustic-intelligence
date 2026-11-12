@@ -77,7 +77,8 @@ def wind_analysis(x: np.ndarray, sr: int) -> dict:
     windy = ratio > 10
     k = 10
     sm = np.convolve(lf, np.ones(k) / k, mode="same")
-    base = np.percentile(sm, 30)
+    base = max(float(np.percentile(sm, 30)), -90.0)  # digital silence must not create a fake baseline
+    ratio_sm = np.convolve(ratio, np.ones(k) / k, mode="same")
     gusts = []
     i = 0
     while i < len(sm):
@@ -85,7 +86,9 @@ def wind_analysis(x: np.ndarray, sr: int) -> dict:
             j = i
             while j < len(sm) and sm[j] > base + 3:
                 j += 1
-            if (j - i) * hop / sr >= 0.5:
+            lf_dominant = float(np.mean(ratio_sm[i:j])) > 6.0
+            loud_enough = float(sm[i:j].max()) > -70.0
+            if (j - i) * hop / sr >= 0.5 and lf_dominant and loud_enough:
                 gusts.append({"start": round(i * hop / sr, 2), "end": round(j * hop / sr, 2),
                               "peak_db_above_baseline": round(float(sm[i:j].max() - base), 1)})
             i = j

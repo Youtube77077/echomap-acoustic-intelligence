@@ -21,12 +21,13 @@ def mains_hum(x_2k: np.ndarray, sr: int = 2000) -> dict:
 
     x_2k: audio resampled to `sr` (2 kHz is enough for harmonics up to 240 Hz).
     """
-    seg = int(8 * sr)
-    if len(x_2k) < seg:
-        seg = int(2 ** np.floor(np.log2(max(len(x_2k), 256))))
+    dur = len(x_2k) / sr
+    # Welch averaging: at least 7 half-overlapping segments so noise peaks cannot pass as hum
+    seg_s = float(np.clip(dur / 4.0, 1.0, 8.0))
+    seg = int(2 ** np.round(np.log2(seg_s * sr)))
     hop = seg // 2
     p = stft_power(x_2k, seg, hop, center=False)
-    psd = np.median(p, axis=1)  # median over time = robust to transients
+    psd = p.mean(axis=1) if p.shape[1] < 9 else np.median(p, axis=1)
     df = sr / seg
     freqs = np.arange(len(psd)) * df
     out = {"freq_resolution_hz": round(df, 4), "families": {}}
@@ -44,15 +45,19 @@ def mains_hum(x_2k: np.ndarray, sr: int = 2000) -> dict:
             snr = 10 * np.log10(psd[k] / (np.median(psd[bg]) + 1e-20) + 1e-20)
             fpk = _interp_peak(psd, k) * df
             harm.append({"harmonic": h, "freq_hz": round(fpk, 3), "snr_db": round(float(snr), 1)})
-        strong = [hh for hh in harm if hh["snr_db"] >= 6]
-        score = sum(max(0.0, hh["snr_db"] - 6) for hh in harm)
+        strong = [hh for hh in harm if hh["snr_db"] >= 8]
+        score = sum(max(0.0, hh["snr_db"] - 8) for hh in harm)
         out["families"][nominal] = {"harmonics": harm, "n_strong": len(strong), "score": round(score, 1)}
     f50, f60 = out["families"][50], out["families"][60]
     best = 50 if f50["score"] >= f60["score"] else 60
     fb, fo = out["families"][best], out["families"][110 - best]
     fund = next((h for h in fb["harmonics"] if h["harmonic"] == 1), None)
-    detected = (fb["n_strong"] >= 2 or (fund and fund["snr_db"] >= 12)) and fb["score"] > 2 * fo["score"] + 3
+    n_seg = p.shape[1]
+    detected = ((fb["n_strong"] >= 3 or (fb["n_strong"] >= 2 and fund and fund["snr_db"] >= 15))
+                and fb["score"] > 2 * fo["score"] + 6 and n_seg >= 5)
     out["detected"] = bool(detected)
+    out["segments_averaged"] = int(n_seg)
+    out["duration_s"] = round(dur, 2)
     out["nominal_hz"] = best if detected else None
     # ENF trace from the strongest harmonic of the winning family
     if detected:
@@ -325,10 +330,12 @@ def engine_f0_track(x_4k: np.ndarray, sr: int = 4000, t0: float = 0.0, t1: float
             if len(pre) > 4 and len(post) > 4 and np.polyfit(range(len(pre)), pre, 1)[0] > 0 and np.polyfit(range(len(post)), post, 1)[0] > 0:
                 gear.append(round(float(tv[i]), 2))
     med = float(np.nanmedian(fv))
+    jumps = np.abs(np.diff(fv)) / (fv[:-1] + 1e-9) if len(fv) > 1 else np.zeros(1)
+    continuity = float(np.mean(jumps < 0.08)) * float(valid.mean())
     rpm = {f"{c}-cyl 4-stroke": round(med * 120 / c) for c in (2, 3, 4, 6, 8)}
     return {"available": True, "f0_median_hz": round(med, 1), "f0_range_hz": [round(float(np.nanmin(fv)), 1), round(float(np.nanmax(fv)), 1)],
             "t_s": [round(float(v), 2) for v in tv[::2]], "f0_hz": [round(float(v), 1) for v in fv[::2]],
-            "states": states, "possible_gear_changes_s": gear,
+            "states": states, "possible_gear_changes_s": gear, "continuity": round(continuity, 3),
             "rpm_if": rpm,
             "note": ("f0 is the strongest harmonic-series fundamental, usually the engine firing frequency. RPM values "
                      "are conditional on an assumed cylinder count (RPM = f0 x 120 / cylinders for 4-stroke) and are "

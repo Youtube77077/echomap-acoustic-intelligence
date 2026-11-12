@@ -27,6 +27,8 @@ GROUP_CLIP = 6.0
 OUT_OF_RANGE_FLOOR = 0.02      # captive / escaped / vagrant / transported animals
 LANGUAGE_FLOOR = 0.005         # tourists, migrants, broadcast media
 RESOLUTIONS_KM = [1, 5, 10, 25, 50, 100]
+SPECIES_MIN_CONF = 0.4         # species predictions below this are listed but not used for geography
+MIN_INFORMATION_RATIO = 2.0    # evidence must shrink the plausible land area at least 2x to report candidates
 
 
 @dataclass
@@ -105,10 +107,22 @@ class GeoEngine:
         cache = self._occ_cache.setdefault(key, {})
         todo = [i for i in idxs if i not in cache]
         if todo:
+            # evaluate on a 1-degree lattice for the global grid (4x fewer model calls), then map back;
+            # species ranges are smooth at this scale
+            if len(pts.lat) > 20000:
+                kl = np.floor(pts.lat).astype(np.int32) * 1000 + np.floor(pts.lon).astype(np.int32) + 500
+                uk, inv_idx = np.unique(kl, return_inverse=True)
+                lat_i = np.floor_divide(uk, 1000)
+                qlat = lat_i.astype(np.float32) + 0.5
+                qlon = (uk - lat_i * 1000 - 500).astype(np.float32) + 0.5
+            else:
+                qlat, qlon, inv_idx = pts.lat, pts.lon, None
             occ = None
             for wk in (weeks or [-1]):
-                o = bnm.geo_occurrence(self.models_dir, pts.lat, pts.lon, wk, todo)
+                o = bnm.geo_occurrence(self.models_dir, qlat, qlon, wk, todo)
                 occ = o if occ is None else np.maximum(occ, o)
+            if inv_idx is not None:
+                occ = occ[inv_idx]
             for j, i in enumerate(todo):
                 cache[i] = occ[:, j]
         return np.stack([cache[i] for i in idxs], axis=1)
@@ -118,7 +132,9 @@ class GeoEngine:
         items = []
         w = pts.area_km2.astype(np.float64)
         # --- biogeography (BirdNET species + geomodel)
-        sp = [r for r in records if r.get("scientific_name")]
+        # Species gating: only predictions >= SPECIES_MIN_CONF are used as geographic evidence. Uncorroborated
+        # predictions (no overlapping AudioSet animal activity) get half weight.
+        sp = [r for r in records if r.get("scientific_name") and r["confidence"] >= SPECIES_MIN_CONF]
         best: dict[str, dict] = {}
         for r in sp:
             k = r["scientific_name"].lower()
@@ -136,8 +152,9 @@ class GeoEngine:
                         r = best[k]
                         L = np.maximum(occ[:, j], OUT_OF_RANGE_FLOOR)
                         frac = float((occ[:, j] >= 0.25).astype(float) @ w / w.sum())
+                        c_eff = r["confidence"] if r.get("corroborated_by") else 0.5 * r["confidence"]
                         items.append({"group": "biogeography", "label": f"{r['common_name']} ({r['scientific_name']})",
-                                      "record": r["id"], "c": r["confidence"], "L": L,
+                                      "record": r["id"], "c": c_eff, "L": L,
                                       "note": f"range model: occurrence ≥ 0.25 over {frac*100:.1f}% of land area",
                                       "range_fraction": frac})
                 for k in best:
@@ -167,7 +184,7 @@ class GeoEngine:
             mixed = np.char.find(pts.mains.astype(str), "/") >= 0
             L = np.where(mixed, 0.5, np.where(match > 0, 0.97, 0.03)).astype(np.float32)
             rec = next((r for r in records if r["label"].startswith("Mains hum")), None)
-            c = 0.95 if rec and rec["tier"] == "confirmed" else 0.7
+            c = 0.85 if rec and rec["tier"] == "confirmed" else 0.5
             items.append({"group": "electrical_grid", "label": f"Mains hum {hz} Hz", "record": rec["id"] if rec else None,
                           "c": c, "L": L, "note": "Nominal grid frequency per country (Japan split east/west)"})
         # --- cultural infrastructure
@@ -319,6 +336,12 @@ class GeoEngine:
                 "neutral": [s for s in support if abs(s["contribution_nats"]) <= 0.05],
                 "cells": int(len(idx)),
             })
+        cands.sort(key=lambda c: -c["relative_mass"])
+        best_mass = cands[0]["relative_mass"] if cands else 1.0
+        for i, c in enumerate(cands, 1):
+            c["rank"] = i
+            c["strength"] = ("stronger" if c["relative_mass"] >= 0.25 and c["relative_mass"] >= 0.5 * best_mass else
+                             "moderate" if c["relative_mass"] >= 0.05 else "weaker")
         return cands
 
     # ------------------------------------------------------------------ main
@@ -348,6 +371,17 @@ class GeoEngine:
         eff_area = float(np.exp(ent) * np.median(pts.area_km2))
         land_area = float(pts.area_km2.sum())
         cands = self.candidates(pts, total, gscore, items)
+        info_ratio = land_area / max(eff_area, 1.0)
+        if info_ratio < MIN_INFORMATION_RATIO and loc.get("mode", "unknown") == "unknown":
+            keep = np.argsort(-total)[:1500]
+            return {**base, "status": "no_estimate", "effective_area_km2": round(eff_area), "land_area_km2": round(land_area),
+                    "information_ratio": round(info_ratio, 2), "candidates": [], "weak_candidates": cands[:3],
+                    "heat": [[round(float(pts.lat[i]), 2), round(float(pts.lon[i]), 2),
+                              round(float(np.exp(total[i] - total.max())), 4)] for i in keep],
+                    "heat_cell_deg": grid().res,
+                    "summary": (f"No reliable geographic estimate: the evidence only narrows the plausible land area by "
+                                f"{info_ratio:.2f}x (threshold {MIN_INFORMATION_RATIO}x). Weak candidates are kept in the "
+                                "case data for transparency but are not presented as estimates.")}
         result = {**base, "status": "estimate", "effective_area_km2": round(eff_area), "land_area_km2": round(land_area),
                   "information_ratio": round(land_area / max(eff_area, 1.0), 2), "candidates": cands}
         # local refinement when a city/region prior or a compact best candidate exists
