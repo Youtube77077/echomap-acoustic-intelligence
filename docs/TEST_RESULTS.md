@@ -91,5 +91,22 @@ These are listed as *possible* but are **excluded from geolocation**: species ne
 - 120 s soundscape: analysis 13.5 s, geography 8.8 s (was 141 s before the geomodel lattice and caching fixes).
 - An O(n³) click-train scan that made long recordings hang was found and fixed. A regression test now enforces linear scaling.
 
-## 7. Windows build
-See the `build-windows` workflow run. Status is recorded in the release notes once complete.
+## 7. Windows build and built-exe tests (build-windows run 43268562053, Windows Server 2025)
+- The full test suite passed on Windows before packaging.
+- PyInstaller one-folder build: **app ZIP 75.3 MB** (no models); **models ZIP 117.2 MB**.
+- Smoke test of `EchoMap.exe`:
+  - the API answers with the token and rejects requests without it;
+  - the UI HTML is served.
+- Real analysis through the built exe's API (soundscape.wav):
+  - 57 inventory records;
+  - geo best candidate US/Canada (radius 1000 km);
+  - spectrogram endpoint returned 800x300 pixels (60,340 non-zero);
+  - report HTML 446 KB containing all sections.
+- Headless Edge screenshots (artifact `ui-screenshots`): analysis tab (waveform, timeline) and inventory tab (all categories, tiers, confidence bars) render correctly.
+- **Not yet verified visually:** the spectrogram and globe screenshots were captured before their asynchronous data arrived. The spectrogram endpoint itself is verified by the API check above, but interactive rendering inside the native WebView2 window has not been seen in CI.
+
+## 8. Open test gaps (planned)
+- Video input (MP4/MOV/MKV/WEBM) extraction test file.
+- Real-speech language test set (e.g. FLEURS, CC BY 4.0, streamed in CI). Needs approval.
+- Geolocation evaluation on recordings with known coordinates. Needs approval.
+- Real crossing-signal, EV pass-by, and change-ringing recordings. Need approval.
