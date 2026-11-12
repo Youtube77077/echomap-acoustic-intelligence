@@ -143,3 +143,24 @@ def test_frontend_shapes():
     assert efficientat_mel(tone(1000, 5.0), mb).shape == (128, 500)  # pre-emphasis drops one sample, as in the reference
     mf = np.ones((80, 201), np.float32) / 201
     assert whisper_log_mel(tone(500, 2.0, sr=16000), mf).shape == (80, 3000)
+
+
+def _codrift(f1, f2, dur=5.0, drift_pct_s=2.0):
+    t = np.arange(int(dur * SR)) / SR
+    k = 1 + drift_pct_s / 100 * t
+    x = sum(0.15 * np.sin(2 * np.pi * np.cumsum(f * k) / SR) for f in (f1, f2))
+    return (x + rng.normal(0, 0.003, len(t))).astype(np.float32)
+
+
+def test_avas_like_detects_codrifting_tones():
+    tr = tonal.tone_tracks(_codrift(520, 1300), SR)
+    assert tonal.avas_like(tr), "co-drifting AVAS-style tones not detected"
+
+
+def test_avas_like_ignores_static_tones_and_sirens():
+    static = tone(800, 5.0) + tone(1900, 5.0)
+    assert not tonal.avas_like(tonal.tone_tracks(static, SR))
+    t = np.arange(8 * SR) / SR
+    f = 900 + 400 * np.sin(2 * np.pi * t / 4.0)
+    wail = (0.3 * np.sin(2 * np.pi * np.cumsum(f) / SR)).astype(np.float32)
+    assert not tonal.avas_like(tonal.tone_tracks(wail, SR))

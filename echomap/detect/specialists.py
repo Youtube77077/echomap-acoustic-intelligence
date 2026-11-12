@@ -288,3 +288,19 @@ def add_unclassified(inv: Inventory, segments: list[dict], profile_fn, sed: dict
                 frequency=profile_fn(s["start"], s["end"]), evidence={"segment": s},
                 signature=f"{s['peak_db_above_floor']} dB above noise floor",
                 limitations="Energy above the noise floor that no model classified above the listing threshold.")
+
+
+def add_avas(inv: Inventory, segments: list[dict], profile_fn) -> None:
+    """AVAS-like co-drifting tones: possible electric vehicle at low speed (UN R138 pattern)."""
+    for s in segments:
+        veh = inv.find_overlapping(s["start"], s["end"], lambda r: r["category"] in ("vehicles", "engines_machinery",
+                                                                                      "public_transport", "road_infrastructure"), 0.2)
+        conf = 0.45 if veh else 0.3
+        inv.add(category="vehicles", label="AVAS-like tonal pattern (possible electric vehicle at low speed)",
+                specific=f"Co-drifting tones {s['f_hz'][0]:.0f} / {s['f_hz'][1]:.0f} Hz, drift {s['drift_pct_per_s']}%/s",
+                start=s["start"], end=s["end"], confidence=conf, tier=tier_for(conf, bool(veh)), kind="measurement",
+                model="AVAS pattern detector (EchoMap DSP, UN R138 rules)", frequency=profile_fn(s["start"], s["end"]),
+                corroborated_by=[f"{r['id']} {r['label']}" for r in veh], evidence={"avas": s},
+                signature="Sustained tones 160 Hz-5 kHz with common frequency drift",
+                limitations=("Pattern-based. Any device with co-varying tones (some machinery, music) can match. AVAS only "
+                             "sounds below ~20 km/h, so its absence says nothing about EVs at higher speeds."))

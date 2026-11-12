@@ -210,6 +210,7 @@ class Case:
             sp.add_sirens(inv, x32, tonal.siren_pattern)
             sp.add_bell_counts(inv, on["times_s"])
             sp.add_periodic(inv, patterns, profile)
+            sp.add_avas(inv, tonal.avas_like(tracks), profile)
             sp.add_mains(inv, mains, dur)
             sp.add_wind(inv, wind)
             sp.add_reverb(inv, rt, dur)

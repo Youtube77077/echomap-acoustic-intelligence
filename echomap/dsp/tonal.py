@@ -340,3 +340,46 @@ def engine_f0_track(x_4k: np.ndarray, sr: int = 4000, t0: float = 0.0, t1: float
             "note": ("f0 is the strongest harmonic-series fundamental, usually the engine firing frequency. RPM values "
                      "are conditional on an assumed cylinder count (RPM = f0 x 120 / cylinders for 4-stroke) and are "
                      "not identifications. Gear-change times are heuristic: a sudden >15% f0 drop between rising segments.")}
+
+
+# ----------------------------------------------------------------------------- AVAS (electric-vehicle warning sound)
+def avas_like(tracks: list[dict], min_dur: float = 1.5, min_corr: float = 0.85) -> list[dict]:
+    """Detect AVAS-like sounds: concurrent, sustained tonal components (160 Hz-5 kHz) whose frequencies
+    drift together, as required by UN R138 (a tone shifting on average >= 0.8 % per km/h between
+    5 and 20 km/h). Returns candidate segments. This is a pattern detector, not an identification.
+    """
+    long = [t for t in tracks if t["duration"] >= min_dur and 160 <= t["f_median"] <= 5000 and len(t["contour"]) >= 8]
+    out, used = [], set()
+    for i, a in enumerate(long):
+        for j in range(i + 1, len(long)):
+            b = long[j]
+            if i in used or j in used:
+                continue
+            t0, t1 = max(a["start"], b["start"]), min(a["end"], b["end"])
+            if t1 - t0 < min_dur or abs(a["f_median"] - b["f_median"]) < 0.05 * a["f_median"]:
+                continue
+
+            def seg(t):
+                n = len(t["contour"])
+                ts = t["start"] + np.arange(n) * t["contour_hop_s"]
+                m = (ts >= t0) & (ts <= t1)
+                return ts[m], np.array(t["contour"])[m]
+            ta, fa = seg(a)
+            tb, fb = seg(b)
+            if len(fa) < 6 or len(fb) < 6:
+                continue
+            grid_t = np.linspace(t0, t1, 30)
+            ra = np.interp(grid_t, ta, fa)
+            rb = np.interp(grid_t, tb, fb)
+            ra, rb = ra / ra.mean(), rb / rb.mean()
+            drift = float(ra.max() - ra.min())
+            if drift < 0.01 or drift > 0.6 or ra.std() < 1e-6 or rb.std() < 1e-6:
+                continue  # static tones (beepers) or wild sweeps (sirens, birds) are excluded
+            corr = float(np.corrcoef(ra, rb)[0, 1])
+            ratio_stability = float(np.std(ra / rb))
+            if corr >= min_corr and ratio_stability < 0.02:
+                used.update((i, j))
+                slope = float(np.polyfit(grid_t, ra, 1)[0] * 100)
+                out.append({"start": round(t0, 2), "end": round(t1, 2), "f_hz": sorted([a["f_median"], b["f_median"]]),
+                            "relative_drift": round(drift, 3), "drift_pct_per_s": round(slope, 2), "co_drift_corr": round(corr, 3)})
+    return out
