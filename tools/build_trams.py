@@ -40,11 +40,11 @@ CELL = 0.02  # degrees, ~2 km
 
 
 def fetch_tile(s: float, w: float, n: float, e: float) -> list[tuple[float, float]]:
-    q = f'[out:json][timeout:600][maxsize:1073741824];way["railway"="tram"]({s},{w},{n},{e});out center;'
-    for attempt in range(8):
+    q = f'[out:json][timeout:240][maxsize:1073741824];way["railway"="tram"]({s},{w},{n},{e});out center;'
+    for attempt in range(4):
         url = OVERPASS[attempt % len(OVERPASS)]
         try:
-            r = requests.post(url, data={"data": q}, headers=UA, timeout=700)
+            r = requests.post(url, data={"data": q}, headers=UA, timeout=300)
             if r.status_code == 200 and r.headers.get("content-type", "").startswith("application/json"):
                 els = r.json().get("elements", [])
                 return [(e["center"]["lat"], e["center"]["lon"]) for e in els if "center" in e]
@@ -52,7 +52,8 @@ def fetch_tile(s: float, w: float, n: float, e: float) -> list[tuple[float, floa
         except Exception as e:  # noqa: BLE001
             print("overpass error", url, e)
         time.sleep(10 * (attempt + 1))
-    raise SystemExit(f"Overpass failed for tile {s},{w},{n},{e}")
+    print(f"SKIPPED tile {s},{w},{n},{e} (all Overpass servers failed)")
+    return None
 
 
 def components(cells: np.ndarray) -> np.ndarray:
@@ -77,9 +78,12 @@ def components(cells: np.ndarray) -> np.ndarray:
 
 
 def main():
-    pts = []
+    pts, skipped = [], []
     for t in TILES:
         b = fetch_tile(*t)
+        if b is None:
+            skipped.append(list(t))
+            continue
         print(f"tile {t}: {len(b)} tram ways")
         pts += b
         time.sleep(5)
@@ -115,7 +119,7 @@ def main():
     nets.sort(key=lambda n: -n["ways"])
     meta = {"source": "OpenStreetMap railway=tram ways via Overpass API", "licence": "ODbL 1.0 (© OpenStreetMap contributors)",
             "built": time.strftime("%Y-%m-%d"), "tram_ways": len(P), "networks": len(nets),
-            "countries": len({n["cc"] for n in nets}), "method": __doc__.split("Method: ")[1].strip()}
+            "countries": len({n["cc"] for n in nets}), "skipped_tiles": skipped, "method": __doc__.split("Method: ")[1].strip()}
     out = ROOT / "echomap" / "data" / "tram_networks.json.gz"
     with gzip.open(out, "wt", encoding="utf-8") as g:
         json.dump({"meta": meta, "networks": nets}, g, ensure_ascii=False, separators=(",", ":"))
