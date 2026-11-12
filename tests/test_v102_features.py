@@ -129,3 +129,24 @@ def test_fingerprint_is_deterministic_and_nonempty():
     x = rng.normal(0, 0.1, 8000 * 5).astype(np.float32)
     a, b = fingerprint(x), fingerprint(x)
     assert a and a == b
+
+
+def test_asr_enhancement_and_candidates():
+    from echomap.models import asr
+    x = (rng.normal(0, 0.001, 3 * 16000) + 0.003 * np.sin(2 * np.pi * 300 * np.arange(3 * 16000) / 16000)).astype(np.float32)
+    y = asr.enhance(x)
+    assert len(y) == len(x) and np.isfinite(y).all() and np.sqrt(np.mean(y ** 2)) > 5 * np.sqrt(np.mean(x ** 2))
+    fs = np.zeros((20, 527), np.float32)
+    fs[4:8, 0] = 0.08  # faint speech score still becomes a candidate
+    regs = asr.speech_candidates({"frame_scores": fs, "hop_s": 0.5}, [0])
+    assert regs and abs(regs[0][0] - 2.0) < 1e-6
+
+
+def test_asr_transcribes_when_pack_installed():
+    import os
+    md = os.environ.get("ECHOMAP_MODELS")
+    from echomap.models import asr
+    if not md or not asr.available(md):
+        pytest.skip("speech-to-text pack not installed")
+    r = asr.transcribe(np.zeros(16000 * 3, np.float32), md, "en")
+    assert r["quality"] in ("likely spurious", "uncertain")  # silence must never come out as a 'clear' transcript

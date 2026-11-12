@@ -33,7 +33,7 @@ jobs:
       - uses: actions/cache@v4
         with:
           path: ci_models
-          key: win-models-v1-birdnet31-geo304
+          key: win-models-v1-birdnet31-geo304-asr1
       - run: python tools/fetch_models.py ci_models
       - uses: actions/cache@v4
         with:

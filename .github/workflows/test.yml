@@ -25,7 +25,7 @@ jobs:
       - uses: actions/cache@v4
         with:
           path: /home/runner/models
-          key: models-v1-birdnet31-geo304
+          key: models-v1-birdnet31-geo304-asr1
       - run: python tools/fetch_models.py "$ECHOMAP_MODELS"
       - uses: actions/cache@v4
         with:
