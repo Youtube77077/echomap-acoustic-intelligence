@@ -1,0 +1,49 @@
+name: transit-lines
+# Worldwide public-transport lines and stops from Mobility Database GTFS feeds -> release transit-lines-v1
+# (EchoMap-transit-v1.json.gz). EchoMap matches announced stop names to lines and pins the stop. GitHub only.
+on:
+  push:
+    branches: ["claude/**"]
+    paths: [".github/workflows/transit-lines.yml"]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - run: pip install requests==2.34.2
+      - run: python -u tools/build_transit_lines.py ${{ matrix.shard }} 8 part_${{ matrix.shard }}.json.gz
+      - uses: actions/upload-artifact@v4
+        with:
+          name: transit-part-${{ matrix.shard }}
+          path: part_${{ matrix.shard }}.json.gz
+          retention-days: 2
+  merge:
+    needs: build
+    if: always()
+    runs-on: ubuntu-24.04
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: transit-part-*
+          merge-multiple: true
+      - run: python -u tools/build_transit_lines.py --merge EchoMap-transit-v1.json.gz part_*.json.gz
+      - run: |
+          gh release view transit-lines-v1 >/dev/null 2>&1 || gh release create transit-lines-v1 --prerelease --title "EchoMap transit lines" --notes "Public-transport lines with their stops (GTFS feeds via the Mobility Database; feed licences listed inside). Put EchoMap-transit-v1.json.gz next to EchoMap.exe or in the models folder."
+          gh release upload transit-lines-v1 EchoMap-transit-v1.json.gz --clobber
