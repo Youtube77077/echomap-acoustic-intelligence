@@ -1,0 +1,98 @@
+{
+ "generated": "2026-11-13 14:22",
+ "summary": {
+  "recordings": 2,
+  "estimates": 2,
+  "median_error_km": 1367,
+  "within_100km": 0,
+  "within_500km": 0,
+  "inside_circle": 2
+ },
+ "rows": [
+  {
+   "source": "iNaturalist",
+   "query": "Derry",
+   "title": "Derry: Sylvia atricapilla",
+   "url": "https://static.inaturalist.org/sounds/1832680.m4a?1774982282",
+   "page": "https://www.inaturalist.org/observations/346421793",
+   "licence": "cc-by-nc",
+   "lat": 55.0426425923,
+   "lon": -7.4730953202,
+   "date": "2026-03-31",
+   "country": "IE",
+   "state": "complete",
+   "error": null,
+   "analysis_s": 12.8,
+   "geo_status": "estimate",
+   "headline": "Most likely area: France, Germany, Spain region (within about 2000 km)",
+   "best": "France, Germany, Spain region",
+   "best_error_km": 1367,
+   "best_radius_km": 2000.0,
+   "inside_best": true,
+   "min_error_top5_km": 554,
+   "languages": [],
+   "sounds": [
+    "Bird vocalization — species: Eurasian Blackcap (Sylvia atricapilla)",
+    "Bird vocalization — species: Eurasian Wren (Troglodytes troglodytes)",
+    "Bird vocalization — species: Greenish Warbler (Phylloscopus trochiloides)",
+    "Wind gust (low-frequency microphone wind noise) — +27.4 dB above low-frequency baseline"
+   ],
+   "clues": [
+    "Eurasian Blackcap (Sylvia atricapilla)",
+    "Eurasian Wren (Troglodytes troglodytes)"
+   ],
+   "screenshots": [
+    "docs/screenshots/bench_ireland/01_1_findings.png",
+    "docs/screenshots/bench_ireland/01_2_analysis.png",
+    "docs/screenshots/bench_ireland/01_3_inventory.png",
+    "docs/screenshots/bench_ireland/01_4_map.png",
+    "docs/screenshots/bench_ireland/01_5_where_found.png"
+   ]
+  },
+  {
+   "source": "iNaturalist",
+   "query": "Dublin",
+   "title": "Dublin: Fringilla coelebs",
+   "url": "https://static.inaturalist.org/sounds/2179239.wav?1790764596",
+   "page": "https://www.inaturalist.org/observations/404689681",
+   "licence": "cc-by-nc",
+   "lat": 53.3050367947,
+   "lon": -6.2281476706,
+   "date": "2026-09-30",
+   "country": "IE",
+   "state": "complete",
+   "error": null,
+   "analysis_s": 13.9,
+   "geo_status": "estimate",
+   "headline": "Most likely area: Germany, Poland, Italy region (within about 1600 km)",
+   "best": "Germany, Poland, Italy region",
+   "best_error_km": 1266,
+   "best_radius_km": 1600.0,
+   "inside_best": true,
+   "min_error_top5_km": 1246,
+   "languages": [
+    "English 22%"
+   ],
+   "sounds": [
+    "Bird vocalization — species: Barred Owl (Strix varia)",
+    "Bird vocalization — species: European Robin (Erithacus rubecula)",
+    "Bird vocalization — species: Common Cuckoo (Cuculus canorus)",
+    "Bird vocalization — species: Great Tit (Parus major)",
+    "Bird vocalization — species: Black-throated Blue Warbler (Setophaga caerulescens)",
+    "Bird vocalization — species: Eurasian Chaffinch (Fringilla coelebs)",
+    "Bird vocalization — species: Common Linnet (Linaria cannabina)",
+    "Siren-like tonal pattern — Pitch pattern: fast sweep (yelp-like)"
+   ],
+   "clues": [
+    "European Robin (Erithacus rubecula)"
+   ],
+   "screenshots": [
+    "docs/screenshots/bench_ireland/02_1_findings.png",
+    "docs/screenshots/bench_ireland/02_2_analysis.png",
+    "docs/screenshots/bench_ireland/02_3_inventory.png",
+    "docs/screenshots/bench_ireland/02_4_map.png",
+    "docs/screenshots/bench_ireland/02_5_where_found.png"
+   ]
+  }
+ ]
+}
