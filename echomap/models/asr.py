@@ -122,7 +122,11 @@ def transcribe(x16k: np.ndarray, md: str, lang: str | None = None, max_tokens: i
     raw = text.encode("utf-8")
     comp = len(raw) / max(1, len(zlib.compress(raw))) if raw else 0.0
     avg = float(np.mean(logps)) if logps else -10.0
-    if not text or (no_speech > 0.6 and avg < -1.0) or comp > 2.4:
+    letters = sum(ch.isalpha() for ch in text)
+    toks = text.lower().replace("-", " ").split()
+    junk = (letters < 0.5 * max(1, len(text.replace(" ", ""))) or
+            (len(toks) >= 6 and len(set(toks)) <= 0.3 * len(toks)))   # "1.5-2-2-2-2...", "the the the ..."
+    if not text or junk or (no_speech > 0.6 and avg < -1.0) or comp > 2.4:
         quality = "likely spurious"
     elif no_speech < 0.4 and avg > -0.7:
         quality = "clear"
