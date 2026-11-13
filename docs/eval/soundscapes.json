@@ -1,11 +1,11 @@
 {
- "generated": "2026-11-13 01:15",
+ "generated": "2026-11-13 02:05",
  "summary": {
   "recordings": 10,
-  "estimates": 4,
-  "median_error_km": 903,
-  "within_100km": 0,
-  "within_500km": 0,
+  "estimates": 7,
+  "median_error_km": 1020,
+  "within_100km": 1,
+  "within_500km": 3,
   "inside_circle": 3
  },
  "rows": [
@@ -22,17 +22,17 @@
    "country": "GB",
    "state": "complete",
    "error": null,
-   "analysis_s": 34.0,
+   "analysis_s": 61.1,
    "geo_status": "estimate",
-   "headline": "Most likely area: Germany, France, The Netherlands region (within about 700 km)",
-   "best": "Germany, France, The Netherlands region",
-   "best_error_km": 669,
-   "best_radius_km": 700.0,
-   "inside_best": true,
-   "min_error_top5_km": 129,
+   "headline": "Most likely area: Turkey, Russia, Ukraine region (within about 1900 km)",
+   "best": "Turkey, Russia, Ukraine region",
+   "best_error_km": 2330,
+   "best_radius_km": 1900.0,
+   "inside_best": false,
+   "min_error_top5_km": 719,
    "languages": [
-    "English 60%",
-    "Nynorsk 20%"
+    "English 59%",
+    "Nynorsk 21%"
    ],
    "sounds": [
     "Bird vocalization — species: Common Wood Pigeon (Columba palumbus)",
@@ -48,11 +48,11 @@
     "Common Wood Pigeon (Columba palumbus)",
     "Eurasian Blue Tit (Cyanistes caeruleus)",
     "Eurasian Chaffinch (Fringilla coelebs)",
+    "Great Tit (Parus major)",
     "Eurasian Wren (Troglodytes troglodytes)",
     "European Robin (Erithacus rubecula)",
-    "Eurasian Bullfinch (Pyrrhula pyrrhula)",
-    "Common Blackbird (Turdus merula)",
-    "Language English (en)"
+    "Common Chiffchaff (Phylloscopus collybita)",
+    "Long-tailed Tit (Aegithalos caudatus)"
    ],
    "screenshots": [
     "docs/screenshots/bench/01_1_findings.png",
@@ -75,14 +75,14 @@
    "country": "US",
    "state": "complete",
    "error": null,
-   "analysis_s": 13.8,
+   "analysis_s": 22.1,
    "geo_status": "estimate",
-   "headline": "Most likely area: United States, Canada region (within about 1300 km)",
-   "best": "United States, Canada region",
-   "best_error_km": 903,
-   "best_radius_km": 1300.0,
+   "headline": "Most likely area: United States, Mexico, Canada region (within about 1600 km)",
+   "best": "United States, Mexico, Canada region",
+   "best_error_km": 1020,
+   "best_radius_km": 1600.0,
    "inside_best": true,
-   "min_error_top5_km": 271,
+   "min_error_top5_km": 642,
    "languages": [],
    "sounds": [
     "Bird vocalization — species: Eastern Phoebe (Sayornis phoebe)",
@@ -122,14 +122,14 @@
    "country": "AU",
    "state": "complete",
    "error": null,
-   "analysis_s": 21.4,
+   "analysis_s": 27.0,
    "geo_status": "no_estimate",
    "headline": "No reliable location estimate",
-   "best": "Canada, United States region",
-   "best_error_km": 13233,
-   "best_radius_km": 250.0,
+   "best": "Antarctica region",
+   "best_error_km": 7592,
+   "best_radius_km": 300.0,
    "inside_best": false,
-   "min_error_top5_km": 10292,
+   "min_error_top5_km": 21,
    "languages": [
     "Nynorsk 44%",
     "English 22%"
@@ -145,7 +145,10 @@
     "Bird vocalization — species: Rock Dove (Columba livia)"
    ],
    "clues": [
+    "Rainbow Lorikeet (Trichoglossus moluccanus)",
+    "Weddell Seal (Leptonychotes weddellii)",
     "Humpback Whale (Megaptera novaeangliae)",
+    "bowhead whale (Balaena mysticetus)",
     "Western House Martin (Delichon urbicum)"
    ],
    "screenshots": [
@@ -169,14 +172,14 @@
    "country": "CZ",
    "state": "complete",
    "error": null,
-   "analysis_s": 19.8,
-   "geo_status": "no_estimate",
-   "headline": "No reliable location estimate",
-   "best": "Russia, Mongolia, China region",
-   "best_error_km": 5875,
-   "best_radius_km": 2000.0,
-   "inside_best": false,
-   "min_error_top5_km": 108,
+   "analysis_s": 34.6,
+   "geo_status": "estimate",
+   "headline": "Most likely area: Poland, Czechia region (within about 300 km)",
+   "best": "Poland, Czechia region",
+   "best_error_km": 64,
+   "best_radius_km": 300.0,
+   "inside_best": true,
+   "min_error_top5_km": 64,
    "top_place": "Rybnik St Anthony basilica rin",
    "top_place_error_km": 114,
    "languages": [],
@@ -191,14 +194,14 @@
     "Mammal vocalization — species: Harbor Seal (Phoca vitulina)"
    ],
    "clues": [
+    "Chorthippus biguttulus (Chorthippus biguttulus)",
     "Two-tone emergency siren",
     "Two-tone emergency siren",
     "Two-tone emergency siren",
     "Two-tone emergency siren",
     "Reference match: Rybnik St Anthony basilica ringing 2022.wav",
     "Reference match: Rybnik St Anthony basilica ringing 2022.wav",
-    "Reference match: Rybnik St Anthony basilica ringing 2022.wav",
-    "Reference match: Prague st Vitus Easter ringing 2012.ogg"
+    "Reference match: Rybnik St Anthony basilica ringing 2022.wav"
    ],
    "screenshots": [
     "docs/screenshots/bench/04_1_findings.png",
@@ -221,7 +224,7 @@
    "country": "TH",
    "state": "complete",
    "error": null,
-   "analysis_s": 7.6,
+   "analysis_s": 12.2,
    "geo_status": "no_estimate",
    "headline": "No reliable location estimate",
    "best": "Thailand, China, Myanmar region",
@@ -259,17 +262,15 @@
    "country": "IN",
    "state": "complete",
    "error": null,
-   "analysis_s": 11.4,
+   "analysis_s": 19.5,
    "geo_status": "estimate",
-   "headline": "Most likely area: India region (within about 1200 km)",
-   "best": "India region",
-   "best_error_km": 545,
-   "best_radius_km": 1200.0,
+   "headline": "Most likely area: India, China, Myanmar region (within about 2100 km)",
+   "best": "India, China, Myanmar region",
+   "best_error_km": 1873,
+   "best_radius_km": 2100.0,
    "inside_best": true,
-   "min_error_top5_km": 545,
-   "languages": [
-    "English 22%"
-   ],
+   "min_error_top5_km": 620,
+   "languages": [],
    "sounds": [
     "Bird vocalization — species: Asian Koel (Eudynamys scolopaceus)",
     "Bird vocalization — species: Australian Boobook (Ninox boobook)",
@@ -301,18 +302,18 @@
    "country": "PL",
    "state": "complete",
    "error": null,
-   "analysis_s": 10.6,
-   "geo_status": "no_estimate",
-   "headline": "No reliable location estimate",
-   "best": "China, South Korea, North Korea region",
-   "best_error_km": 7595,
-   "best_radius_km": 1800.0,
+   "analysis_s": 20.3,
+   "geo_status": "estimate",
+   "headline": "Most likely area: Czechia, Germany, Poland region (within about 250 km)",
+   "best": "Czechia, Germany, Poland region",
+   "best_error_km": 342,
+   "best_radius_km": 250.0,
    "inside_best": false,
-   "min_error_top5_km": 514,
+   "min_error_top5_km": 342,
    "top_place": "Prague st Vitus Easter ringing",
    "top_place_error_km": 325,
    "languages": [
-    "English 48%"
+    "English 47%"
    ],
    "sounds": [
     "Insect vocalization — species: Roeseliana roeselii (Roeseliana roeselii)",
@@ -321,6 +322,7 @@
     "Siren-like tonal pattern — Pitch pattern: fast sweep (yelp-like)"
    ],
    "clues": [
+    "Roeseliana roeselii (Roeseliana roeselii)",
     "Reference match: Prague st Vitus Easter ringing 2012.ogg",
     "Reference match: Prague st Vitus Easter ringing 2012.ogg",
     "Reference match: Prague st Vitus Easter ringing 2012.ogg",
@@ -347,9 +349,14 @@
    "country": "FR",
    "state": "complete",
    "error": null,
-   "analysis_s": 5.3,
+   "analysis_s": 9.6,
    "geo_status": "no_estimate",
    "headline": "No reliable location estimate",
+   "best": "United States, Canada, Mexico region",
+   "best_error_km": 7333,
+   "best_radius_km": 2200.0,
+   "inside_best": false,
+   "min_error_top5_km": 4654,
    "languages": [],
    "sounds": [
     "Bird vocalization — species: House Sparrow (Passer domesticus)",
@@ -359,7 +366,9 @@
     "Bird vocalization — species: Northern Saw-whet Owl (Aegolius acadicus)",
     "Bird vocalization — species: House Finch (Haemorhous mexicanus)"
    ],
-   "clues": [],
+   "clues": [
+    "House Sparrow (Passer domesticus)"
+   ],
    "screenshots": [
     "docs/screenshots/bench/08_1_findings.png",
     "docs/screenshots/bench/08_2_analysis.png",
@@ -381,10 +390,17 @@
    "country": "AT",
    "state": "complete",
    "error": null,
-   "analysis_s": 7.4,
-   "geo_status": "no_estimate",
-   "headline": "No reliable location estimate",
-   "languages": [],
+   "analysis_s": 15.9,
+   "geo_status": "estimate",
+   "headline": "Most likely area: United States, Canada region (within about 700 km)",
+   "best": "United States, Canada region",
+   "best_error_km": 6942,
+   "best_radius_km": 700.0,
+   "inside_best": false,
+   "min_error_top5_km": 6137,
+   "languages": [
+    "English 24%"
+   ],
    "sounds": [
     "Bird vocalization — species: Virginia Rail (Rallus limicola)",
     "Bird vocalization — species: Yellow-billed Cuckoo (Coccyzus americanus)",
@@ -395,7 +411,11 @@
     "Mammal vocalization — species: Humpback Whale (Megaptera novaeangliae)",
     "Bird vocalization — species: American Dipper (Cinclus mexicanus)"
    ],
-   "clues": [],
+   "clues": [
+    "Virginia Rail (Rallus limicola)",
+    "Green Sandpiper (Tringa ochropus)",
+    "Yellow-billed Cuckoo (Coccyzus americanus)"
+   ],
    "screenshots": [
     "docs/screenshots/bench/09_1_findings.png",
     "docs/screenshots/bench/09_2_analysis.png",
@@ -417,19 +437,19 @@
    "country": "DE",
    "state": "complete",
    "error": null,
-   "analysis_s": 68.6,
+   "analysis_s": 89.7,
    "geo_status": "estimate",
-   "headline": "Most likely area: South Korea, North Korea region (within about 600 km)",
-   "best": "South Korea, North Korea region",
-   "best_error_km": 8588,
-   "best_radius_km": 600.0,
+   "headline": "Most likely area: Czechia, Germany region (within about 200 km)",
+   "best": "Czechia, Germany region",
+   "best_error_km": 389,
+   "best_radius_km": 200.0,
    "inside_best": false,
-   "min_error_top5_km": 384,
+   "min_error_top5_km": 383,
    "top_place": "Prague st Vitus Easter ringing",
    "top_place_error_km": 389,
    "languages": [
-    "Korean 52%",
-    "English 31%"
+    "Korean 50%",
+    "English 33%"
    ],
    "sounds": [
     "Bird vocalization — species: Black Redstart (Phoenicurus ochruros)",
@@ -442,13 +462,13 @@
     "Bird vocalization — species: Carrion Crow (Corvus corone)"
    ],
    "clues": [
-    "Language Korean (ko)",
     "Two-tone emergency siren",
     "Two-tone emergency siren",
     "Two-tone emergency siren",
     "Two-tone emergency siren",
     "Two-tone emergency siren",
     "Two-tone emergency siren",
+    "Reference match: Prague st Vitus Easter ringing 2012.ogg",
     "Reference match: Prague st Vitus Easter ringing 2012.ogg"
    ],
    "screenshots": [
