@@ -1,0 +1,60 @@
+name: species-ranges
+# Where and when each identifiable species occurs (GBIF country + month statistics) -> echomap/data/species_ranges.json.gz
+on:
+  push:
+    branches: ["claude/**"]
+    paths: [".github/workflows/species-ranges.yml"]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  names:
+    runs-on: ubuntu-24.04
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          mkdir m && gh release download models-v1 -p "birdnet_v3_labels.csv" -D m
+          gh release download inat-emb-v1 -p "train_0.categories.json" -D m || echo "no iNat categories yet"
+          python3 - <<'PY'
+          import csv, json, os
+          names = {r["sci_name"].strip() for r in csv.DictReader(open("m/birdnet_v3_labels.csv", encoding="utf-8-sig"), delimiter=";")}
+          if os.path.exists("m/train_0.categories.json"):
+              names |= {c["name"].strip() for c in json.load(open("m/train_0.categories.json"))["categories"]}
+          open("names.txt", "w").write("\n".join(sorted(n for n in names if " " in n)))
+          print(len(names), "names")
+          PY
+      - uses: actions/upload-artifact@v4
+        with: {name: names, path: names.txt, retention-days: 2}
+  build:
+    needs: names
+    runs-on: ubuntu-24.04
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: {name: names}
+      - run: pip install requests==2.34.2
+      - run: python -u tools/build_species_ranges.py ${{ matrix.shard }} 6 part_${{ matrix.shard }}.json.gz names.txt
+      - uses: actions/upload-artifact@v4
+        with: {name: "ranges-${{ matrix.shard }}", path: "part_${{ matrix.shard }}.json.gz", retention-days: 2}
+  merge:
+    needs: build
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: {pattern: "ranges-*", merge-multiple: true}
+      - run: python tools/build_species_ranges.py --merge echomap/data/species_ranges.json.gz part_*.json.gz
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add echomap/data/species_ranges.json.gz
+          git commit -m "Species ranges and seasons from GBIF" || exit 0
+          for i in 1 2 3; do git pull --rebase origin ${{ github.ref_name }} && git push origin HEAD:${{ github.ref_name }} && break; sleep 5; done

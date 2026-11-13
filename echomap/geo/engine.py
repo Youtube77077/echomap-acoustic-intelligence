@@ -160,6 +160,19 @@ def context_weeks(ctx: dict) -> tuple[list[int] | None, str]:
 
 
 @lru_cache(maxsize=1)
+def species_ranges() -> dict:
+    """GBIF country / month statistics per species (tools/build_species_ranges.py); empty when not bundled."""
+    import gzip
+    import json
+    from pathlib import Path
+    p = Path(__file__).resolve().parents[1] / "data" / "species_ranges.json.gz"
+    if not p.exists():
+        return {}
+    with gzip.open(p, "rt", encoding="utf-8") as g:
+        return json.load(g).get("species", {})
+
+
+@lru_cache(maxsize=1)
 def _population_cells() -> dict:
     """Summed city population per 0.5° cell, spread to the 8 neighbouring cells (suburbs, smaller towns)."""
     from .gazetteer import _cities
@@ -273,7 +286,49 @@ class GeoEngine:
                     if k not in gidx:
                         best[k]["geographic_relevance"] = "Species not in the geomodel label set, so no range evidence."
             except FileNotFoundError:
-                pass
+                gidx = {}
+            # v1.0.9: GBIF country ranges for species the geomodel does not cover (iNatSounds insects, frogs, mammals)
+            rng = species_ranges()
+            for k, r in best.items():
+                if k in gidx or k not in rng:
+                    continue
+                g = rng[k]
+                tot = max(1, sum(g["c"].values()))
+                present = {cc for cc, n in g["c"].items() if n >= max(3, 0.002 * tot)}
+                if not present:
+                    continue
+                L = np.where(np.isin(pts.iso, list(present)), 1.0, OUT_OF_RANGE_FLOOR).astype(np.float32)
+                corr = bool(r.get("corroborated_by"))
+                use = r["confidence"] >= SPECIES_MIN_CONF and (corr or r["confidence"] >= UNCORROBORATED_MIN_CONF)
+                frac = float((L >= 0.5).astype(float) @ w / w.sum())
+                items.append({"group": "biogeography", "label": f"{r.get('common_name') or k} ({r['scientific_name']})",
+                              "record": r["id"], "c": r["confidence"] if corr else 0.5 * r["confidence"], "L": L,
+                              "fp": L >= 0.5, "shape": "countries", "used": use,
+                              "source": "GBIF occurrence statistics (countries)", "precision": "country level",
+                              "note": f"recorded in {len(present)} countries ({frac * 100:.1f}% of land area), "
+                                      f"{g['n']:,} GBIF occurrences", "range_fraction": frac})
+                r["geographic_relevance"] = "Range from GBIF occurrence statistics (country level)."
+        # --- season check for every species with a known date (GBIF monthly occurrence counts)
+        month = (ctx or {}).get("date", {}).get("month")
+        dv = (ctx or {}).get("date", {}).get("value")
+        if not month and dv and len(str(dv)) >= 7:
+            try:
+                month = int(str(dv)[5:7])
+            except ValueError:
+                month = None
+        if month:
+            rng = species_ranges()
+            for it in items:
+                if it["group"] != "biogeography" or not it.get("record"):
+                    continue
+                rec = next((r for r in records if r["id"] == it["record"]), None)
+                g = rng.get((rec or {}).get("scientific_name", "").lower()) if rec else None
+                if g and sum(g["m"]) >= 30:
+                    share = g["m"][int(month) - 1] / sum(g["m"])
+                    rec["season_check"] = (f"{share * 100:.1f}% of GBIF records are from this month"
+                                           + (" — unusual at this time of year" if share < 0.01 else ""))
+                    if share < 0.01:
+                        it["c"] *= 0.5
         # --- language
         langs: dict[str, dict] = {}
         for r in records:
