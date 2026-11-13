@@ -1,0 +1,298 @@
+{
+ "dataset": "iNatSounds 2024 (visipedia/inat_sounds), non-commercial research/education terms",
+ "training_recordings": 136965,
+ "training_windows": 228330,
+ "species": 5569,
+ "licence_ids_train": {
+  "1": 189871,
+  "0": 27039,
+  "4": 7713,
+  "3": 1487,
+  "2": 1131,
+  "6": 1085,
+  "5": 4
+ },
+ "licenses": [
+  {
+   "name": "Attribution License",
+   "url": "http://creativecommons.org/licenses/by/4.0/",
+   "id": 0
+  },
+  {
+   "name": "Attribution-NonCommercial License",
+   "url": "http://creativecommons.org/licenses/by-nc/4.0/",
+   "id": 1
+  },
+  {
+   "name": "Attribution-NonCommercial-NoDerivatives License",
+   "url": "http://creativecommons.org/licenses/by-nc-nd/4.0/",
+   "id": 2
+  },
+  {
+   "name": "Attribution-NonCommercial-ShareAlike License",
+   "url": "http://creativecommons.org/licenses/by-nc-sa/4.0/",
+   "id": 3
+  },
+  {
+   "name": "Public Domain Dedication",
+   "url": "http://creativecommons.org/publicdomain/zero/1.0/",
+   "id": 4
+  },
+  {
+   "name": "Attribution-NoDerivatives License",
+   "url": "http://creativecommons.org/licenses/by-nd/4.0/",
+   "id": 5
+  },
+  {
+   "name": "Attribution-ShareAlike License",
+   "url": "http://creativecommons.org/licenses/by-sa/4.0/",
+   "id": 6
+  }
+ ],
+ "feature_sets": {
+  "eat": {
+   "recordings": 45696,
+   "top1": 0.3039,
+   "top5": 0.4927,
+   "by_group": {
+    "Amphibia": {
+     "recordings": 4003,
+     "top1": 0.387,
+     "top5": 0.6195
+    },
+    "Aves": {
+     "recordings": 37596,
+     "top1": 0.2766,
+     "top5": 0.4599
+    },
+    "Insecta": {
+     "recordings": 3065,
+     "top1": 0.5024,
+     "top5": 0.707
+    },
+    "Mammalia": {
+     "recordings": 983,
+     "top1": 0.3886,
+     "top5": 0.5646
+    },
+    "Reptilia": {
+     "recordings": 49,
+     "top1": 0.3265,
+     "top5": 0.4082
+    }
+   },
+   "precision_at": {
+    "0.2": {
+     "coverage": 0.7248,
+     "precision": 0.3927
+    },
+    "0.3": {
+     "coverage": 0.5573,
+     "precision": 0.4698
+    },
+    "0.4": {
+     "coverage": 0.4371,
+     "precision": 0.5409
+    },
+    "0.5": {
+     "coverage": 0.3467,
+     "precision": 0.6067
+    },
+    "0.6": {
+     "coverage": 0.2763,
+     "precision": 0.6699
+    },
+    "0.7": {
+     "coverage": 0.2151,
+     "precision": 0.7364
+    },
+    "0.8": {
+     "coverage": 0.1619,
+     "precision": 0.7939
+    }
+   },
+   "top_confusions": [
+    "Pseudacris triseriata -> Pseudacris maculata: 32",
+    "Pseudacris sierra -> Pseudacris regilla: 29",
+    "Pseudacris feriarum -> Pseudacris maculata: 24",
+    "Fringilla coelebs -> Troglodytes aedon: 20",
+    "Corvus corone -> Corvus cornix: 18",
+    "Corvus cornix -> Corvus corone: 18",
+    "Acris blanchardi -> Acris crepitans: 16",
+    "Poecile carolinensis -> Poecile atricapillus: 15",
+    "Pseudacris regilla -> Pseudacris sierra: 14",
+    "Pseudacris sierra -> Pseudacris hypochondriaca: 14",
+    "Prosthemadera novaeseelandiae -> Anthornis melanura: 13",
+    "Pseudacris feriarum -> Pseudacris triseriata: 12",
+    "Gryllus campestris -> Gryllus bimaculatus: 12",
+    "Ninox boobook -> Strix varia: 11",
+    "Regulus regulus -> Regulus satrapa: 11"
+   ],
+   "train_seconds": 374
+  },
+  "bn": {
+   "recordings": 45696,
+   "top1": 0.6546,
+   "top5": 0.7774,
+   "by_group": {
+    "Amphibia": {
+     "recordings": 4003,
+     "top1": 0.6345,
+     "top5": 0.8294
+    },
+    "Aves": {
+     "recordings": 37596,
+     "top1": 0.6548,
+     "top5": 0.7678
+    },
+    "Insecta": {
+     "recordings": 3065,
+     "top1": 0.692,
+     "top5": 0.8372
+    },
+    "Mammalia": {
+     "recordings": 983,
+     "top1": 0.6104,
+     "top5": 0.7436
+    },
+    "Reptilia": {
+     "recordings": 49,
+     "top1": 0.6735,
+     "top5": 0.7959
+    }
+   },
+   "precision_at": {
+    "0.2": {
+     "coverage": 0.8941,
+     "precision": 0.7219
+    },
+    "0.3": {
+     "coverage": 0.8371,
+     "precision": 0.7572
+    },
+    "0.4": {
+     "coverage": 0.7842,
+     "precision": 0.7876
+    },
+    "0.5": {
+     "coverage": 0.7303,
+     "precision": 0.816
+    },
+    "0.6": {
+     "coverage": 0.6751,
+     "precision": 0.8431
+    },
+    "0.7": {
+     "coverage": 0.6185,
+     "precision": 0.8668
+    },
+    "0.8": {
+     "coverage": 0.5521,
+     "precision": 0.8912
+    }
+   },
+   "top_confusions": [
+    "Pseudacris sierra -> Pseudacris regilla: 37",
+    "Pseudacris triseriata -> Pseudacris maculata: 37",
+    "Corvus corone -> Corvus cornix: 21",
+    "Pseudacris regilla -> Pseudacris sierra: 21",
+    "Corvus cornix -> Corvus corone: 17",
+    "Pseudacris feriarum -> Pseudacris maculata: 15",
+    "Pseudacris sierra -> Pseudacris hypochondriaca: 14",
+    "Prosthemadera novaeseelandiae -> Anthornis melanura: 14",
+    "Arthroleptella villiersi -> Arthroleptella lightfooti: 13",
+    "Pseudacris maculata -> Pseudacris triseriata: 12",
+    "Pseudacris hypochondriaca -> Pseudacris regilla: 12",
+    "Pseudacris hypochondriaca -> Pseudacris sierra: 12",
+    "Hyla arborea -> Hyla intermedia: 11",
+    "Athene noctua -> Strix aluco: 10",
+    "Passer italiae -> Passer domesticus: 9"
+   ],
+   "train_seconds": 359
+  },
+  "both": {
+   "recordings": 45696,
+   "top1": 0.6527,
+   "top5": 0.7855,
+   "by_group": {
+    "Amphibia": {
+     "recordings": 4003,
+     "top1": 0.621,
+     "top5": 0.8286
+    },
+    "Aves": {
+     "recordings": 37596,
+     "top1": 0.6536,
+     "top5": 0.7771
+    },
+    "Insecta": {
+     "recordings": 3065,
+     "top1": 0.6914,
+     "top5": 0.8414
+    },
+    "Mammalia": {
+     "recordings": 983,
+     "top1": 0.6307,
+     "top5": 0.7548
+    },
+    "Reptilia": {
+     "recordings": 49,
+     "top1": 0.6122,
+     "top5": 0.7959
+    }
+   },
+   "precision_at": {
+    "0.2": {
+     "coverage": 0.8982,
+     "precision": 0.716
+    },
+    "0.3": {
+     "coverage": 0.835,
+     "precision": 0.7549
+    },
+    "0.4": {
+     "coverage": 0.7762,
+     "precision": 0.7903
+    },
+    "0.5": {
+     "coverage": 0.721,
+     "precision": 0.8197
+    },
+    "0.6": {
+     "coverage": 0.6664,
+     "precision": 0.8464
+    },
+    "0.7": {
+     "coverage": 0.6103,
+     "precision": 0.8707
+    },
+    "0.8": {
+     "coverage": 0.5469,
+     "precision": 0.8958
+    }
+   },
+   "top_confusions": [
+    "Pseudacris triseriata -> Pseudacris maculata: 37",
+    "Pseudacris sierra -> Pseudacris regilla: 32",
+    "Pseudacris regilla -> Pseudacris sierra: 22",
+    "Corvus corone -> Corvus cornix: 20",
+    "Pseudacris sierra -> Pseudacris hypochondriaca: 18",
+    "Prosthemadera novaeseelandiae -> Anthornis melanura: 18",
+    "Arthroleptella villiersi -> Arthroleptella lightfooti: 18",
+    "Hyla arborea -> Hyla intermedia: 14",
+    "Pseudacris feriarum -> Pseudacris maculata: 13",
+    "Acris blanchardi -> Acris crepitans: 12",
+    "Corvus cornix -> Corvus corone: 12",
+    "Pseudacris maculata -> Pseudacris triseriata: 11",
+    "Pseudacris feriarum -> Pseudacris triseriata: 11",
+    "Microbatrachella capensis -> Cacosternum boettgeri: 11",
+    "Sturnus unicolor -> Sturnus vulgaris: 11"
+   ],
+   "train_seconds": 376
+  }
+ },
+ "shipped": [
+  "eat",
+  "bn"
+ ]
+}
