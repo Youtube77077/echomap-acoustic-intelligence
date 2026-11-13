@@ -1,12 +1,12 @@
 {
- "generated": "2026-11-13 02:05",
+ "generated": "2026-11-13 12:28",
  "summary": {
   "recordings": 10,
-  "estimates": 7,
-  "median_error_km": 1020,
+  "estimates": 8,
+  "median_error_km": 571,
   "within_100km": 1,
   "within_500km": 3,
-  "inside_circle": 3
+  "inside_circle": 4
  },
  "rows": [
   {
@@ -22,17 +22,17 @@
    "country": "GB",
    "state": "complete",
    "error": null,
-   "analysis_s": 61.1,
+   "analysis_s": 48.4,
    "geo_status": "estimate",
-   "headline": "Most likely area: Turkey, Russia, Ukraine region (within about 1900 km)",
-   "best": "Turkey, Russia, Ukraine region",
-   "best_error_km": 2330,
-   "best_radius_km": 1900.0,
-   "inside_best": false,
-   "min_error_top5_km": 719,
+   "headline": "Most likely area: Germany, Poland, United Kingdom region (within about 1600 km)",
+   "best": "Germany, Poland, United Kingdom region",
+   "best_error_km": 840,
+   "best_radius_km": 1600.0,
+   "inside_best": true,
+   "min_error_top5_km": 840,
    "languages": [
-    "English 59%",
-    "Nynorsk 21%"
+    "English 60%",
+    "Nynorsk 20%"
    ],
    "sounds": [
     "Bird vocalization — species: Common Wood Pigeon (Columba palumbus)",
@@ -51,8 +51,8 @@
     "Great Tit (Parus major)",
     "Eurasian Wren (Troglodytes troglodytes)",
     "European Robin (Erithacus rubecula)",
-    "Common Chiffchaff (Phylloscopus collybita)",
-    "Long-tailed Tit (Aegithalos caudatus)"
+    "Dunnock (Prunella modularis)",
+    "Common Chiffchaff (Phylloscopus collybita)"
    ],
    "screenshots": [
     "docs/screenshots/bench/01_1_findings.png",
@@ -75,14 +75,14 @@
    "country": "US",
    "state": "complete",
    "error": null,
-   "analysis_s": 22.1,
+   "analysis_s": 17.8,
    "geo_status": "estimate",
-   "headline": "Most likely area: United States, Mexico, Canada region (within about 1600 km)",
-   "best": "United States, Mexico, Canada region",
-   "best_error_km": 1020,
-   "best_radius_km": 1600.0,
+   "headline": "Most likely area: United States, Canada region (within about 1500 km)",
+   "best": "United States, Canada region",
+   "best_error_km": 571,
+   "best_radius_km": 1500.0,
    "inside_best": true,
-   "min_error_top5_km": 642,
+   "min_error_top5_km": 571,
    "languages": [],
    "sounds": [
     "Bird vocalization — species: Eastern Phoebe (Sayornis phoebe)",
@@ -122,12 +122,12 @@
    "country": "AU",
    "state": "complete",
    "error": null,
-   "analysis_s": 27.0,
-   "geo_status": "no_estimate",
-   "headline": "No reliable location estimate",
-   "best": "Antarctica region",
-   "best_error_km": 7592,
-   "best_radius_km": 300.0,
+   "analysis_s": 29.5,
+   "geo_status": "estimate",
+   "headline": "Most likely area: Australia region (within about 200 km)",
+   "best": "Australia region",
+   "best_error_km": 1385,
+   "best_radius_km": 200.0,
    "inside_best": false,
    "min_error_top5_km": 21,
    "languages": [
@@ -137,17 +137,18 @@
    "sounds": [
     "Bird vocalization — species: Western House Martin (Delichon urbicum)",
     "Mammal vocalization — species: Humpback Whale (Megaptera novaeangliae)",
+    "Bird vocalization — species: Common Mynah (Acridotheres tristis)",
     "Mammal vocalization — species: Weddell Seal (Leptonychotes weddellii)",
     "Bird vocalization — species: Rainbow Lorikeet (Trichoglossus moluccanus)",
     "Mammal vocalization — species: bowhead whale (Balaena mysticetus)",
     "Bird vocalization — species: Killdeer (Charadrius vociferus)",
-    "Bird vocalization — species: Eurasian Oystercatcher (Haematopus ostralegus)",
-    "Bird vocalization — species: Rock Dove (Columba livia)"
+    "Bird vocalization — species: Eurasian Oystercatcher (Haematopus ostralegus)"
    ],
    "clues": [
     "Rainbow Lorikeet (Trichoglossus moluccanus)",
-    "Weddell Seal (Leptonychotes weddellii)",
+    "Common Mynah (Acridotheres tristis)",
     "Humpback Whale (Megaptera novaeangliae)",
+    "Killdeer (Charadrius vociferus)",
     "bowhead whale (Balaena mysticetus)",
     "Western House Martin (Delichon urbicum)"
    ],
@@ -172,14 +173,14 @@
    "country": "CZ",
    "state": "complete",
    "error": null,
-   "analysis_s": 34.6,
+   "analysis_s": 28.1,
    "geo_status": "estimate",
    "headline": "Most likely area: Poland, Czechia region (within about 300 km)",
    "best": "Poland, Czechia region",
-   "best_error_km": 64,
+   "best_error_km": 63,
    "best_radius_km": 300.0,
    "inside_best": true,
-   "min_error_top5_km": 64,
+   "min_error_top5_km": 63,
    "top_place": "Rybnik St Anthony basilica rin",
    "top_place_error_km": 114,
    "languages": [],
@@ -188,10 +189,10 @@
     "Church bell — or: Bell, Change ringing (campanology)",
     "Music",
     "Insect vocalization — species: Galanga labeculata (Galanga labeculata)",
+    "Bird vocalization — species: Great-tailed Grackle (Quiscalus mexicanus)",
     "Mammal vocalization — species: beluga (Delphinapterus leucas)",
-    "Amphibian vocalization — species: Gray Treefrog (Dryophytes versicolor)",
-    "Mammal vocalization — species: Red Fox (Vulpes vulpes)",
-    "Mammal vocalization — species: Harbor Seal (Phoca vitulina)"
+    "Mammal vocalization — species: White-tailed Deer (Odocoileus virginianus)",
+    "Amphibian vocalization — species: Gray Treefrog (Dryophytes versicolor)"
    ],
    "clues": [
     "Chorthippus biguttulus (Chorthippus biguttulus)",
@@ -224,7 +225,7 @@
    "country": "TH",
    "state": "complete",
    "error": null,
-   "analysis_s": 12.2,
+   "analysis_s": 9.8,
    "geo_status": "no_estimate",
    "headline": "No reliable location estimate",
    "best": "Thailand, China, Myanmar region",
@@ -262,15 +263,17 @@
    "country": "IN",
    "state": "complete",
    "error": null,
-   "analysis_s": 19.5,
+   "analysis_s": 15.0,
    "geo_status": "estimate",
-   "headline": "Most likely area: India, China, Myanmar region (within about 2100 km)",
-   "best": "India, China, Myanmar region",
-   "best_error_km": 1873,
-   "best_radius_km": 2100.0,
+   "headline": "Most likely area: India region (within about 1200 km)",
+   "best": "India region",
+   "best_error_km": 545,
+   "best_radius_km": 1200.0,
    "inside_best": true,
-   "min_error_top5_km": 620,
-   "languages": [],
+   "min_error_top5_km": 545,
+   "languages": [
+    "English 22%"
+   ],
    "sounds": [
     "Bird vocalization — species: Asian Koel (Eudynamys scolopaceus)",
     "Bird vocalization — species: Australian Boobook (Ninox boobook)",
@@ -302,7 +305,7 @@
    "country": "PL",
    "state": "complete",
    "error": null,
-   "analysis_s": 20.3,
+   "analysis_s": 15.2,
    "geo_status": "estimate",
    "headline": "Most likely area: Czechia, Germany, Poland region (within about 250 km)",
    "best": "Czechia, Germany, Poland region",
@@ -313,11 +316,12 @@
    "top_place": "Prague st Vitus Easter ringing",
    "top_place_error_km": 325,
    "languages": [
-    "English 47%"
+    "English 48%"
    ],
    "sounds": [
     "Insect vocalization — species: Roeseliana roeselii (Roeseliana roeselii)",
     "Church bell — 4 bell(s) reconstructed, tenor nominal 490.72 Hz; 1 compatible Dove rings — or: Bell, Change ringing (campanology)",
+    "Bird vocalization — species: Great Blue Heron (Ardea herodias)",
     "Bird vocalization — species: Grey Heron (Ardea cinerea)",
     "Siren-like tonal pattern — Pitch pattern: fast sweep (yelp-like)"
    ],
@@ -349,14 +353,14 @@
    "country": "FR",
    "state": "complete",
    "error": null,
-   "analysis_s": 9.6,
+   "analysis_s": 7.8,
    "geo_status": "no_estimate",
    "headline": "No reliable location estimate",
    "best": "United States, Canada, Mexico region",
-   "best_error_km": 7333,
+   "best_error_km": 7369,
    "best_radius_km": 2200.0,
    "inside_best": false,
-   "min_error_top5_km": 4654,
+   "min_error_top5_km": 4669,
    "languages": [],
    "sounds": [
     "Bird vocalization — species: House Sparrow (Passer domesticus)",
@@ -390,17 +394,15 @@
    "country": "AT",
    "state": "complete",
    "error": null,
-   "analysis_s": 15.9,
+   "analysis_s": 13.0,
    "geo_status": "estimate",
-   "headline": "Most likely area: United States, Canada region (within about 700 km)",
+   "headline": "Most likely area: United States, Canada region (within about 1200 km)",
    "best": "United States, Canada region",
-   "best_error_km": 6942,
-   "best_radius_km": 700.0,
+   "best_error_km": 6758,
+   "best_radius_km": 1200.0,
    "inside_best": false,
-   "min_error_top5_km": 6137,
-   "languages": [
-    "English 24%"
-   ],
+   "min_error_top5_km": 6758,
+   "languages": [],
    "sounds": [
     "Bird vocalization — species: Virginia Rail (Rallus limicola)",
     "Bird vocalization — species: Yellow-billed Cuckoo (Coccyzus americanus)",
@@ -413,7 +415,7 @@
    ],
    "clues": [
     "Virginia Rail (Rallus limicola)",
-    "Green Sandpiper (Tringa ochropus)",
+    "Black Redstart (Phoenicurus ochruros)",
     "Yellow-billed Cuckoo (Coccyzus americanus)"
    ],
    "screenshots": [
@@ -437,7 +439,7 @@
    "country": "DE",
    "state": "complete",
    "error": null,
-   "analysis_s": 89.7,
+   "analysis_s": 88.6,
    "geo_status": "estimate",
    "headline": "Most likely area: Czechia, Germany region (within about 200 km)",
    "best": "Czechia, Germany region",
@@ -448,28 +450,28 @@
    "top_place": "Prague st Vitus Easter ringing",
    "top_place_error_km": 389,
    "languages": [
-    "Korean 50%",
-    "English 33%"
+    "Korean 52%",
+    "English 31%"
    ],
    "sounds": [
     "Bird vocalization — species: Black Redstart (Phoenicurus ochruros)",
     "Bird vocalization — species: Hooded Crow (Corvus cornix)",
     "Bird vocalization — species: Saffron Finch (Sicalis flaveola)",
+    "Bird vocalization — species: American Crow (Corvus brachyrhynchos)",
     "Bird vocalization — species: Large-billed Crow (Corvus macrorhynchos)",
     "Church bell — or: Bell, Change ringing (campanology)",
     "Music",
-    "Bird vocalization — species: Lucy's Warbler (Leiothlypis luciae)",
-    "Bird vocalization — species: Carrion Crow (Corvus corone)"
+    "Bird vocalization — species: Lucy's Warbler (Leiothlypis luciae)"
    ],
    "clues": [
+    "Black Redstart (Phoenicurus ochruros)",
+    "American Crow (Corvus brachyrhynchos)",
+    "Saffron Finch (Sicalis flaveola)",
     "Two-tone emergency siren",
     "Two-tone emergency siren",
     "Two-tone emergency siren",
     "Two-tone emergency siren",
-    "Two-tone emergency siren",
-    "Two-tone emergency siren",
-    "Reference match: Prague st Vitus Easter ringing 2012.ogg",
-    "Reference match: Prague st Vitus Easter ringing 2012.ogg"
+    "Two-tone emergency siren"
    ],
    "screenshots": [
     "docs/screenshots/bench/10_1_findings.png",
