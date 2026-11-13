@@ -1,9 +1,9 @@
 {
- "generated": "2026-11-13 12:28",
+ "generated": "2026-11-13 14:14",
  "summary": {
   "recordings": 10,
   "estimates": 8,
-  "median_error_km": 571,
+  "median_error_km": 1020,
   "within_100km": 1,
   "within_500km": 3,
   "inside_circle": 4
@@ -22,17 +22,17 @@
    "country": "GB",
    "state": "complete",
    "error": null,
-   "analysis_s": 48.4,
+   "analysis_s": 63.3,
    "geo_status": "estimate",
-   "headline": "Most likely area: Germany, Poland, United Kingdom region (within about 1600 km)",
-   "best": "Germany, Poland, United Kingdom region",
-   "best_error_km": 840,
-   "best_radius_km": 1600.0,
+   "headline": "Most likely area: Germany, United Kingdom, France region (within about 1400 km)",
+   "best": "Germany, United Kingdom, France region",
+   "best_error_km": 660,
+   "best_radius_km": 1400.0,
    "inside_best": true,
-   "min_error_top5_km": 840,
+   "min_error_top5_km": 660,
    "languages": [
-    "English 60%",
-    "Nynorsk 20%"
+    "English 59%",
+    "Nynorsk 21%"
    ],
    "sounds": [
     "Bird vocalization — species: Common Wood Pigeon (Columba palumbus)",
@@ -75,14 +75,14 @@
    "country": "US",
    "state": "complete",
    "error": null,
-   "analysis_s": 17.8,
+   "analysis_s": 21.8,
    "geo_status": "estimate",
-   "headline": "Most likely area: United States, Canada region (within about 1500 km)",
-   "best": "United States, Canada region",
-   "best_error_km": 571,
-   "best_radius_km": 1500.0,
+   "headline": "Most likely area: United States, Mexico, Canada region (within about 1600 km)",
+   "best": "United States, Mexico, Canada region",
+   "best_error_km": 1020,
+   "best_radius_km": 1600.0,
    "inside_best": true,
-   "min_error_top5_km": 571,
+   "min_error_top5_km": 642,
    "languages": [],
    "sounds": [
     "Bird vocalization — species: Eastern Phoebe (Sayornis phoebe)",
@@ -122,7 +122,7 @@
    "country": "AU",
    "state": "complete",
    "error": null,
-   "analysis_s": 29.5,
+   "analysis_s": 30.8,
    "geo_status": "estimate",
    "headline": "Most likely area: Australia region (within about 200 km)",
    "best": "Australia region",
@@ -173,7 +173,7 @@
    "country": "CZ",
    "state": "complete",
    "error": null,
-   "analysis_s": 28.1,
+   "analysis_s": 32.0,
    "geo_status": "estimate",
    "headline": "Most likely area: Poland, Czechia region (within about 300 km)",
    "best": "Poland, Czechia region",
@@ -196,12 +196,11 @@
    ],
    "clues": [
     "Chorthippus biguttulus (Chorthippus biguttulus)",
-    "Two-tone emergency siren",
-    "Two-tone emergency siren",
-    "Two-tone emergency siren",
-    "Two-tone emergency siren",
     "Reference match: Rybnik St Anthony basilica ringing 2022.wav",
     "Reference match: Rybnik St Anthony basilica ringing 2022.wav",
+    "Reference match: Rybnik St Anthony basilica ringing 2022.wav",
+    "Reference match: Prague st Vitus Easter ringing 2012.ogg",
+    "Reference match: Prague st Vitus Easter ringing 2012.ogg",
     "Reference match: Rybnik St Anthony basilica ringing 2022.wav"
    ],
    "screenshots": [
@@ -225,7 +224,7 @@
    "country": "TH",
    "state": "complete",
    "error": null,
-   "analysis_s": 9.8,
+   "analysis_s": 12.1,
    "geo_status": "no_estimate",
    "headline": "No reliable location estimate",
    "best": "Thailand, China, Myanmar region",
@@ -263,17 +262,15 @@
    "country": "IN",
    "state": "complete",
    "error": null,
-   "analysis_s": 15.0,
+   "analysis_s": 19.3,
    "geo_status": "estimate",
-   "headline": "Most likely area: India region (within about 1200 km)",
-   "best": "India region",
-   "best_error_km": 545,
-   "best_radius_km": 1200.0,
+   "headline": "Most likely area: India, China, Myanmar region (within about 2100 km)",
+   "best": "India, China, Myanmar region",
+   "best_error_km": 1873,
+   "best_radius_km": 2100.0,
    "inside_best": true,
-   "min_error_top5_km": 545,
-   "languages": [
-    "English 22%"
-   ],
+   "min_error_top5_km": 620,
+   "languages": [],
    "sounds": [
     "Bird vocalization — species: Asian Koel (Eudynamys scolopaceus)",
     "Bird vocalization — species: Australian Boobook (Ninox boobook)",
@@ -305,7 +302,7 @@
    "country": "PL",
    "state": "complete",
    "error": null,
-   "analysis_s": 15.2,
+   "analysis_s": 20.2,
    "geo_status": "estimate",
    "headline": "Most likely area: Czechia, Germany, Poland region (within about 250 km)",
    "best": "Czechia, Germany, Poland region",
@@ -316,7 +313,7 @@
    "top_place": "Prague st Vitus Easter ringing",
    "top_place_error_km": 325,
    "languages": [
-    "English 48%"
+    "English 47%"
    ],
    "sounds": [
     "Insect vocalization — species: Roeseliana roeselii (Roeseliana roeselii)",
@@ -353,14 +350,14 @@
    "country": "FR",
    "state": "complete",
    "error": null,
-   "analysis_s": 7.8,
+   "analysis_s": 9.4,
    "geo_status": "no_estimate",
    "headline": "No reliable location estimate",
    "best": "United States, Canada, Mexico region",
-   "best_error_km": 7369,
+   "best_error_km": 7334,
    "best_radius_km": 2200.0,
    "inside_best": false,
-   "min_error_top5_km": 4669,
+   "min_error_top5_km": 4624,
    "languages": [],
    "sounds": [
     "Bird vocalization — species: House Sparrow (Passer domesticus)",
@@ -394,15 +391,17 @@
    "country": "AT",
    "state": "complete",
    "error": null,
-   "analysis_s": 13.0,
+   "analysis_s": 16.1,
    "geo_status": "estimate",
-   "headline": "Most likely area: United States, Canada region (within about 1200 km)",
+   "headline": "Most likely area: United States, Canada region (within about 700 km)",
    "best": "United States, Canada region",
-   "best_error_km": 6758,
-   "best_radius_km": 1200.0,
+   "best_error_km": 6939,
+   "best_radius_km": 700.0,
    "inside_best": false,
-   "min_error_top5_km": 6758,
-   "languages": [],
+   "min_error_top5_km": 6136,
+   "languages": [
+    "English 24%"
+   ],
    "sounds": [
     "Bird vocalization — species: Virginia Rail (Rallus limicola)",
     "Bird vocalization — species: Yellow-billed Cuckoo (Coccyzus americanus)",
@@ -439,7 +438,7 @@
    "country": "DE",
    "state": "complete",
    "error": null,
-   "analysis_s": 88.6,
+   "analysis_s": 87.2,
    "geo_status": "estimate",
    "headline": "Most likely area: Czechia, Germany region (within about 200 km)",
    "best": "Czechia, Germany region",
@@ -450,8 +449,8 @@
    "top_place": "Prague st Vitus Easter ringing",
    "top_place_error_km": 389,
    "languages": [
-    "Korean 52%",
-    "English 31%"
+    "Korean 50%",
+    "English 33%"
    ],
    "sounds": [
     "Bird vocalization — species: Black Redstart (Phoenicurus ochruros)",
@@ -467,11 +466,11 @@
     "Black Redstart (Phoenicurus ochruros)",
     "American Crow (Corvus brachyrhynchos)",
     "Saffron Finch (Sicalis flaveola)",
-    "Two-tone emergency siren",
-    "Two-tone emergency siren",
-    "Two-tone emergency siren",
-    "Two-tone emergency siren",
-    "Two-tone emergency siren"
+    "Reference match: Prague st Vitus Easter ringing 2012.ogg",
+    "Reference match: Prague st Vitus Easter ringing 2012.ogg",
+    "Reference match: Prague st Vitus Easter ringing 2012.ogg",
+    "Reference match: Prague st Vitus Easter ringing 2012.ogg",
+    "Reference match: Prague st Vitus Easter ringing 2012.ogg"
    ],
    "screenshots": [
     "docs/screenshots/bench/10_1_findings.png",
