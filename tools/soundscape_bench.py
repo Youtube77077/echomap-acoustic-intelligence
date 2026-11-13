@@ -163,6 +163,7 @@ def main():
             continue
         s = config.Settings.load()
         s.analysis_mode = "deep"
+        s.models_dir = models
         s.cases_dir = str(work / "cases")
         c = Case(str(f), s)
         t0 = time.time()

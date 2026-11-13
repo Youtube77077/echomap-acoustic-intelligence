@@ -157,6 +157,7 @@ const ClueMap = (() => {
   const onScreen = f => { const b = labelGeom(f)._lb; return !vb || !(b[1][0] < vb[0] || b[0][0] > vb[2] || b[1][1] < vb[1] || b[0][1] > vb[3]); };
   function full(ctx) {
     const k = tf.k, dpr = devicePixelRatio;
+    placed = [];
 
     ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, cv.width, cv.height);
     ctx.setTransform(k, 0, 0, k, tf.x * dpr, tf.y * dpr);
@@ -203,23 +204,11 @@ const ClueMap = (() => {
       if (rings) rings.forEach((r, i) => { const rp = cached(r, "ring", p2 => ringPath(p2, r.coordinates.flat()));
         ctx.strokeStyle = i ? "#16294d" : "#3b5a8f"; ctx.lineWidth = (i ? 2.4 : 1.6) / k; ctx.stroke(rp); });
     }
-    if ($("#clLabels").checked) {
-      ctx.textAlign = "center";
-      for (const f of (w ? w.features : [])) { if (!onScreen(f)) continue; const a = f._la * k * k; if (a < 1800 * dpr * dpr) continue; const c = f._lc; if (!isFinite(c[0])) continue;
-        ctx.font = `${Math.min(15, 8 + Math.sqrt(a) / 70) * dpr / k}px Segoe UI`; ctx.fillStyle = "rgba(90,102,122,.9)";
-        ctx.fillText(f.properties.name || "", c[0], c[1]); }
-      const minPop = k < 2 ? 5e6 : k < 4 ? 2e6 : k < 8 ? 7e5 : k < 20 ? 2.5e5 : 1.5e5;
-      ctx.textAlign = "left";
-      const P8 = $("#clPlaces").checked ? Clues.places().slice(0, 8) : [];
-      for (const [nm, la, lo, pop] of cities) { if (pop < minPop || P8.some(q => Math.abs(q.lat - la) < 0.25 && Math.abs(q.lon - lo) < 0.4)) continue;
-        const p = proj([lo, la]); if (!p) continue;
-        ctx.beginPath(); ctx.arc(p[0], p[1], 2.2 * dpr / k, 0, 7); ctx.fillStyle = "#6b778c"; ctx.fill();
-        ctx.font = `${10.5 * dpr / k}px Segoe UI`; ctx.fillStyle = "#4b576b"; ctx.fillText(nm, p[0] + 4 * dpr / k, p[1] - 3 * dpr / k); }
-    }
+    const labels = [];
     if (g && $("#clCand").checked) {   // estimate circles: navy, labelled with their radius
       (g.candidates || []).forEach(c => { const p = circle(ctx, c.centre.lon, c.centre.lat, c.uncertainty_radius_km, 6); if (!p) return;
         ctx.strokeStyle = c.rank === 1 ? "#1f66e5" : "#7d93b8"; ctx.lineWidth = 1.8 / k; ctx.setLineDash([6 / k, 4 / k]); ctx.stroke(); ctx.setLineDash([]);
-        halo(ctx, `Estimate #${c.rank}: ${c.name} · ±${c.uncertainty_radius_km} km`, [p[0] + 8 / k, p[1] - 8 / k], 11 / k, "#16294d", "left"); });
+        labels.push([9 + c.rank, `Estimate #${c.rank}: ${c.name} · ±${c.uncertainty_radius_km} km`, [p[0] + 8 / k, p[1] - 8 / k], 11 / k, "#16294d"]); });
     }
     if (g && $("#clPlaces").checked) {   // likely places: blue circles sized to the place
       Clues.places().slice().reverse().forEach(q => { if (q.share < 0.005 && q.rank > 3) return;
@@ -227,7 +216,30 @@ const ClueMap = (() => {
         const top = q.rank === 1;
         ctx.fillStyle = top ? "rgba(31,102,229,0.45)" : `rgba(31,102,229,${0.12 + 0.4 * q.share})`; ctx.fill();
         ctx.strokeStyle = top ? "#0f3d99" : "#1f66e5"; ctx.lineWidth = (top ? 2.6 : 1.6) / k; ctx.stroke();
-        if (q.rank <= 5 || k >= 6) halo(ctx, `${q.rank}. ${q.name} ${(q.share * 100).toFixed(0)}%`, [p[0] + 7 / k, p[1] - 6 / k], (top ? 13 : 11) / k, top ? "#0f3d99" : "#16294d", "left"); });
+        if (q.rank <= 5 || k >= 6) labels.push([q.rank === 1 ? 0 : 10 + q.rank, `${q.rank}. ${q.name} ${(q.share * 100).toFixed(0)}%`, [p[0] + 7 / k, p[1] - 6 / k], (top ? 13 : 11) / k, top ? "#0f3d99" : "#16294d"]); });
+    }
+    // labels by priority (best place, best estimate, then the rest); overlapping ones are skipped
+    labels.sort((a, b) => a[0] - b[0]).forEach(([, t, xy, sz, col]) => halo(ctx, t, xy, sz, col, "left"));
+    if ($("#clLabels").checked) {   // after the estimate / place labels, so those always win; overlaps skipped
+      const free = (x, y, wpx, hpx) => { const sx = x * k + tf.x * dpr, sy = y * k + tf.y * dpr - hpx;
+        if (placed.some(b => sx < b[2] && sx + wpx > b[0] && sy < b[3] && sy + hpx > b[1])) return false;
+        placed.push([sx - 3, sy - 1, sx + wpx + 3, sy + hpx + 1]); return true; };
+      ctx.textAlign = "left";
+      for (const f of (w ? w.features : [])) { if (!onScreen(f)) continue; const a = f._la * k * k; if (a < 1800 * dpr * dpr) continue; const c = f._lc; if (!isFinite(c[0])) continue;
+        const fs = Math.min(15, 8 + Math.sqrt(a) / 70) * dpr; ctx.font = `${fs / k}px Segoe UI`;
+        const nm = f.properties.name || "", wpx = ctx.measureText(nm).width * k;
+        if (!free(c[0] - wpx / 2 / k, c[1], wpx, fs)) continue;
+        ctx.fillStyle = "rgba(90,102,122,.9)"; ctx.fillText(nm, c[0] - wpx / 2 / k, c[1]); }
+      const minPop = k < 2 ? 5e6 : k < 4 ? 2e6 : k < 8 ? 7e5 : k < 20 ? 2.5e5 : 1.5e5;
+      const P8 = $("#clPlaces").checked ? Clues.places().slice(0, 8) : [];
+      for (const [nm, la, lo, pop] of cities.slice().sort((a, b) => b[3] - a[3])) {   // biggest cities first
+        if (pop < minPop || P8.some(q => Math.abs(q.lat - la) < 0.25 && Math.abs(q.lon - lo) < 0.4)) continue;
+        const p = proj([lo, la]); if (!p) continue;
+        ctx.font = `${10.5 * dpr / k}px Segoe UI`;
+        const wpx = ctx.measureText(nm).width * k;
+        if (!free(p[0] + 4 * dpr / k, p[1] - 3 * dpr / k, wpx, 10.5 * dpr)) continue;
+        ctx.beginPath(); ctx.arc(p[0], p[1], 2.2 * dpr / k, 0, 7); ctx.fillStyle = "#6b778c"; ctx.fill();
+        ctx.fillStyle = "#4b576b"; ctx.fillText(nm, p[0] + 4 * dpr / k, p[1] - 3 * dpr / k); }
     }
   }
   function largestCentroid(mp) {
@@ -236,8 +248,14 @@ const ClueMap = (() => {
       const a = Math.abs(d3.polygonArea(ring)); if (a > ba) { ba = a; best = d3.polygonCentroid(ring); } }
     return best;
   }
+  let placed = [];   // label boxes already drawn in this frame (screen pixels): later labels that overlap are skipped
   function halo(ctx, text, [x, y], size, color, align = "center") {
-    ctx.font = `600 ${size * devicePixelRatio}px Segoe UI`; ctx.textAlign = align; ctx.lineWidth = 3 * devicePixelRatio / tf.k;
+    ctx.font = `600 ${size * devicePixelRatio}px Segoe UI`; ctx.textAlign = align;
+    const k = tf.k, dpr = devicePixelRatio, w = ctx.measureText(text).width * k, h = size * dpr * k;
+    const sx = x * k + tf.x * dpr - (align === "center" ? w / 2 : 0), sy = y * k + tf.y * dpr - h;
+    if (placed.some(b => sx < b[2] && sx + w > b[0] && sy < b[3] && sy + h > b[1])) return false;
+    placed.push([sx - 4, sy - 2, sx + w + 4, sy + h + 2]);
+    ctx.lineWidth = 3 * devicePixelRatio / tf.k;
     ctx.strokeStyle = "rgba(255,255,255,.92)"; ctx.strokeText(text, x, y); ctx.fillStyle = color; ctx.fillText(text, x, y);
   }
   let queued = false, settle = null;
