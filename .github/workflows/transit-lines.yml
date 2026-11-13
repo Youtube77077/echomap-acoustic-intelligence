@@ -43,6 +43,7 @@ jobs:
         with:
           pattern: transit-part-*
           merge-multiple: true
+      - run: pip install requests==2.34.2
       - run: python -u tools/build_transit_lines.py --merge EchoMap-transit-v1.json.gz part_*.json.gz
       - run: |
           gh release view transit-lines-v1 >/dev/null 2>&1 || gh release create transit-lines-v1 --prerelease --title "EchoMap transit lines" --notes "Public-transport lines with their stops (GTFS feeds via the Mobility Database; feed licences listed inside). Put EchoMap-transit-v1.json.gz next to EchoMap.exe or in the models folder."
