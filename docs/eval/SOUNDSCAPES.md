@@ -6,7 +6,7 @@ Summary: {"recordings": 10, "estimates": 4, "median_error_km": 571, "within_100k
 |---|---|---|---|---|---|
 | 1 | File:Bourne Garden 2020-08-28 0943.mp3 | GB (52.77, -0.39) | Germany, United Kingdom, France region | 602 km | Common Wood Pigeon (Columba palumbus); Eurasian Blue Tit (Cyanistes caeruleus); Eurasian C |
 | 2 | File:2020-04-28 deciduous forest.wav | US (38.00, -78.00) | United States, Canada region | 571 km | Tufted Titmouse (Baeolophus bicolor); Carolina Wren (Thryothorus ludovicianus); Yellow-thr |
-| 3 | File:Melbourne trams - 2018-09-15 - Andy Mabbett.o | AU (-37.82, 144.97) | Germany, Poland, Ukraine region | 15515 km | bowhead whale (Balaena mysticetus); Western House Martin (Delichon urbicum) |
+| 3 | File:Melbourne trams - 2018-09-15 - Andy Mabbett.o | AU (-37.82, 144.97) | Germany, Poland, Ukraine region | 15498 km | Western House Martin (Delichon urbicum) |
 | 4 | File:Church of Saint Mark (Litovel) ringing.ogg | CZ (49.70, 17.07) | Poland, Czechia, Slovakia region | 58 km | Reference match: Rybnik St Anthony basilica ringing 2022.wav; Reference match: Rybnik St A |
 | 5 | File:2013-07-24 00-19-04hrs Chiang Mai Chang Khien | TH (18.82, 98.95) | Thailand, China, Myanmar region | 303 km | Kaloula pulchra (Kaloula pulchra) |
 | 6 | File:Cuckoo singing.ogg | IN (12.91, 77.61) | India region | 545 km | Asian Koel (Eudynamys scolopaceus) |
