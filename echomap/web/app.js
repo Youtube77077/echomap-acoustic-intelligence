@@ -107,6 +107,7 @@ function renderFindings(f) {
   el.innerHTML = `<div class="fgrid">
     <div class="fbox fwhere"><h3>Where</h3><p class="big">${esc(w.headline || "-")}</p>
       ${w.detail ? `<p class="muted small">${esc(w.detail)}</p>` : ""}
+      ${w.transit ? `<div class="small ftransit"><b>🚋 Public-transport line:</b> ${esc(w.transit.text)}${w.transit.others?.length ? `<br><span class="muted">Also possible: ${w.transit.others.map(esc).join(" · ")}</span>` : ""}</div>` : ""}
       ${w.places?.length ? `<div class="small"><b>Likely places:</b> ${w.places.map(esc).join(" · ")}</div>` : ""}
       ${w.alternatives?.length ? `<div class="small"><b>Also possible:</b> ${w.alternatives.map(esc).join(" · ")}</div>` : ""}
       ${w.clues?.length ? `<div class="small muted">Based on: ${w.clues.map(esc).join("; ")}</div>` : ""}

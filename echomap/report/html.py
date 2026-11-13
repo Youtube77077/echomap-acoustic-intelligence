@@ -79,6 +79,7 @@ def render(case) -> str:
                  + (f"<br>Likely places: {E(' · '.join(w['places']))}" if w.get("places") else "")
                  + (f"<br>Also possible: {E(' · '.join(w['alternatives']))}" if w.get("alternatives") else "")
                  + (f"<br><span class='muted'>Based on: {E('; '.join(w['clues']))}</span>" if w.get("clues") else "")),
+                ("Public-transport line", E(w["transit"]["text"]) if w.get("transit") else "none recognised"),
                 ("Language", E(", ".join(f"{l['name']} ({l['code']}) {round(100 * l['confidence'])}%" for l in f.get("languages", [])) or "none identified")),
                 ("What was said", "<br>".join(f"[{fmt_t(l['start'])}] <i>{E(l.get('language') or '')}, {E(l['quality'])}</i>: {E(l['text'])}"
                                               for l in (f.get("speech") or {}).get("lines", [])) or "no intelligible speech"),

@@ -78,6 +78,14 @@ def build(result: dict) -> dict:
     places = [p for p in places if float(p.get("share") or 0) >= 0.05]   # a 1% "place" is noise, not a finding
     if places:
         where["places"] = [f"{p['name']} ({_pct(p.get('share'))})" for p in places[:5]]
+    tl = result.get("transit_lines")
+    if tl and tl.get("lines"):
+        b = tl["lines"][0]
+        where["transit"] = {"line": b["line"], "operator": b["operator"], "city": b["city"], "country": b["country"],
+                            "stops_heard": b["stops_heard"], "lat": b["lat"], "lon": b["lon"],
+                            "others": [f"{x['line']} ({x['operator']}, {x['city']})" for x in tl["lines"][1:5]],
+                            "text": f"{b['line']} — {b['operator']}, {b['city']} ({b['country']}); stop(s) heard: "
+                                    f"{', '.join(b['stops_heard'])} at {b['lat']:.4f}, {b['lon']:.4f}"}
     out["where"] = where
     # --- languages
     langs = {}

@@ -472,6 +472,18 @@ class Case:
                 rec = next((r for r in records if r.get("transcripts") and r["start"] - 0.5 <= t0 <= r["end"] + 0.5), None)
                 m["record"] = rec["id"] if rec else None
             extra["place_mentions"] = mentions
+            from .geo import transit_lines
+            tl = transit_lines.match(segs, s.models_dir, prefer_modes=transit_lines.modes_heard(records))
+            extra["transit_lines"] = tl
+            self.result["transit_lines"] = tl
+            if getattr(self, "cap", None):
+                self.cap.items = [i for i in self.cap.items if i["id"] != "transit_lines"]
+                pack = transit_lines.find_pack(s.models_dir)
+                self.cap.add("transit_lines", "Public-transport line from announced stops (GTFS timetables)",
+                             "executed" if pack and segs else ("unavailable" if not pack else "not_executed"),
+                             (f"{len(tl['lines'])} line(s) for stop(s) {', '.join(h['stop'] for h in tl['heard'][:3])}" if tl
+                              else "No announced stop recognised.") if pack else "Transit-line pack not installed.",
+                             cls="context")
             self.result["place_mentions"] = [{k: v for k, v in m.items() if k != "rows"} for m in mentions]
             if getattr(self, "cap", None):
                 tn = places.tram_networks()["networks"]

@@ -331,6 +331,21 @@ class GeoEngine:
                               "source": "OpenStreetMap railway=tram track (ODbL), " + str(len(nets)) + " networks",
                               "precision": "city level: kernel around each tram network",
                               "note": th["basis"] + "; tram cities favoured, larger networks slightly more"})
+        tl = extra.get("transit_lines")
+        if tl and tl.get("pins"):   # announced stops matched to public-transport lines: stop-level pins
+            L = np.zeros(len(pts.lat), np.float64)
+            for q in tl["pins"]:
+                d = haversine_km(q["lat"], q["lon"], pts.lat, pts.lon)
+                L = np.maximum(L, np.exp(-0.5 * (d / places.kernel_sigma(1.5, pts)) ** 2))
+            best = tl["lines"][0] if tl.get("lines") else {}
+            items.append({"group": "place_names", "label": f"Announced stop(s): {', '.join(h['stop'] for h in tl['heard'][:3])}",
+                          "record": None, "c": float(tl["confidence"]), "L": np.maximum(L, 0.03).astype(np.float32),
+                          "fp": L >= 0.3, "points": [{"name": q["name"], "cc": q["cc"], "lat": q["lat"], "lon": q["lon"], "r": 0.5}
+                                                     for q in tl["pins"]],
+                          "source": "Speech transcript + public-transport timetables (GTFS, Mobility Database)",
+                          "precision": "stop level (pins at the announced stops)",
+                          "note": f"{tl['basis']}; best line {best.get('line', '?')} ({best.get('operator', '')}, {best.get('city', '')}); "
+                                  f"{tl['n_matching_lines']} line(s) match"})
         for m in extra.get("place_mentions") or []:
             L, cities = places.mention_likelihood(pts, m)
             items.append({"group": "place_names", "label": f"Spoken place name: {m['name']}", "record": m.get("record"),
