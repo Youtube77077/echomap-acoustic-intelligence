@@ -30,3 +30,4 @@ jobs:
       - run: |
           gh release view images-v1 >/dev/null 2>&1 || gh release create images-v1 --prerelease --title "EchoMap picture pack" --notes "Thumbnails (WebP, 128 px) from Wikimedia Commons via Wikidata P18, free licences only; credits in index.json. Put EchoMap-images-v1.zip next to EchoMap.exe or in the models folder."
           gh release upload images-v1 EchoMap-images-v1.zip --clobber
+# rebuild 2: include all iNatSounds species (categories now available)
