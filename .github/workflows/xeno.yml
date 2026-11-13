@@ -1,0 +1,90 @@
+name: xeno
+# Xeno-canto (~1.1M recordings): metadata for all (where/when per species) + a per-species audio sample (first ~45 s)
+# for the animal head, then retrain with iNatSounds. Key from the GitHub environment "Xeno" (variable or secret XENO).
+on:
+  push:
+    branches: ["claude/**"]
+    paths: [".github/workflows/xeno.yml"]
+  workflow_dispatch:
+    inputs:
+      stage:
+        description: "all | embed (reuse harvested metadata) | train"
+        default: "all"
+permissions:
+  contents: write
+jobs:
+  harvest:
+    if: github.event_name == 'push' || inputs.stage == 'all'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 340
+    environment: Xeno
+    env:
+      GH_TOKEN: ${{ github.token }}
+      XC_KEY: ${{ secrets.XENO || vars.XENO }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.14"}
+      - run: pip install requests==2.34.2
+      - run: python -u tools/xc_harvest.py xc_meta.jsonl.gz echomap/data/xc_ranges.json.gz
+      - run: |
+          gh release view xc-meta-v1 >/dev/null 2>&1 || gh release create xc-meta-v1 --prerelease --title "Xeno-canto metadata" --notes "Recording metadata (species, coordinates, date, licence) from the Xeno-canto API v3. No audio."
+          gh release upload xc-meta-v1 xc_meta.jsonl.gz echomap/data/xc_ranges.json.gz --clobber
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add echomap/data/xc_ranges.json.gz
+          git commit -m "Xeno-canto species ranges and seasons" || exit 0
+          for i in 1 2 3; do git pull --rebase origin ${{ github.ref_name }} && git push origin HEAD:${{ github.ref_name }} && break; sleep 5; done
+  embed:
+    needs: harvest
+    if: always() && (needs.harvest.result == 'success' || inputs.stage == 'embed')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 350
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    env:
+      GH_TOKEN: ${{ github.token }}
+      LOCALAPPDATA: /home/runner/appdata
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.14", cache: pip, cache-dependency-path: requirements*.txt}
+      - run: pip install -r requirements.txt
+      - name: Cache models
+        uses: actions/cache@v4
+        with:
+          path: /home/runner/appdata/EchoMap/models
+          key: models-v1-birdnet31-geo304-asr1
+      - run: python tools/fetch_models.py "$LOCALAPPDATA/EchoMap/models"
+      - run: gh release download xc-meta-v1 -p xc_meta.jsonl.gz
+      - run: python -u tools/xc_embed.py "$LOCALAPPDATA/EchoMap/models" xc_meta.jsonl.gz ${{ matrix.shard }} 10 xc_${{ matrix.shard }}.npz 12
+      - run: |
+          gh release view xc-emb-v1 >/dev/null 2>&1 || gh release create xc-emb-v1 --prerelease --title "Xeno-canto embeddings" --notes "Embeddings only (no audio) of a per-species sample of Xeno-canto recordings, for EchoMap's animal head." || true
+          for i in 1 2 3; do gh release upload xc-emb-v1 xc_${{ matrix.shard }}.npz --clobber && break; sleep 10; done
+  train:
+    needs: embed
+    if: always() && (needs.embed.result == 'success' || inputs.stage == 'train')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.14"}
+      - run: pip install numpy==2.5.4
+      - run: |
+          mkdir -p emb
+          gh release download inat-emb-v1 -D emb --clobber || echo "no iNatSounds embeddings"
+          gh release download xc-emb-v1 -D emb --clobber
+          gh release download xc-meta-v1 -p xc_ranges.json.gz -D emb --clobber
+          ls -la emb
+      - run: python -u tools/train_inat_head.py emb
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add echomap/data/inat_head.npz docs/eval/inat_head.json
+          git commit -m "Animal head retrained on iNatSounds + Xeno-canto (see docs/eval/inat_head.json)" || exit 0
+          for i in 1 2 3; do git pull --rebase origin ${{ github.ref_name }} && git push origin HEAD:${{ github.ref_name }} && break; sleep 5; done

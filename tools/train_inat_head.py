@@ -133,6 +133,37 @@ def main():
     ytr = np.array([cid[v] for v in tr["y"]], np.int32)
     keep_v = np.array([v in cid for v in va["y"]])
     yva = np.array([cid[v] for v in va["y"][keep_v]], np.int32)
+    # Xeno-canto shards (tools/xc_embed.py): same embeddings, labelled by scientific name; 1 in 10 recordings held out
+    xs = sorted(glob.glob(str(ed / "xc_*.npz")))
+    if xs:
+        import gzip
+        xr = {}
+        if (ed / "xc_ranges.json.gz").exists():
+            with gzip.open(ed / "xc_ranges.json.gz", "rt", encoding="utf-8") as g:
+                xr = json.load(g)["species"]
+        parts = [np.load(f) for f in xs]
+        X = {k: np.concatenate([p[k] for p in parts]) for k in ("eat", "bn", "yname", "audio_id")}
+        idx = {n.lower(): i for i, n in enumerate(names)}
+        for n in sorted(set(X["yname"].tolist()) - set(idx)):
+            idx[n] = len(names)
+            names.append(n[:1].upper() + n[1:])
+            common.append((xr.get(n) or {}).get("en") or "")
+            groups.append({"birds": "Aves", "frogs": "Amphibia", "grasshoppers": "Insecta", "bats": "Mammalia",
+                           "land mammals": "Mammalia"}.get((xr.get(n) or {}).get("grp", ""), ""))
+        yx = np.array([idx[n] for n in X["yname"]], np.int32)
+        hold = (X["audio_id"] % 10) == 0
+        off = 10 ** 12   # keep Xeno-canto recording ids apart from iNatSounds ids
+        tr = {"eat": np.concatenate([tr["eat"], X["eat"][~hold]]), "bn": np.concatenate([tr["bn"], X["bn"][~hold]]),
+              "audio_id": np.concatenate([tr["audio_id"], X["audio_id"][~hold] + off]),
+              "license": np.concatenate([tr["license"], np.full(int((~hold).sum()), -2, np.int32)])}
+        va = {"eat": np.concatenate([va["eat"][keep_v], X["eat"][hold]]), "bn": np.concatenate([va["bn"][keep_v], X["bn"][hold]]),
+              "audio_id": np.concatenate([va["audio_id"][keep_v], X["audio_id"][hold] + off])}
+        ytr = np.concatenate([ytr, yx[~hold]])
+        yva = np.concatenate([yva, yx[hold]])
+        keep_v = np.ones(len(yva), bool)
+        cats = [{"id": i} for i in range(len(names))]
+        print(f"+ Xeno-canto: {int((~hold).sum())} train / {int(hold.sum())} held-out windows; classes now {len(names)}",
+              flush=True)
     print(f"train windows {len(ytr)} ({len(set(tr['audio_id']))} recordings, {len(set(ytr))} species); "
           f"val windows {len(yva)}; categories {len(cats)}; sample category {cats[0]}", flush=True)
     has_bn = tr["bn"].shape[1] > 1

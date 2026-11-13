@@ -185,6 +185,19 @@ def species_ranges() -> dict:
 
 
 @lru_cache(maxsize=1)
+def xc_ranges() -> dict:
+    """Xeno-canto recording sites (1-degree cells) and months per species (tools/xc_harvest.py); empty if absent."""
+    import gzip
+    import json
+    from pathlib import Path
+    p = Path(__file__).resolve().parents[1] / "data" / "xc_ranges.json.gz"
+    if not p.exists():
+        return {}
+    with gzip.open(p, "rt", encoding="utf-8") as g:
+        return json.load(g).get("species", {})
+
+
+@lru_cache(maxsize=1)
 def _population_cells() -> dict:
     """Summed city population per 0.5° cell, spread to the 8 neighbouring cells (suburbs, smaller towns)."""
     from .gazetteer import _cities
@@ -301,8 +314,27 @@ class GeoEngine:
                 gidx = {}
             # v1.0.9: GBIF country ranges for species the geomodel does not cover (iNatSounds insects, frogs, mammals)
             rng = species_ranges()
+            xcr = xc_ranges()
             for k, r in best.items():
-                if k in gidx or k not in rng:
+                if k in gidx:
+                    continue
+                xc = xcr.get(k)
+                if xc and sum(c[2] for c in xc["cells"]) >= 5:   # Xeno-canto recording sites: 1-degree cells +- 1 cell
+                    occ = {(a + da, b + db) for a, b, _ in xc["cells"] for da in (-1, 0, 1) for db in (-1, 0, 1)}
+                    keyc = list(zip(np.floor(pts.lat).astype(int).tolist(), np.floor(pts.lon).astype(int).tolist()))
+                    L = np.array([1.0 if kc in occ else OUT_OF_RANGE_FLOOR for kc in keyc], np.float32)
+                    corr = bool(r.get("corroborated_by"))
+                    use = r["confidence"] >= SPECIES_MIN_CONF and (corr or r["confidence"] >= UNCORROBORATED_MIN_CONF)
+                    frac = float((L >= 0.5).astype(float) @ w / w.sum())
+                    items.append({"group": "biogeography", "label": f"{r.get('common_name') or xc.get('en') or k} "
+                                  f"({r['scientific_name']})", "record": r["id"], "c": r["confidence"] if corr else
+                                  0.5 * r["confidence"], "L": L, "fp": L >= 0.5, "used": use,
+                                  "source": "Xeno-canto recording sites", "precision": "1-degree cells (~110 km)",
+                                  "note": f"recorded at {len(xc['cells'])} 1-degree cells ({frac * 100:.1f}% of land area)",
+                                  "range_fraction": frac})
+                    r["geographic_relevance"] = "Range from Xeno-canto recording sites."
+                    continue
+                if k not in rng:
                     continue
                 g = rng[k]
                 tot = max(1, sum(g["c"].values()))
@@ -334,7 +366,11 @@ class GeoEngine:
                 if it["group"] != "biogeography" or not it.get("record"):
                     continue
                 rec = next((r for r in records if r["id"] == it["record"]), None)
-                g = rng.get((rec or {}).get("scientific_name", "").lower()) if rec else None
+                sk = (rec or {}).get("scientific_name", "").lower() if rec else ""
+                g = rng.get(sk)
+                xg = xc_ranges().get(sk)
+                if xg and sum(xg["m"]) >= 30 and (not g or sum(g["m"]) < sum(xg["m"])):
+                    g = {"m": xg["m"]}
                 if g and sum(g["m"]) >= 30:
                     share = g["m"][int(month) - 1] / sum(g["m"])
                     rec["season_check"] = (f"{share * 100:.1f}% of GBIF records are from this month"
