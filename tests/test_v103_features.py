@@ -16,6 +16,9 @@ def _rec(**kw):
     b = {"id": "D0001", "label": "x", "confidence": 0.9, "tier": "probable", "evidence": {}, "category": "language",
          "start": 0, "end": 10, "category_title": "x"}
     b.update(kw)
+    if b.get("language_code"):   # hand-specified language clue = clear speech
+        b["evidence"] = {**b["evidence"], "speech_score_max": 0.9}
+        b.setdefault("transcripts", [{"quality": "clear", "language": b["language_code"]}])
     return b
 
 

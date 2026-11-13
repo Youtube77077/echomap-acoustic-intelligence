@@ -27,15 +27,15 @@ from .gazetteer import cities_in_region, nearest_city
 from .grid import countries, grid, haversine_km, local_grid
 
 GROUP_CLIP = 6.0
-GROUP_DISCOUNT_EXP = 0.5       # n clues in one group count as n**(1-exp) independent clues (0.5 = sqrt(n) discount)
+GROUP_DISCOUNT_EXP = 0.25      # n clues in one group count as n**(1-exp) independent clues (0.5 = sqrt(n) discount)
 OUT_OF_RANGE_FLOOR = 0.02      # captive / escaped / vagrant / transported animals
 LANGUAGE_FLOOR = 0.005         # tourists, migrants, broadcast media
 RESOLUTIONS_KM = [1, 5, 10, 25, 50, 100]
-UNCORROBORATED_MIN_CONF = 0.8  # species without simultaneous AudioSet animal activity need this confidence
+UNCORROBORATED_MIN_CONF = 0.6  # species without simultaneous AudioSet animal activity need this confidence
 LANG_MIN_CONF = 0.5            # weaker language guesses (bells or trams read as speech) are shown but not used
 LANG_ALIASES = {"nn": "no", "jw": "jv"}   # Whisper codes -> CLDR codes
 SPECIES_MIN_CONF = 0.4         # species predictions below this are listed but not used for geography
-MIN_INFORMATION_RATIO = 2.0
+MIN_INFORMATION_RATIO = 1.5
 # Radius calibration: on the iNaturalist evaluation (docs/eval/geo.json, 43 estimates, 2026-11-12) the true location fell
 # inside the best candidate's raw radius only 43% of the time. Scaling by the 68th percentile of error/radius (1.74)
 # makes the best circle a ~68% region on that data. Small sample: re-estimated whenever the evaluation is re-run.
@@ -157,6 +157,18 @@ def context_weeks(ctx: dict) -> tuple[list[int] | None, str]:
     except (ValueError, TypeError):
         pass
     return None, "date unknown, so species ranges use the maximum over the whole year"
+
+
+def _language_backed(r: dict, code: str) -> bool:
+    """A language counts for location only with a clear transcript in it, or very confident ID on clear speech
+    (bells and engines were read as Korean / Nynorsk speakers in the soundscape benchmark)."""
+    if "transcript" in str(r.get("model", "")).lower() or "speech-to-text" in str(r.get("model", "")).lower():
+        return True
+    if any(t.get("quality") == "clear" and LANG_ALIASES.get(t.get("language"), t.get("language")) == code
+           for t in r.get("transcripts") or []):
+        return True
+    sp = float((r.get("evidence") or {}).get("speech_score_max") or 0)
+    return r["confidence"] >= 0.8 and sp >= 0.5
 
 
 @lru_cache(maxsize=1)
@@ -344,7 +356,7 @@ class GeoEngine:
             L = np.maximum(share, LANGUAGE_FLOOR)
             items.append({"group": "language", "label": f"Language {r['language_name']} ({code})", "record": r["id"],
                           "c": r["confidence"], "L": L, "fp": share >= 0.15, "shape": "countries", "source": "Unicode CLDR territoryInfo",
-                          "used": r["confidence"] >= LANG_MIN_CONF,
+                          "used": r["confidence"] >= LANG_MIN_CONF and _language_backed(r, code),
                           "precision": "country-level (language shares are national)",
                           "note": f"CLDR population share; spoken by ≥ 50% in {int((share >= 0.5).sum())} land cells' countries"})
         # --- electrical grid
@@ -703,7 +715,10 @@ class GeoEngine:
         lp = self.likely_places(items, records, mains, ctx, weeks, extra)
         if lp:
             base["likely_places"] = lp
-        if info_ratio < MIN_INFORMATION_RATIO and loc.get("mode", "unknown") == "unknown":
+        n_groups = len({it["group"] for it in acoustic if it["group"] != "population"})
+        # one kind of clue alone (e.g. only a 60 Hz hum) needs the stricter 2x narrowing to count as an estimate
+        need = MIN_INFORMATION_RATIO if n_groups >= 2 else max(MIN_INFORMATION_RATIO, 2.0)
+        if info_ratio < need and loc.get("mode", "unknown") == "unknown":
             keep = np.argsort(-total)[:1500]
             return {**base, "status": "no_estimate", "effective_area_km2": round(eff_area), "land_area_km2": round(land_area),
                     "information_ratio": round(info_ratio, 2), "candidates": [], "weak_candidates": cands[:3],

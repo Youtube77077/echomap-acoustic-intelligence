@@ -34,6 +34,9 @@ def test_gazetteer():
 def _rec(**kw):
     base = {"id": "D0001", "label": "x", "confidence": 0.9, "tier": "probable", "evidence": {}, "category": "language"}
     base.update(kw)
+    if base.get("language_code"):   # hand-specified language clue = clear speech
+        base["evidence"] = {**base["evidence"], "speech_score_max": 0.9}
+        base.setdefault("transcripts", [{"quality": "clear", "language": base["language_code"]}])
     return base
 
 
