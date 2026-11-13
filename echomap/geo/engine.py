@@ -31,6 +31,9 @@ GROUP_DISCOUNT_EXP = 0.5       # n clues in one group count as n**(1-exp) indepe
 OUT_OF_RANGE_FLOOR = 0.02      # captive / escaped / vagrant / transported animals
 LANGUAGE_FLOOR = 0.005         # tourists, migrants, broadcast media
 RESOLUTIONS_KM = [1, 5, 10, 25, 50, 100]
+UNCORROBORATED_MIN_CONF = 0.8  # species without simultaneous AudioSet animal activity need this confidence
+LANG_MIN_CONF = 0.5            # weaker language guesses (bells or trams read as speech) are shown but not used
+LANG_ALIASES = {"nn": "no", "jw": "jv"}   # Whisper codes -> CLDR codes
 SPECIES_MIN_CONF = 0.4         # species predictions below this are listed but not used for geography
 MIN_INFORMATION_RATIO = 2.0
 # Radius calibration: on the iNaturalist evaluation (docs/eval/geo.json, 43 estimates, 2026-11-12) the true location fell
@@ -255,10 +258,14 @@ class GeoEngine:
                         r = best[k]
                         L = np.maximum(occ[:, j], OUT_OF_RANGE_FLOOR)
                         frac = float((occ[:, j] >= 0.25).astype(float) @ w / w.sum())
-                        c_eff = r["confidence"] if r.get("corroborated_by") else 0.5 * r["confidence"]
+                        corr = bool(r.get("corroborated_by"))
+                        c_eff = r["confidence"] if corr else 0.5 * r["confidence"]
+                        # v1.0.9: bells, trams and engines produce false "species"; without an AudioSet animal sound at
+                        # the same time a species is only used when the model is very sure
+                        use = r["confidence"] >= SPECIES_MIN_CONF and (corr or r["confidence"] >= UNCORROBORATED_MIN_CONF)
                         items.append({"group": "biogeography", "label": f"{r['common_name']} ({r['scientific_name']})",
                                       "record": r["id"], "c": c_eff, "L": L, "fp": occ[:, j] >= 0.25,
-                                      "used": r["confidence"] >= SPECIES_MIN_CONF, "source": "BirdNET+ Geomodel V3.0.4",
+                                      "used": use, "source": "BirdNET+ Geomodel V3.0.4",
                                       "precision": "2° range-model lattice (~220 km)",
                                       "note": f"range model: occurrence ≥ 0.25 over {frac*100:.1f}% of land area",
                                       "range_fraction": frac})
@@ -274,6 +281,7 @@ class GeoEngine:
                 if r["language_code"] not in langs or r["confidence"] > langs[r["language_code"]]["confidence"]:
                     langs[r["language_code"]] = r
         for code, r in langs.items():
+            code = LANG_ALIASES.get(code, code)
             share = pts.language_share(code)
             if share.max() <= 0:
                 r["geographic_relevance"] = "Language not in the CLDR territory data, so no geographic evidence."
@@ -281,6 +289,7 @@ class GeoEngine:
             L = np.maximum(share, LANGUAGE_FLOOR)
             items.append({"group": "language", "label": f"Language {r['language_name']} ({code})", "record": r["id"],
                           "c": r["confidence"], "L": L, "fp": share >= 0.15, "shape": "countries", "source": "Unicode CLDR territoryInfo",
+                          "used": r["confidence"] >= LANG_MIN_CONF,
                           "precision": "country-level (language shares are national)",
                           "note": f"CLDR population share; spoken by ≥ 50% in {int((share >= 0.5).sum())} land cells' countries"})
         # --- electrical grid

@@ -20,8 +20,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from echomap.geo import engine as E  # noqa: E402
 from echomap.geo.grid import haversine_km  # noqa: E402
 
-GRID = {"GROUP_CLIP": [6.0, 10.0], "GROUP_DISCOUNT_EXP": [0.5, 0.25], "SPECIES_MIN_CONF": [0.4, 0.3],
-        "MIN_INFORMATION_RATIO": [2.0, 1.5]}
+GRID = {"GROUP_CLIP": [6.0, 10.0], "GROUP_DISCOUNT_EXP": [0.5, 0.25], "UNCORROBORATED_MIN_CONF": [0.6, 0.8, 1.01],
+        "LANG_MIN_CONF": [0.5, 0.7], "MIN_INFORMATION_RATIO": [2.0, 1.5]}
 NO_EST_KM = 5000.0
 
 

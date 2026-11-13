@@ -448,6 +448,8 @@ class Case:
         records = self.result["inventory"]
         self._p("geo", 0.92, "Estimating location")
         eng = GeoEngine(s.models_dir, h)
+        from .geo import transit_lines as _tl
+        _tl.DEFAULT_MODELS_DIR = s.models_dir
         with h.timed("geo.fusion", "Evidence fusion on 0.5° land grid"):
             extra = dict(getattr(self, "_bell", None) or {})
             refgeo = []

@@ -20,12 +20,14 @@ from .. import config
 from .places import CUES, _norm
 
 PACK_GLOB = "EchoMap-transit*.json.gz"
+DEFAULT_MODELS_DIR: str | None = None   # set by the pipeline so callers without a models dir can find the pack
 GENERIC_MAX_PLACES = 25        # a stop name used in more places than this is generic ("Station", "Kerk")
 MODE_TITLE = {"tram": "Tram", "metro": "Metro", "rail": "Train", "bus": "Bus", "ferry": "Ferry", "trolleybus": "Trolleybus",
               "funicular": "Funicular", "cable tram": "Cable car", "aerial lift": "Cable car", "monorail": "Monorail"}
 
 
 def find_pack(models_dir: str | None = None) -> Path | None:
+    models_dir = models_dir or DEFAULT_MODELS_DIR
     roots = [Path(models_dir), Path(models_dir).parent] if models_dir else []
     exe = Path(sys.executable).resolve().parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parents[2]
     roots += [exe, exe / "models", config.app_home(), config.app_home() / "models", Path.home() / "Downloads",
@@ -171,3 +173,48 @@ def match(segments: list[dict], models_dir: str | None = None, max_lines: int = 
             "lines": out_lines, "pins": list(pins.values())[:40], "n_matching_lines": len(cands),
             "confidence": 0.7 if best_n >= 2 else 0.5,
             "basis": (f"{best_n} announced stops on the same line" if best_n >= 2 else "an announced stop after a cue phrase")}
+
+
+@lru_cache(maxsize=2)
+def _tram_networks(path: str) -> list[dict]:
+    """Tram networks (one per operator and ~50 km cluster) from the tram lines in the pack: centre, extent, stops."""
+    import numpy as np
+    d = _load(path)
+    groups: dict[tuple, set] = defaultdict(set)
+    for op, mode, _, _, ids in d["lines"]:
+        if mode in ("tram", "cable tram"):
+            for sid in ids:
+                _, la, lo = d["stops"][sid]
+                groups[(op, round(la * 2) / 2, round(lo * 2) / 2)].add(sid)
+    merged: dict[int, list] = defaultdict(list)
+    for (op, _, _), sids in groups.items():
+        merged[op].append(sids)
+    nets = []
+    for op, clusters in merged.items():
+        allsids = set().union(*clusters)
+        la = np.array([d["stops"][s][1] for s in allsids])
+        lo = np.array([d["stops"][s][2] for s in allsids])
+        clat, clon = float(np.median(la)), float(np.median(lo))
+        dist = np.hypot((la - clat) * 111.0, (lo - clon) * 111.0 * np.cos(np.radians(clat)))
+        if np.percentile(dist, 90) > 120:      # operator spread over several cities: keep each cluster separately
+            parts = [np.array(sorted(c)) for c in clusters]
+        else:
+            parts = [np.array(sorted(allsids))]
+        for ids in parts:
+            la = np.array([d["stops"][s][1] for s in ids])
+            lo = np.array([d["stops"][s][2] for s in ids])
+            clat, clon = float(np.median(la)), float(np.median(lo))
+            dist = np.hypot((la - clat) * 111.0, (lo - clon) * 111.0 * np.cos(np.radians(clat)))
+            operator, cc, city = d["operators"][op]
+            if not city:
+                from .gazetteer import nearest_city
+                city = (nearest_city(clat, clon) or {}).get("name", "")
+            nets.append({"name": city or operator, "operator": operator, "cc": cc, "lat": round(clat, 4), "lon": round(clon, 4),
+                         "extent_km": round(float(min(40.0, max(3.0, np.percentile(dist, 90)))), 1), "stops": int(len(ids)),
+                         "source": "GTFS tram lines (Mobility Database)"})
+    return nets
+
+
+def tram_networks(models_dir: str | None = None) -> list[dict]:
+    p = find_pack(models_dir)
+    return _tram_networks(str(p)) if p else []

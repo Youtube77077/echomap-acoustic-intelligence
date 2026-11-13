@@ -57,12 +57,19 @@ def _norm(s: str) -> str:
 
 
 # ---------------------------------------------------------------- tram networks
-@lru_cache(maxsize=1)
 def tram_networks() -> dict:
+    """OSM tram networks when bundled; otherwise (v1.0.9) derived from the GTFS transit-line pack."""
     p = DATA / "tram_networks.json.gz"
-    if not p.exists():
-        return {"meta": {}, "networks": []}
-    with gzip.open(p, "rt", encoding="utf-8") as g:
+    if p.exists():
+        return _osm_tram_networks(str(p))
+    from . import transit_lines
+    nets = transit_lines.tram_networks()
+    return {"meta": {"source": "GTFS tram lines (Mobility Database)"} if nets else {}, "networks": nets}
+
+
+@lru_cache(maxsize=1)
+def _osm_tram_networks(path: str) -> dict:
+    with gzip.open(path, "rt", encoding="utf-8") as g:
         return json.load(g)
 
 
