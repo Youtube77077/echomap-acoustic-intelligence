@@ -1,0 +1,490 @@
+{
+ "generated": "2026-11-13 00:37",
+ "summary": {
+  "recordings": 10,
+  "estimates": 5,
+  "median_error_km": 672,
+  "within_100km": 0,
+  "within_500km": 1,
+  "inside_circle": 3
+ },
+ "rows": [
+  {
+   "source": "Wikimedia Commons",
+   "query": "street ambience",
+   "title": "File:Bourne Garden 2020-08-28 0943.mp3",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/0/02/Bourne_Garden_2020-08-28_0943.mp3?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "page": "https://commons.wikimedia.org/wiki/File:Bourne_Garden_2020-08-28_0943.mp3",
+   "licence": "CC BY-SA 4.0",
+   "lat": 52.772637,
+   "lon": -0.392832,
+   "duration_s": 1220.4480184704262,
+   "country": "GB",
+   "state": "complete",
+   "error": null,
+   "analysis_s": 60.3,
+   "geo_status": "estimate",
+   "headline": "Most likely area: Germany, United Kingdom, France region (within about 1100 km)",
+   "best": "Germany, United Kingdom, France region",
+   "best_error_km": 526,
+   "best_radius_km": 1100.0,
+   "inside_best": true,
+   "min_error_top5_km": 526,
+   "languages": [
+    "English 60%",
+    "Nynorsk 20%"
+   ],
+   "sounds": [
+    "Bird vocalization — species: Common Wood Pigeon (Columba palumbus)",
+    "Bird vocalization — species: European Robin (Erithacus rubecula)",
+    "Bird vocalization — species: Eurasian Wren (Troglodytes troglodytes)",
+    "Bird vocalization — species: Eurasian Chaffinch (Fringilla coelebs)",
+    "Bird vocalization — species: Eurasian Blue Tit (Cyanistes caeruleus)",
+    "Bird vocalization — species: Common Blackbird (Turdus merula)",
+    "Bird vocalization — species: Great Spotted Woodpecker (Dendrocopos major)",
+    "Bird vocalization — species: European Greenfinch (Chloris chloris)"
+   ],
+   "clues": [
+    "Common Wood Pigeon (Columba palumbus)",
+    "Eurasian Blue Tit (Cyanistes caeruleus)",
+    "Eurasian Chaffinch (Fringilla coelebs)",
+    "Great Tit (Parus major)",
+    "Eurasian Wren (Troglodytes troglodytes)",
+    "European Robin (Erithacus rubecula)",
+    "Common Chiffchaff (Phylloscopus collybita)",
+    "Long-tailed Tit (Aegithalos caudatus)"
+   ],
+   "screenshots": [
+    "docs/screenshots/bench/01_1_findings.png",
+    "docs/screenshots/bench/01_2_analysis.png",
+    "docs/screenshots/bench/01_3_inventory.png",
+    "docs/screenshots/bench/01_4_map.png",
+    "docs/screenshots/bench/01_5_where_found.png"
+   ]
+  },
+  {
+   "source": "Wikimedia Commons",
+   "query": "dawn chorus forest",
+   "title": "File:2020-04-28 deciduous forest.wav",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/9/90/2020-04-28_deciduous_forest.wav?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "page": "https://commons.wikimedia.org/wiki/File:2020-04-28_deciduous_forest.wav",
+   "licence": "CC BY-SA 4.0",
+   "lat": 38,
+   "lon": -78,
+   "duration_s": 80.42527083333333,
+   "country": "US",
+   "state": "complete",
+   "error": null,
+   "analysis_s": 21.4,
+   "geo_status": "estimate",
+   "headline": "Most likely area: United States, Canada region (within about 1300 km)",
+   "best": "United States, Canada region",
+   "best_error_km": 903,
+   "best_radius_km": 1300.0,
+   "inside_best": true,
+   "min_error_top5_km": 271,
+   "languages": [],
+   "sounds": [
+    "Bird vocalization — species: Eastern Phoebe (Sayornis phoebe)",
+    "Bird vocalization — species: Carolina Chickadee (Poecile carolinensis)",
+    "Bird vocalization — species: Carolina Wren (Thryothorus ludovicianus)",
+    "Bird vocalization — species: Yellow-throated Vireo (Vireo flavifrons)",
+    "Bird vocalization — species: Tufted Titmouse (Baeolophus bicolor)",
+    "Bird vocalization — species: Blue-headed Vireo (Vireo solitarius)",
+    "Bird vocalization — species: American Crow (Corvus brachyrhynchos)",
+    "Bird vocalization — species: Northern Cardinal (Cardinalis cardinalis)"
+   ],
+   "clues": [
+    "Tufted Titmouse (Baeolophus bicolor)",
+    "Carolina Wren (Thryothorus ludovicianus)",
+    "Yellow-throated Vireo (Vireo flavifrons)",
+    "Eastern Phoebe (Sayornis phoebe)",
+    "Carolina Chickadee (Poecile carolinensis)"
+   ],
+   "screenshots": [
+    "docs/screenshots/bench/02_1_findings.png",
+    "docs/screenshots/bench/02_2_analysis.png",
+    "docs/screenshots/bench/02_3_inventory.png",
+    "docs/screenshots/bench/02_4_map.png",
+    "docs/screenshots/bench/02_5_where_found.png"
+   ]
+  },
+  {
+   "source": "Wikimedia Commons",
+   "query": "tram passing",
+   "title": "File:Melbourne trams - 2018-09-15 - Andy Mabbett.oga",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/e/e7/Melbourne_trams_-_2018-09-15_-_Andy_Mabbett.oga?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "page": "https://commons.wikimedia.org/wiki/File:Melbourne_trams_-_2018-09-15_-_Andy_Mabbett.oga",
+   "licence": "CC BY-SA 4.0",
+   "lat": -37.822,
+   "lon": 144.9693,
+   "duration_s": 124.06015873015873,
+   "country": "AU",
+   "state": "complete",
+   "error": null,
+   "analysis_s": 37.6,
+   "geo_status": "no_estimate",
+   "headline": "No reliable location estimate",
+   "best": "Norway region",
+   "best_error_km": 16070,
+   "best_radius_km": 450.0,
+   "inside_best": false,
+   "min_error_top5_km": 15995,
+   "languages": [
+    "Nynorsk 44%",
+    "English 22%"
+   ],
+   "sounds": [
+    "Bird vocalization — species: Western House Martin (Delichon urbicum)",
+    "Mammal vocalization — species: Humpback Whale (Megaptera novaeangliae)",
+    "Mammal vocalization — species: Weddell Seal (Leptonychotes weddellii)",
+    "Bird vocalization — species: Rainbow Lorikeet (Trichoglossus moluccanus)",
+    "Mammal vocalization — species: bowhead whale (Balaena mysticetus)",
+    "Bird vocalization — species: Killdeer (Charadrius vociferus)",
+    "Bird vocalization — species: Eurasian Oystercatcher (Haematopus ostralegus)",
+    "Bird vocalization — species: Rock Dove (Columba livia)"
+   ],
+   "clues": [
+    "Rainbow Lorikeet (Trichoglossus moluccanus)",
+    "Eurasian Oystercatcher (Haematopus ostralegus)",
+    "Weddell Seal (Leptonychotes weddellii)",
+    "Humpback Whale (Megaptera novaeangliae)",
+    "Killdeer (Charadrius vociferus)",
+    "bowhead whale (Balaena mysticetus)",
+    "Western House Martin (Delichon urbicum)",
+    "Language Nynorsk (nn)"
+   ],
+   "screenshots": [
+    "docs/screenshots/bench/03_1_findings.png",
+    "docs/screenshots/bench/03_2_analysis.png",
+    "docs/screenshots/bench/03_3_inventory.png",
+    "docs/screenshots/bench/03_4_map.png",
+    "docs/screenshots/bench/03_5_where_found.png"
+   ]
+  },
+  {
+   "source": "Wikimedia Commons",
+   "query": "church bells town",
+   "title": "File:Church of Saint Mark (Litovel) ringing.ogg",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/5/5e/Church_of_Saint_Mark_%28Litovel%29_ringing.ogg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "page": "https://commons.wikimedia.org/wiki/File:Church_of_Saint_Mark_(Litovel)_ringing.ogg",
+   "licence": "Public domain",
+   "lat": 49.7027,
+   "lon": 17.0738,
+   "duration_s": 183.01968253968255,
+   "country": "CZ",
+   "state": "complete",
+   "error": null,
+   "analysis_s": 33.7,
+   "geo_status": "no_estimate",
+   "headline": "No reliable location estimate",
+   "best": "Germany, Poland, Czechia region",
+   "best_error_km": 392,
+   "best_radius_km": 800.0,
+   "inside_best": true,
+   "min_error_top5_km": 73,
+   "top_place": "Rybnik St Anthony basilica rin",
+   "top_place_error_km": 114,
+   "languages": [],
+   "sounds": [
+    "Insect vocalization — species: Chorthippus biguttulus (Chorthippus biguttulus)",
+    "Church bell — or: Bell, Change ringing (campanology)",
+    "Music",
+    "Insect vocalization — species: Galanga labeculata (Galanga labeculata)",
+    "Mammal vocalization — species: beluga (Delphinapterus leucas)",
+    "Amphibian vocalization — species: Gray Treefrog (Dryophytes versicolor)",
+    "Mammal vocalization — species: Red Fox (Vulpes vulpes)",
+    "Mammal vocalization — species: Harbor Seal (Phoca vitulina)"
+   ],
+   "clues": [
+    "Chorthippus biguttulus (Chorthippus biguttulus)",
+    "Two-tone emergency siren",
+    "Two-tone emergency siren",
+    "Two-tone emergency siren",
+    "Two-tone emergency siren",
+    "Reference match: Rybnik St Anthony basilica ringing 2022.wav",
+    "Reference match: Rybnik St Anthony basilica ringing 2022.wav",
+    "Reference match: Rybnik St Anthony basilica ringing 2022.wav"
+   ],
+   "screenshots": [
+    "docs/screenshots/bench/04_1_findings.png",
+    "docs/screenshots/bench/04_2_analysis.png",
+    "docs/screenshots/bench/04_3_inventory.png",
+    "docs/screenshots/bench/04_4_map.png",
+    "docs/screenshots/bench/04_5_where_found.png"
+   ]
+  },
+  {
+   "source": "Wikimedia Commons",
+   "query": "frogs night",
+   "title": "File:2013-07-24 00-19-04hrs Chiang Mai Chang Khien rain animal sounds night time.ogg",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/a/a0/2013-07-24_00-19-04hrs_Chiang_Mai_Chang_Khien_rain_animal_sounds_night_time.ogg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "page": "https://commons.wikimedia.org/wiki/File:2013-07-24_00-19-04hrs_Chiang_Mai_Chang_Khien_rain_animal_sounds_night_time.ogg",
+   "licence": "CC BY-SA 3.0",
+   "lat": 18.820633,
+   "lon": 98.954245,
+   "duration_s": 50.20734693877551,
+   "country": "TH",
+   "state": "complete",
+   "error": null,
+   "analysis_s": 12.9,
+   "geo_status": "no_estimate",
+   "headline": "No reliable location estimate",
+   "best": "Thailand, China, Myanmar region",
+   "best_error_km": 303,
+   "best_radius_km": 1000.0,
+   "inside_best": true,
+   "min_error_top5_km": 303,
+   "languages": [],
+   "sounds": [
+    "Amphibian vocalization — species: Kaloula pulchra (Kaloula pulchra)",
+    "Croak",
+    "Amphibian vocalization — species: American Bullfrog (Lithobates catesbeianus)"
+   ],
+   "clues": [
+    "Kaloula pulchra (Kaloula pulchra)"
+   ],
+   "screenshots": [
+    "docs/screenshots/bench/05_1_findings.png",
+    "docs/screenshots/bench/05_2_analysis.png",
+    "docs/screenshots/bench/05_3_inventory.png",
+    "docs/screenshots/bench/05_4_map.png",
+    "docs/screenshots/bench/05_5_where_found.png"
+   ]
+  },
+  {
+   "source": "Wikimedia Commons",
+   "query": "harbour boats",
+   "title": "File:Cuckoo singing.ogg",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/d/de/Cuckoo_singing.ogg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "page": "https://commons.wikimedia.org/wiki/File:Cuckoo_singing.ogg",
+   "licence": "CC BY-SA 3.0",
+   "lat": 12.908156,
+   "lon": 77.612092,
+   "duration_s": 55.72789115646258,
+   "country": "IN",
+   "state": "complete",
+   "error": null,
+   "analysis_s": 19.7,
+   "geo_status": "estimate",
+   "headline": "Most likely area: India, Pakistan, Nepal region (within about 1400 km)",
+   "best": "India, Pakistan, Nepal region",
+   "best_error_km": 1308,
+   "best_radius_km": 1400.0,
+   "inside_best": true,
+   "min_error_top5_km": 1308,
+   "languages": [
+    "English 22%"
+   ],
+   "sounds": [
+    "Bird vocalization — species: Asian Koel (Eudynamys scolopaceus)",
+    "Bird vocalization — species: Australian Boobook (Ninox boobook)",
+    "Bird vocalization — species: White-winged Dove (Zenaida asiatica)",
+    "Bird vocalization — species: Little Bittern (Botaurus minutus)",
+    "Whistling"
+   ],
+   "clues": [
+    "Asian Koel (Eudynamys scolopaceus)",
+    "Australian Boobook (Ninox boobook)",
+    "Language English (en)"
+   ],
+   "screenshots": [
+    "docs/screenshots/bench/06_1_findings.png",
+    "docs/screenshots/bench/06_2_analysis.png",
+    "docs/screenshots/bench/06_3_inventory.png",
+    "docs/screenshots/bench/06_4_map.png",
+    "docs/screenshots/bench/06_5_where_found.png"
+   ]
+  },
+  {
+   "source": "Wikimedia Commons",
+   "query": "temple bells",
+   "title": "File:Chorzow Luther church bell ringing 2021.opus",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/d/d6/Chorzow_Luther_church_bell_ringing_2021.opus?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "page": "https://commons.wikimedia.org/wiki/File:Chorzow_Luther_church_bell_ringing_2021.opus",
+   "licence": "CC BY-SA 4.0",
+   "lat": 50.294929,
+   "lon": 18.95141,
+   "duration_s": 46.462125,
+   "country": "PL",
+   "state": "complete",
+   "error": null,
+   "analysis_s": 19.3,
+   "geo_status": "estimate",
+   "headline": "Most likely area: Germany, Belgium, The Netherlands region (within about 600 km)",
+   "best": "Germany, Belgium, The Netherlands region",
+   "best_error_km": 672,
+   "best_radius_km": 600.0,
+   "inside_best": false,
+   "min_error_top5_km": 211,
+   "top_place": "Prague st Vitus Easter ringing",
+   "top_place_error_km": 325,
+   "languages": [
+    "English 48%"
+   ],
+   "sounds": [
+    "Insect vocalization — species: Roeseliana roeselii (Roeseliana roeselii)",
+    "Church bell — 4 bell(s) reconstructed, tenor nominal 490.72 Hz; 1 compatible Dove rings — or: Bell, Change ringing (campanology)",
+    "Bird vocalization — species: Grey Heron (Ardea cinerea)",
+    "Siren-like tonal pattern — Pitch pattern: fast sweep (yelp-like)"
+   ],
+   "clues": [
+    "Roeseliana roeselii (Roeseliana roeselii)",
+    "Language English (en)",
+    "Reference match: Prague st Vitus Easter ringing 2012.ogg",
+    "Reference match: Prague st Vitus Easter ringing 2012.ogg",
+    "Reference match: Prague st Vitus Easter ringing 2012.ogg",
+    "Reference match: Cloche de l'Eglise de Sainte-Marie-des-Batignolles"
+   ],
+   "screenshots": [
+    "docs/screenshots/bench/07_1_findings.png",
+    "docs/screenshots/bench/07_2_analysis.png",
+    "docs/screenshots/bench/07_3_inventory.png",
+    "docs/screenshots/bench/07_4_map.png",
+    "docs/screenshots/bench/07_5_where_found.png"
+   ]
+  },
+  {
+   "source": "Wikimedia Commons",
+   "query": "church bells town",
+   "title": "File:Le Baizil - Cloche de la mairie sonnant 12h.ogg",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/4/45/Le_Baizil_-_Cloche_de_la_mairie_sonnant_12h.ogg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "page": "https://commons.wikimedia.org/wiki/File:Le_Baizil_-_Cloche_de_la_mairie_sonnant_12h.ogg",
+   "licence": "CC BY-SA 4.0",
+   "lat": 48.969929,
+   "lon": 3.794417,
+   "duration_s": 31.0,
+   "country": "FR",
+   "state": "complete",
+   "error": null,
+   "analysis_s": 10.1,
+   "geo_status": "no_estimate",
+   "headline": "No reliable location estimate",
+   "best": "United States, Canada, Mexico region",
+   "best_error_km": 7369,
+   "best_radius_km": 2200.0,
+   "inside_best": false,
+   "min_error_top5_km": 4719,
+   "languages": [],
+   "sounds": [
+    "Bird vocalization — species: House Sparrow (Passer domesticus)",
+    "Bird vocalization — species: Monk Parakeet (Myiopsitta monachus)",
+    "Bird vocalization — species: Eurasian Tree Sparrow (Passer montanus)",
+    "Bird vocalization — species: Common Linnet (Linaria cannabina)",
+    "Bird vocalization — species: Northern Saw-whet Owl (Aegolius acadicus)",
+    "Bird vocalization — species: House Finch (Haemorhous mexicanus)"
+   ],
+   "clues": [
+    "House Sparrow (Passer domesticus)"
+   ],
+   "screenshots": [
+    "docs/screenshots/bench/08_1_findings.png",
+    "docs/screenshots/bench/08_2_analysis.png",
+    "docs/screenshots/bench/08_3_inventory.png",
+    "docs/screenshots/bench/08_4_map.png",
+    "docs/screenshots/bench/08_5_where_found.png"
+   ]
+  },
+  {
+   "source": "Wikimedia Commons",
+   "query": "church bells town",
+   "title": "File:Sonntagsglocken Kirche Dafins 20200614-01ASD.ogg",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/4/47/Sonntagsglocken_Kirche_Dafins_20200614-01ASD.ogg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "page": "https://commons.wikimedia.org/wiki/File:Sonntagsglocken_Kirche_Dafins_20200614-01ASD.ogg",
+   "licence": "CC BY-SA 4.0",
+   "lat": 47.293845,
+   "lon": 9.684953,
+   "duration_s": 36.73396825396826,
+   "country": "AT",
+   "state": "complete",
+   "error": null,
+   "analysis_s": 13.5,
+   "geo_status": "no_estimate",
+   "headline": "No reliable location estimate",
+   "best": "United States, Canada region",
+   "best_error_km": 6842,
+   "best_radius_km": 1400.0,
+   "inside_best": false,
+   "min_error_top5_km": 6842,
+   "languages": [],
+   "sounds": [
+    "Bird vocalization — species: Virginia Rail (Rallus limicola)",
+    "Bird vocalization — species: Yellow-billed Cuckoo (Coccyzus americanus)",
+    "Bird vocalization — species: Green Sandpiper (Tringa ochropus)",
+    "Bird vocalization — species: Black Redstart (Phoenicurus ochruros)",
+    "Bird vocalization — species: American Kestrel (Falco sparverius)",
+    "Music",
+    "Mammal vocalization — species: Humpback Whale (Megaptera novaeangliae)",
+    "Bird vocalization — species: American Dipper (Cinclus mexicanus)"
+   ],
+   "clues": [
+    "Virginia Rail (Rallus limicola)",
+    "Green Sandpiper (Tringa ochropus)",
+    "Black Redstart (Phoenicurus ochruros)",
+    "Yellow-billed Cuckoo (Coccyzus americanus)"
+   ],
+   "screenshots": [
+    "docs/screenshots/bench/09_1_findings.png",
+    "docs/screenshots/bench/09_2_analysis.png",
+    "docs/screenshots/bench/09_3_inventory.png",
+    "docs/screenshots/bench/09_4_map.png",
+    "docs/screenshots/bench/09_5_where_found.png"
+   ]
+  },
+  {
+   "source": "Wikimedia Commons",
+   "query": "church bells town",
+   "title": "File:WimpfenBerg Stadtkirche GelaeutSonntags 20250427 103128.ogg",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/1/19/WimpfenBerg_Stadtkirche_GelaeutSonntags_20250427_103128.ogg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "page": "https://commons.wikimedia.org/wiki/File:WimpfenBerg_Stadtkirche_GelaeutSonntags_20250427_103128.ogg",
+   "licence": "CC0",
+   "lat": 49.23067,
+   "lon": 9.161933,
+   "duration_s": 263.9537916666667,
+   "country": "DE",
+   "state": "complete",
+   "error": null,
+   "analysis_s": 127.5,
+   "geo_status": "estimate",
+   "headline": "Most likely area: Czechia, Germany, Poland region (within about 200 km)",
+   "best": "Czechia, Germany, Poland region",
+   "best_error_km": 392,
+   "best_radius_km": 200.0,
+   "inside_best": false,
+   "min_error_top5_km": 391,
+   "top_place": "Prague st Vitus Easter ringing",
+   "top_place_error_km": 389,
+   "languages": [
+    "Korean 52%",
+    "English 31%"
+   ],
+   "sounds": [
+    "Bird vocalization — species: Black Redstart (Phoenicurus ochruros)",
+    "Bird vocalization — species: Hooded Crow (Corvus cornix)",
+    "Bird vocalization — species: Saffron Finch (Sicalis flaveola)",
+    "Bird vocalization — species: Large-billed Crow (Corvus macrorhynchos)",
+    "Church bell — or: Bell, Change ringing (campanology)",
+    "Music",
+    "Bird vocalization — species: Lucy's Warbler (Leiothlypis luciae)",
+    "Bird vocalization — species: Carrion Crow (Corvus corone)"
+   ],
+   "clues": [
+    "Black Redstart (Phoenicurus ochruros)",
+    "Lucy's Warbler (Leiothlypis luciae)",
+    "Hooded Crow (Corvus cornix)",
+    "Large-billed Crow (Corvus macrorhynchos)",
+    "Saffron Finch (Sicalis flaveola)",
+    "Language English (en)",
+    "Language Korean (ko)",
+    "Two-tone emergency siren"
+   ],
+   "screenshots": [
+    "docs/screenshots/bench/10_1_findings.png",
+    "docs/screenshots/bench/10_2_analysis.png",
+    "docs/screenshots/bench/10_3_inventory.png",
+    "docs/screenshots/bench/10_4_map.png",
+    "docs/screenshots/bench/10_5_where_found.png"
+   ]
+  }
+ ]
+}
