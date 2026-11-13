@@ -12,6 +12,7 @@ on:
         default: "all"
 permissions:
   contents: write
+  actions: read
 jobs:
   harvest:
     if: github.event_name == 'push' || inputs.stage == 'all'
@@ -29,7 +30,16 @@ jobs:
       - uses: actions/setup-python@v5
         with: {python-version: "3.14"}
       - run: pip install requests==2.34.2
-      - run: python -u tools/xc_harvest.py --harvest ${{ matrix.shard }} 8 xc_part_${{ matrix.shard }}.jsonl.gz
+      - name: Reuse the part already harvested in run 43427906454 (if still stored)
+        id: prev
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: xc-part-${{ matrix.shard }}
+          run-id: 43427906454
+          github-token: ${{ github.token }}
+      - if: hashFiles(format('xc_part_{0}.jsonl.gz', matrix.shard)) == ''
+        run: python -u tools/xc_harvest.py --harvest ${{ matrix.shard }} 8 xc_part_${{ matrix.shard }}.jsonl.gz
       - uses: actions/upload-artifact@v4
         if: always()
         with: {name: "xc-part-${{ matrix.shard }}", path: "xc_part_${{ matrix.shard }}.jsonl.gz", retention-days: 3}
@@ -45,6 +55,7 @@ jobs:
         with: {python-version: "3.14"}
       - uses: actions/download-artifact@v4
         with: {pattern: "xc-part-*", merge-multiple: true}
+      - run: pip install requests==2.34.2
       - run: python -u tools/xc_harvest.py xc_meta.jsonl.gz echomap/data/xc_ranges.json.gz xc_part_*.jsonl.gz
       - run: |
           gh release view xc-meta-v1 >/dev/null 2>&1 || gh release create xc-meta-v1 --prerelease --title "Xeno-canto metadata" --notes "Recording metadata (species, coordinates, date, licence) from the Xeno-canto API v3. No audio."
