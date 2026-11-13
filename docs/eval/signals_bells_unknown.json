@@ -1,0 +1,2959 @@
+{
+ "generated": "2026-11-13",
+ "summary": {
+  "signals_n": 95,
+  "periodic_detected_rate_crossing": 0.233,
+  "siren_detected_rate": 0.76,
+  "bell_detected_rate": 0.593,
+  "bells_n": 27,
+  "bells_place_found_in_top15": 0,
+  "unknown_flagged_rate": 1.0,
+  "unknown_forced_high_conf_labels": 1
+ },
+ "signals": [
+  {
+   "title": "Akustikkennung einer Ampel am Lerchenfelder G\u00fcrtel in Wien (2023).ogg",
+   "category": "crossing signal",
+   "duration_s": 20.97,
+   "periodic_detected": true,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Wind gust (low-frequency microphone wind noise)",
+    "Repeating signal at ~1 s interval",
+    "Repeating signal at ~1 s interval",
+    "Bird vocalization",
+    "Siren-like tonal pattern",
+    "Wind gust (low-frequency microphone wind noise)"
+   ],
+   "patterns": [
+    {
+     "kind": "periodic_tone",
+     "f_hz": 3093.8,
+     "period_s": 0.989,
+     "rate_hz": 1.011,
+     "period_cv": 0.045,
+     "pulse_duration_s": 0.06,
+     "duty_cycle": 0.06,
+     "count": 22,
+     "start": 0.57,
+     "end": 20.44,
+     "level_db": -53.1,
+     "harmonics_hz": [
+      3218.8
+     ]
+    },
+    {
+     "kind": "periodic_tone",
+     "f_hz": 4812.5,
+     "period_s": 0.99,
+     "rate_hz": 1.01,
+     "period_cv": 0.032,
+     "pulse_duration_s": 0.08,
+     "duty_cycle": 0.08,
+     "count": 23,
+     "start": 0.79,
+     "end": 19.54,
+     "level_db": -75.0
+    }
+   ]
+  },
+  {
+   "title": "1908 Full.ogg",
+   "category": "level crossing",
+   "duration_s": 273.07,
+   "periodic_detected": true,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Siren-like tonal pattern",
+    "Reverberation estimate",
+    "Spoken language: English",
+    "Music",
+    "Wind gust (low-frequency microphone wind noise)",
+    "Siren-like tonal pattern"
+   ],
+   "patterns": [
+    {
+     "kind": "click_train",
+     "start": 1.18,
+     "end": 1.65,
+     "period_s": 0.117,
+     "rate_hz": 8.511,
+     "period_cv": 0.071,
+     "count": 5
+    },
+    {
+     "kind": "click_train",
+     "start": 87.56,
+     "end": 88.26,
+     "period_s": 0.175,
+     "rate_hz": 5.714,
+     "period_cv": 0.086,
+     "count": 5
+    }
+   ]
+  },
+  {
+   "title": "Bell Ringing in Tower of P\u0159ibyslav.ogg",
+   "category": "bells",
+   "duration_s": 204.38,
+   "periodic_detected": true,
+   "siren_detected": true,
+   "bell_detected": true,
+   "top_labels": [
+    "Church bell",
+    "Siren-like tonal pattern",
+    "Spoken language: English",
+    "Repeating signal at ~1 s interval",
+    "Siren-like tonal pattern",
+    "Siren-like tonal pattern"
+   ],
+   "patterns": [
+    {
+     "kind": "periodic_tone",
+     "f_hz": 4437.5,
+     "period_s": 1.679,
+     "rate_hz": 0.595,
+     "period_cv": 0.021,
+     "pulse_duration_s": 0.09,
+     "duty_cycle": 0.05,
+     "count": 21,
+     "start": 91.78,
+     "end": 130.06,
+     "level_db": -26.3
+    },
+    {
+     "kind": "periodic_tone",
+     "f_hz": 1953.1,
+     "period_s": 1.685,
+     "rate_hz": 0.593,
+     "period_cv": 0.049,
+     "pulse_duration_s": 0.24,
+     "duty_cycle": 0.14,
+     "count": 25,
+     "start": 109.56,
+     "end": 202.16,
+     "level_db": -23.6
+    }
+   ]
+  },
+  {
+   "title": "LA2 dont walk.ogg",
+   "category": "crossing signal",
+   "duration_s": 15.91,
+   "periodic_detected": true,
+   "siren_detected": false,
+   "bell_detected": false,
+   "top_labels": [
+    "Clock",
+    "Bird vocalization",
+    "Bird vocalization",
+    "Bird vocalization",
+    "Bird vocalization",
+    "Alarm"
+   ],
+   "patterns": [
+    {
+     "kind": "periodic_tone",
+     "f_hz": 5843.8,
+     "period_s": 0.102,
+     "rate_hz": 9.836,
+     "period_cv": 0.037,
+     "pulse_duration_s": 0.07,
+     "duty_cycle": 0.69,
+     "count": 9,
+     "start": 14.67,
+     "end": 15.85,
+     "level_db": -65.1
+    },
+    {
+     "kind": "periodic_tone",
+     "f_hz": 812.5,
+     "period_s": 0.1,
+     "rate_hz": 10.0,
+     "period_cv": 0.0,
+     "pulse_duration_s": 0.07,
+     "duty_cycle": 0.7,
+     "count": 6,
+     "start": 15.02,
+     "end": 15.8,
+     "level_db": -29.0
+    }
+   ]
+  },
+  {
+   "title": "Barrierenglocke gross Bronze Ob 00934.ogg",
+   "category": "level crossing",
+   "duration_s": 18.48,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Siren-like tonal pattern",
+    "Mammal vocalization",
+    "Singing bowl",
+    "Tuning fork",
+    "Sine wave",
+    "Mammal vocalization"
+   ],
+   "patterns": []
+  },
+  {
+   "title": "Bells ringing in Tower of P\u0159ibyslav.ogg",
+   "category": "bells",
+   "duration_s": 77.25,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": true,
+   "top_labels": [
+    "Church bell",
+    "Siren-like tonal pattern",
+    "Siren-like tonal pattern",
+    "Siren-like tonal pattern",
+    "Siren-like tonal pattern"
+   ],
+   "patterns": []
+  },
+  {
+   "title": "Civil-defense-siren-constant.ogg",
+   "category": "siren",
+   "duration_s": 75.63,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Civil defense siren",
+    "Mammal vocalization",
+    "Mammal vocalization",
+    "Mammal vocalization",
+    "Insect vocalization",
+    "Mammal vocalization"
+   ],
+   "patterns": [
+    {
+     "kind": "click_train",
+     "start": 4.63,
+     "end": 4.99,
+     "period_s": 0.09,
+     "rate_hz": 11.111,
+     "period_cv": 0.079,
+     "count": 5
+    },
+    {
+     "kind": "click_train",
+     "start": 13.32,
+     "end": 13.84,
+     "period_s": 0.13,
+     "rate_hz": 7.692,
+     "period_cv": 0.094,
+     "count": 5
+    }
+   ]
+  },
+  {
+   "title": "Bue Laeutewerk zweifach.ogg",
+   "category": "level crossing",
+   "duration_s": 30.91,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Reverberation estimate",
+    "Siren-like tonal pattern",
+    "Music",
+    "Siren-like tonal pattern",
+    "Siren-like tonal pattern",
+    "Bird vocalization"
+   ],
+   "patterns": []
+  },
+  {
+   "title": "Bytom Assumption church bell ringing 2021.ogg",
+   "category": "bells",
+   "duration_s": 262.66,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": true,
+   "top_labels": [
+    "Church bell",
+    "Mammal vocalization",
+    "Bird vocalization",
+    "Speech",
+    "Mammal vocalization",
+    "Bird vocalization"
+   ],
+   "patterns": []
+  },
+  {
+   "title": "Civil-defense-siren-waver.ogg",
+   "category": "siren",
+   "duration_s": 76.32,
+   "periodic_detected": true,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Siren",
+    "Mammal vocalization",
+    "Mammal vocalization",
+    "Mammal vocalization",
+    "Mammal vocalization",
+    "Mammal vocalization"
+   ],
+   "patterns": [
+    {
+     "kind": "periodic_tone",
+     "f_hz": 2265.6,
+     "period_s": 0.7,
+     "rate_hz": 1.429,
+     "period_cv": 0.057,
+     "pulse_duration_s": 0.07,
+     "duty_cycle": 0.1,
+     "count": 6,
+     "start": 65.47,
+     "end": 69.35,
+     "level_db": -64.2
+    },
+    {
+     "kind": "click_train",
+     "start": 9.65,
+     "end": 10.12,
+     "period_s": 0.117,
+     "rate_hz": 8.511,
+     "period_cv": 0.071,
+     "count": 5
+    }
+   ]
+  },
+  {
+   "title": "PB 5 pedestrian crossing sound.mp3",
+   "category": "crossing signal",
+   "duration_s": 11.89,
+   "periodic_detected": true,
+   "siren_detected": false,
+   "bell_detected": false,
+   "top_labels": [
+    "Periodic signal",
+    "Periodic signal",
+    "Periodic signal",
+    "Periodic signal",
+    "Rapid repeating ticks",
+    "Periodic signal"
+   ],
+   "patterns": [
+    {
+     "kind": "periodic_tone",
+     "f_hz": 1000.0,
+     "period_s": 1.86,
+     "rate_hz": 0.538,
+     "period_cv": 0.003,
+     "pulse_duration_s": 0.065,
+     "duty_cycle": 0.03,
+     "count": 6,
+     "start": 0.0,
+     "end": 9.365,
+     "level_db": -34.1,
+     "harmonics_hz": [
+      3000.0,
+      5000.0,
+      7000.0
+     ]
+    },
+    {
+     "kind": "periodic_tone",
+     "f_hz": 4671.9,
+     "period_s": 0.119,
+     "rate_hz": 8.397,
+     "period_cv": 0.024,
+     "pulse_duration_s": 0.05,
+     "duty_cycle": 0.42,
+     "count": 13,
+     "start": 10.04,
+     "end": 11.64,
+     "level_db": -76.5
+    }
+   ]
+  },
+  {
+   "title": "B\u00dc BLE Rodheim.ogg",
+   "category": "level crossing",
+   "duration_s": 9.65,
+   "periodic_detected": true,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Clock",
+    "Siren-like tonal pattern",
+    "Mammal vocalization",
+    "Spoken language: Japanese",
+    "Repeating signal at ~1 s interval",
+    "Repeating signal at ~1 s interval"
+   ],
+   "patterns": [
+    {
+     "kind": "periodic_tone",
+     "f_hz": 734.4,
+     "period_s": 0.94,
+     "rate_hz": 1.064,
+     "period_cv": 0.072,
+     "pulse_duration_s": 0.07,
+     "duty_cycle": 0.07,
+     "count": 9,
+     "start": 0.45,
+     "end": 9.22,
+     "level_db": -34.2
+    },
+    {
+     "kind": "periodic_tone",
+     "f_hz": 1843.8,
+     "period_s": 0.978,
+     "rate_hz": 1.022,
+     "period_cv": 0.019,
+     "pulse_duration_s": 0.07,
+     "duty_cycle": 0.07,
+     "count": 7,
+     "start": 0.93,
+     "end": 7.82,
+     "level_db": -31.0,
+     "harmonics_hz": [
+      7343.8
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Bytom St Anne church ringing 2022.wav",
+   "category": "bells",
+   "duration_s": 19.04,
+   "periodic_detected": true,
+   "siren_detected": false,
+   "bell_detected": false,
+   "top_labels": [
+    "Fire",
+    "Speech",
+    "Spoken language: English",
+    "Music",
+    "Speech",
+    "Rapid repeating ticks"
+   ],
+   "patterns": [
+    {
+     "kind": "click_train",
+     "start": 8.79,
+     "end": 9.21,
+     "period_s": 0.105,
+     "rate_hz": 9.524,
+     "period_cv": 0.082,
+     "count": 5
+    }
+   ]
+  },
+  {
+   "title": "Civil defense siren and missile explosions sounds.ogg",
+   "category": "siren",
+   "duration_s": 115.01,
+   "periodic_detected": true,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Siren",
+    "Mammal vocalization",
+    "Mammal vocalization",
+    "Mammal vocalization",
+    "Mammal vocalization",
+    "Mammal vocalization"
+   ],
+   "patterns": [
+    {
+     "kind": "click_train",
+     "start": 1.85,
+     "end": 2.2,
+     "period_s": 0.088,
+     "rate_hz": 11.429,
+     "period_cv": 0.095,
+     "count": 5
+    },
+    {
+     "kind": "click_train",
+     "start": 2.84,
+     "end": 3.47,
+     "period_s": 0.105,
+     "rate_hz": 9.524,
+     "period_cv": 0.091,
+     "count": 7
+    }
+   ]
+  },
+  {
+   "title": "B\u00dc BLE Rosbach.ogg",
+   "category": "level crossing",
+   "duration_s": 11.96,
+   "periodic_detected": false,
+   "siren_detected": false,
+   "bell_detected": false,
+   "top_labels": [
+    "Reverberation estimate",
+    "Music",
+    "Bird vocalization",
+    "Bird vocalization"
+   ],
+   "patterns": []
+  },
+  {
+   "title": "Civil defense siren and missile explosions sounds in Israel during Iran war 2026.ogg",
+   "category": "siren",
+   "duration_s": 110.25,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Siren",
+    "Spoken language: English",
+    "Mammal vocalization",
+    "Mammal vocalization",
+    "Mammal vocalization",
+    "Mammal vocalization"
+   ],
+   "patterns": [
+    {
+     "kind": "periodic_tone",
+     "f_hz": 359.4,
+     "period_s": 12.578,
+     "rate_hz": 0.08,
+     "period_cv": 0.02,
+     "pulse_duration_s": 0.055,
+     "duty_cycle": 0.0,
+     "count": 6,
+     "start": 7.79,
+     "end": 58.665,
+     "level_db": -32.2
+    },
+    {
+     "kind": "click_train",
+     "start": 7.84,
+     "end": 8.59,
+     "period_s": 0.188,
+     "rate_hz": 5.333,
+     "period_cv": 0.095,
+     "count": 5
+    }
+   ]
+  },
+  {
+   "title": "Pedestrian crossing audio.wav",
+   "category": "crossing signal",
+   "duration_s": 10.03,
+   "periodic_detected": false,
+   "siren_detected": false,
+   "bell_detected": false,
+   "top_labels": [
+    "Alarm",
+    "Bird vocalization",
+    "Bird vocalization"
+   ],
+   "patterns": []
+  },
+  {
+   "title": "B\u00dc DE, Schrankensignal, 5.ogg",
+   "category": "level crossing",
+   "duration_s": 9.63,
+   "periodic_detected": false,
+   "siren_detected": false,
+   "bell_detected": false,
+   "top_labels": [
+    "Bird vocalization",
+    "Reverberation estimate",
+    "Music",
+    "Bird vocalization"
+   ],
+   "patterns": [
+    {
+     "kind": "click_train",
+     "start": 0.39,
+     "end": 0.85,
+     "period_s": 0.115,
+     "rate_hz": 8.696,
+     "period_cv": 0.097,
+     "count": 5
+    },
+    {
+     "kind": "click_train",
+     "start": 4.09,
+     "end": 4.62,
+     "period_s": 0.106,
+     "rate_hz": 9.434,
+     "period_cv": 0.046,
+     "count": 6
+    }
+   ]
+  },
+  {
+   "title": "Cathedral Fribourg bells ringing end 01.wav",
+   "category": "bells",
+   "duration_s": 109.36,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": true,
+   "top_labels": [
+    "Change ringing (campanology)",
+    "Siren-like tonal pattern",
+    "Mammal vocalization",
+    "Spoken language: Latin",
+    "Siren-like tonal pattern",
+    "Siren-like tonal pattern"
+   ],
+   "patterns": []
+  },
+  {
+   "title": "Folha de S. Paulo 6pm Siren.wav",
+   "category": "siren",
+   "duration_s": 28.96,
+   "periodic_detected": true,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Siren",
+    "Mammal vocalization",
+    "Mammal vocalization",
+    "Mammal vocalization",
+    "Periodic signal",
+    "Mammal vocalization"
+   ],
+   "patterns": [
+    {
+     "kind": "periodic_tone",
+     "f_hz": 875.0,
+     "period_s": 0.218,
+     "rate_hz": 4.587,
+     "period_cv": 0.067,
+     "pulse_duration_s": 0.05,
+     "duty_cycle": 0.23,
+     "count": 7,
+     "start": 22.61,
+     "end": 26.71,
+     "level_db": -53.8
+    },
+    {
+     "kind": "periodic_tone",
+     "f_hz": 1679.7,
+     "period_s": 0.163,
+     "rate_hz": 6.154,
+     "period_cv": 0.051,
+     "pulse_duration_s": 0.065,
+     "duty_cycle": 0.4,
+     "count": 6,
+     "start": 24.79,
+     "end": 25.615,
+     "level_db": -57.4
+    }
+   ]
+  },
+  {
+   "title": "Strasburgo, a\u016dda piedira semaforo, 1.ogg",
+   "category": "crossing signal",
+   "duration_s": 11.93,
+   "periodic_detected": false,
+   "siren_detected": false,
+   "bell_detected": false,
+   "top_labels": [
+    "Mammal vocalization",
+    "Reverberation estimate",
+    "Spoken language: Russian",
+    "Mammal vocalization",
+    "Mammal vocalization",
+    "Mammal vocalization"
+   ],
+   "patterns": []
+  },
+  {
+   "title": "B\u00dc S5 Oberursel.ogg",
+   "category": "level crossing",
+   "duration_s": 10.15,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Ice cream truck, ice cream van",
+    "Clock",
+    "Siren-like tonal pattern",
+    "Music",
+    "Siren-like tonal pattern",
+    "Mammal vocalization"
+   ],
+   "patterns": [
+    {
+     "kind": "periodic_tone",
+     "f_hz": 2671.9,
+     "period_s": 2.047,
+     "rate_hz": 0.488,
+     "period_cv": 0.008,
+     "pulse_duration_s": 0.54,
+     "duty_cycle": 0.26,
+     "count": 5,
+     "start": 0.01,
+     "end": 8.74,
+     "level_db": -26.4
+    }
+   ]
+  },
+  {
+   "title": "Cathedral Fribourg bells ringing start 01.wav",
+   "category": "bells",
+   "duration_s": 89.82,
+   "periodic_detected": true,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Siren-like tonal pattern",
+    "Music",
+    "Bird vocalization",
+    "Change ringing (campanology)",
+    "Bird vocalization",
+    "Change ringing (campanology)"
+   ],
+   "patterns": [
+    {
+     "kind": "periodic_tone",
+     "f_hz": 3062.5,
+     "period_s": 1.584,
+     "rate_hz": 0.631,
+     "period_cv": 0.045,
+     "pulse_duration_s": 0.13,
+     "duty_cycle": 0.08,
+     "count": 7,
+     "start": 70.42,
+     "end": 81.54,
+     "level_db": -39.1
+    },
+    {
+     "kind": "click_train",
+     "start": 62.09,
+     "end": 64.28,
+     "period_s": 0.547,
+     "rate_hz": 1.826,
+     "period_cv": 0.045,
+     "count": 5
+    }
+   ]
+  },
+  {
+   "title": "Motorsirene - Feuerwehralarm.ogg",
+   "category": "siren",
+   "duration_s": 49.67,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Siren",
+    "Bird vocalization",
+    "Mains hum (60 Hz electrical network)",
+    "Civil defense siren",
+    "Mammal vocalization",
+    "Mammal vocalization"
+   ],
+   "patterns": []
+  },
+  {
+   "title": "Toryanse-crosswalk-oji-2011.ogg",
+   "category": "crossing signal",
+   "duration_s": 20.47,
+   "periodic_detected": false,
+   "siren_detected": false,
+   "bell_detected": false,
+   "top_labels": [
+    "Insect vocalization",
+    "Music",
+    "Vehicle",
+    "Insect vocalization",
+    "Insect vocalization",
+    "Insect vocalization"
+   ],
+   "patterns": []
+  },
+  {
+   "title": "B\u00dc TSB Spie\u00dfwald.ogg",
+   "category": "level crossing",
+   "duration_s": 10.32,
+   "periodic_detected": false,
+   "siren_detected": false,
+   "bell_detected": false,
+   "top_labels": [
+    "Reverberation estimate",
+    "Music",
+    "Clock"
+   ],
+   "patterns": []
+  },
+  {
+   "title": "Pneumatic Air Raid Siren.wav",
+   "category": "siren",
+   "duration_s": 46.56,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Civil defense siren",
+    "Bird vocalization",
+    "Mammal vocalization",
+    "Bird vocalization",
+    "Wind gust (low-frequency microphone wind noise)",
+    "Siren"
+   ],
+   "patterns": []
+  },
+  {
+   "title": "B\u00dc TSB Waldkrankenhaus.ogg",
+   "category": "level crossing",
+   "duration_s": 10.15,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Clock",
+    "Siren-like tonal pattern",
+    "Music",
+    "Mammal vocalization",
+    "Mammal vocalization"
+   ],
+   "patterns": [
+    {
+     "kind": "periodic_tone",
+     "f_hz": 4062.5,
+     "period_s": 1.016,
+     "rate_hz": 0.984,
+     "period_cv": 0.012,
+     "pulse_duration_s": 0.36,
+     "duty_cycle": 0.35,
+     "count": 11,
+     "start": 0.01,
+     "end": 9.52,
+     "level_db": -34.6
+    }
+   ]
+  },
+  {
+   "title": "Chorz\u00f3w Assumption church bell ringing 2022.wav",
+   "category": "bells",
+   "duration_s": 30.72,
+   "periodic_detected": true,
+   "siren_detected": true,
+   "bell_detected": true,
+   "top_labels": [
+    "Church bell",
+    "Reptile vocalization",
+    "Insect vocalization",
+    "Siren-like tonal pattern",
+    "Periodic signal",
+    "Insect vocalization"
+   ],
+   "patterns": [
+    {
+     "kind": "periodic_tone",
+     "f_hz": 3187.5,
+     "period_s": 1.168,
+     "rate_hz": 0.857,
+     "period_cv": 0.068,
+     "pulse_duration_s": 0.08,
+     "duty_cycle": 0.07,
+     "count": 5,
+     "start": 18.13,
+     "end": 22.88,
+     "level_db": -55.3
+    }
+   ]
+  },
+  {
+   "title": "Por\u0105bka water dam siren 2022.wav",
+   "category": "siren",
+   "duration_s": 34.39,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Civil defense siren",
+    "Mammal vocalization",
+    "Mammal vocalization",
+    "Mammal vocalization",
+    "Mammal vocalization",
+    "Mammal vocalization"
+   ],
+   "patterns": [
+    {
+     "kind": "click_train",
+     "start": 13.49,
+     "end": 14.53,
+     "period_s": 0.149,
+     "rate_hz": 6.731,
+     "period_cv": 0.084,
+     "count": 8
+    }
+   ]
+  },
+  {
+   "title": "Walk Sign, Brownsboro Road.ogg",
+   "category": "crossing signal",
+   "duration_s": 11.88,
+   "periodic_detected": false,
+   "siren_detected": false,
+   "bell_detected": false,
+   "top_labels": [
+    "Amphibian vocalization",
+    "Amphibian vocalization",
+    "Reverberation estimate",
+    "Telephone dialing, DTMF",
+    "Spoken language: English",
+    "Wind gust (low-frequency microphone wind noise)"
+   ],
+   "patterns": []
+  },
+  {
+   "title": "China Railways DF4D 3291 with T5 Through Train 20111211.ogg",
+   "category": "level crossing",
+   "duration_s": 207.79,
+   "periodic_detected": true,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Mammal vocalization",
+    "Train",
+    "Repeating tone/beep",
+    "Mammal vocalization",
+    "Spoken language: English",
+    "Bird vocalization"
+   ],
+   "patterns": [
+    {
+     "kind": "periodic_tone",
+     "f_hz": 812.5,
+     "period_s": 0.1,
+     "rate_hz": 10.0,
+     "period_cv": 0.0,
+     "pulse_duration_s": 0.06,
+     "duty_cycle": 0.6,
+     "count": 6,
+     "start": 163.22,
+     "end": 164.78,
+     "level_db": -37.8
+    },
+    {
+     "kind": "periodic_tone",
+     "f_hz": 1390.6,
+     "period_s": 0.493,
+     "rate_hz": 2.03,
+     "period_cv": 0.022,
+     "pulse_duration_s": 0.23,
+     "duty_cycle": 0.47,
+     "count": 6,
+     "start": 201.14,
+     "end": 203.51,
+     "level_db": -33.8
+    }
+   ]
+  },
+  {
+   "title": "Probealarm mit einer Feuerwehrsirene in \u00d6sterreich.ogg",
+   "category": "siren",
+   "duration_s": 100.72,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Civil defense siren",
+    "Mammal vocalization",
+    "Mammal vocalization",
+    "Mammal vocalization",
+    "Mammal vocalization",
+    "Insect vocalization"
+   ],
+   "patterns": [
+    {
+     "kind": "periodic_tone",
+     "f_hz": 2390.6,
+     "period_s": 0.507,
+     "rate_hz": 1.97,
+     "period_cv": 0.064,
+     "pulse_duration_s": 0.04,
+     "duty_cycle": 0.08,
+     "count": 6,
+     "start": 42.46,
+     "end": 44.77,
+     "level_db": -76.4
+    },
+    {
+     "kind": "click_train",
+     "start": 19.75,
+     "end": 21.7,
+     "period_s": 0.487,
+     "rate_hz": 2.051,
+     "period_cv": 0.083,
+     "count": 5
+    }
+   ]
+  },
+  {
+   "title": "Walk Sign, Clifton Avenue.ogg",
+   "category": "crossing signal",
+   "duration_s": 7.85,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Siren-like tonal pattern",
+    "Mammal vocalization",
+    "Reverberation estimate",
+    "Spoken language: English",
+    "Car",
+    "Bird vocalization"
+   ],
+   "patterns": []
+  },
+  {
+   "title": "Glockenschlagwerk Bahnhof Fridingen.ogg",
+   "category": "level crossing",
+   "duration_s": 15.9,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Siren-like tonal pattern",
+    "Reverberation estimate",
+    "Bird vocalization"
+   ],
+   "patterns": []
+  },
+  {
+   "title": "Gliwice Assumption church ringing 2022.wav",
+   "category": "bells",
+   "duration_s": 15.53,
+   "periodic_detected": true,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Siren-like tonal pattern",
+    "Siren-like tonal pattern",
+    "Periodic signal"
+   ],
+   "patterns": [
+    {
+     "kind": "periodic_tone",
+     "f_hz": 2562.5,
+     "period_s": 0.208,
+     "rate_hz": 4.819,
+     "period_cv": 0.079,
+     "pulse_duration_s": 0.14,
+     "duty_cycle": 0.67,
+     "count": 6,
+     "start": 14.34,
+     "end": 15.39,
+     "level_db": -49.5
+    }
+   ]
+  },
+  {
+   "title": "Singapore Public Warning System siren.ogg",
+   "category": "siren",
+   "duration_s": 6.62,
+   "periodic_detected": false,
+   "siren_detected": false,
+   "bell_detected": false,
+   "top_labels": [
+    "Mammal vocalization",
+    "Mains hum (50 Hz electrical network)",
+    "Mammal vocalization",
+    "Music"
+   ],
+   "patterns": []
+  },
+  {
+   "title": "Walk Sign to Cross Post.ogg",
+   "category": "crossing signal",
+   "duration_s": 22.4,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Siren-like tonal pattern",
+    "Dog",
+    "Reverberation estimate",
+    "Spoken language: English",
+    "Bird vocalization",
+    "Bird vocalization"
+   ],
+   "patterns": []
+  },
+  {
+   "title": "Il segnale acustico di un passaggio a livello automatico.wav",
+   "category": "level crossing",
+   "duration_s": 12.79,
+   "periodic_detected": true,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Clock",
+    "Siren-like tonal pattern",
+    "Reverberation estimate",
+    "Periodic signal",
+    "Rapid repeating ticks"
+   ],
+   "patterns": [
+    {
+     "kind": "periodic_tone",
+     "f_hz": 6718.8,
+     "period_s": 1.286,
+     "rate_hz": 0.778,
+     "period_cv": 0.006,
+     "pulse_duration_s": 0.24,
+     "duty_cycle": 0.19,
+     "count": 7,
+     "start": 0.14,
+     "end": 11.95,
+     "level_db": -30.9
+    },
+    {
+     "kind": "click_train",
+     "start": 2.72,
+     "end": 3.13,
+     "period_s": 0.082,
+     "rate_hz": 12.195,
+     "period_cv": 0.049,
+     "count": 6
+    }
+   ]
+  },
+  {
+   "title": "Jastarnia Visitation church ringing 2022.wav",
+   "category": "bells",
+   "duration_s": 21.4,
+   "periodic_detected": false,
+   "siren_detected": false,
+   "bell_detected": true,
+   "top_labels": [
+    "Mammal vocalization",
+    "Church bell",
+    "Church bell",
+    "Spoken language: English"
+   ],
+   "patterns": []
+  },
+  {
+   "title": "Siren, viktigt meddelande 2012-09-03.ogg",
+   "category": "siren",
+   "duration_s": 56.17,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Music",
+    "Mammal vocalization",
+    "Mammal vocalization",
+    "Mammal vocalization",
+    "Music",
+    "Siren-like tonal pattern"
+   ],
+   "patterns": [
+    {
+     "kind": "click_train",
+     "start": 24.085,
+     "end": 24.893,
+     "period_s": 0.162,
+     "rate_hz": 6.188,
+     "period_cv": 0.091,
+     "count": 6
+    }
+   ]
+  },
+  {
+   "title": "Walk Sign to Cross Sixth.ogg",
+   "category": "crossing signal",
+   "duration_s": 9.6,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Siren-like tonal pattern",
+    "Animal",
+    "Spoken language: English",
+    "Vehicle",
+    "Wind gust (low-frequency microphone wind noise)"
+   ],
+   "patterns": []
+  },
+  {
+   "title": "Level crossing Belgium 2022.ogg",
+   "category": "level crossing",
+   "duration_s": 26.32,
+   "periodic_detected": true,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Spoken language: English",
+    "Rapid repeating ticks",
+    "Rapid repeating ticks",
+    "Bird vocalization",
+    "Speech",
+    "Bird vocalization"
+   ],
+   "patterns": [
+    {
+     "kind": "periodic_tone",
+     "f_hz": 5609.4,
+     "period_s": 0.185,
+     "rate_hz": 5.405,
+     "period_cv": 0.027,
+     "pulse_duration_s": 0.075,
+     "duty_cycle": 0.41,
+     "count": 6,
+     "start": 25.05,
+     "end": 26.235,
+     "level_db": -71.7
+    },
+    {
+     "kind": "click_train",
+     "start": 0.94,
+     "end": 1.88,
+     "period_s": 0.188,
+     "rate_hz": 5.319,
+     "period_cv": 0.021,
+     "count": 6
+    }
+   ]
+  },
+  {
+   "title": "Jesen\u00edk Assumption church ringing 2021.wav",
+   "category": "bells",
+   "duration_s": 9.98,
+   "periodic_detected": false,
+   "siren_detected": false,
+   "bell_detected": true,
+   "top_labels": [
+    "Church bell"
+   ],
+   "patterns": []
+  },
+  {
+   "title": "Siren, viktigt meddelande 2017-03-06.ogg",
+   "category": "siren",
+   "duration_s": 120.3,
+   "periodic_detected": true,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Music",
+    "Siren-like tonal pattern",
+    "Siren-like tonal pattern",
+    "Mammal vocalization",
+    "Insect vocalization",
+    "Bird vocalization"
+   ],
+   "patterns": [
+    {
+     "kind": "click_train",
+     "start": 17.919,
+     "end": 23.686,
+     "period_s": 1.442,
+     "rate_hz": 0.694,
+     "period_cv": 0.054,
+     "count": 5
+    }
+   ]
+  },
+  {
+   "title": "Walk Sign to Cross Tully.ogg",
+   "category": "crossing signal",
+   "duration_s": 8.6,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Siren-like tonal pattern",
+    "Bird vocalization",
+    "Spoken language: English",
+    "Vehicle"
+   ],
+   "patterns": []
+  },
+  {
+   "title": "WWS Level-crossingbarrier8211Lifting.ogg",
+   "category": "level crossing",
+   "duration_s": 24.34,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Siren-like tonal pattern",
+    "Reverberation estimate",
+    "Siren-like tonal pattern",
+    "Mammal vocalization",
+    "Siren-like tonal pattern"
+   ],
+   "patterns": []
+  },
+  {
+   "title": "Johnny Be Ringing (Antti Luode).mp3",
+   "category": "bells",
+   "duration_s": 228.95,
+   "periodic_detected": false,
+   "siren_detected": false,
+   "bell_detected": false,
+   "top_labels": [
+    "Mammal vocalization",
+    "Mains hum (50 Hz electrical network)",
+    "Music",
+    "Bird vocalization",
+    "Mammal vocalization",
+    "Mammal vocalization"
+   ],
+   "patterns": [
+    {
+     "kind": "click_train",
+     "start": 2.62,
+     "end": 4.65,
+     "period_s": 0.226,
+     "rate_hz": 4.433,
+     "period_cv": 0.07,
+     "count": 10
+    },
+    {
+     "kind": "click_train",
+     "start": 10.19,
+     "end": 11.36,
+     "period_s": 0.234,
+     "rate_hz": 4.274,
+     "period_cv": 0.044,
+     "count": 6
+    }
+   ]
+  },
+  {
+   "title": "\u00d6verg\u00e5ngsst\u00e4lle20190928.wav",
+   "category": "crossing signal",
+   "duration_s": 41.39,
+   "periodic_detected": false,
+   "siren_detected": false,
+   "bell_detected": false,
+   "top_labels": [],
+   "patterns": [
+    {
+     "kind": "periodic_tone",
+     "f_hz": 2921.9,
+     "period_s": 0.102,
+     "rate_hz": 9.818,
+     "period_cv": 0.055,
+     "pulse_duration_s": 0.06,
+     "duty_cycle": 0.59,
+     "count": 130,
+     "start": 15.01,
+     "end": 40.37,
+     "level_db": -66.1,
+     "harmonics_hz": [
+      5867.2
+     ]
+    },
+    {
+     "kind": "periodic_tone",
+     "f_hz": 812.5,
+     "period_s": 0.103,
+     "rate_hz": 9.677,
+     "period_cv": 0.072,
+     "pulse_duration_s": 0.05,
+     "duty_cycle": 0.48,
+     "count": 9,
+     "start": 38.59,
+     "end": 40.28,
+     "level_db": -55.9
+    }
+   ]
+  },
+  {
+   "title": "MY Ringing tone.ogg",
+   "category": "bells",
+   "duration_s": 21.4,
+   "periodic_detected": true,
+   "siren_detected": false,
+   "bell_detected": false,
+   "top_labels": [
+    "Amphibian vocalization",
+    "Reverberation estimate",
+    "Busy signal",
+    "Rapid repeating ticks",
+    "Amphibian vocalization",
+    "Amphibian vocalization"
+   ],
+   "patterns": [
+    {
+     "kind": "click_train",
+     "start": 1.93,
+     "end": 2.32,
+     "period_s": 0.097,
+     "rate_hz": 10.256,
+     "period_cv": 0.085,
+     "count": 5
+    },
+    {
+     "kind": "click_train",
+     "start": 13.33,
+     "end": 13.72,
+     "period_s": 0.078,
+     "rate_hz": 12.821,
+     "period_cv": 0.096,
+     "count": 6
+    }
+   ]
+  },
+  {
+   "title": "Siren.wav",
+   "category": "siren",
+   "duration_s": 29.81,
+   "periodic_detected": true,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Siren-like tonal pattern",
+    "Mains hum (50 Hz electrical network)",
+    "Bird vocalization",
+    "Periodic signal",
+    "Bird vocalization",
+    "Bird vocalization"
+   ],
+   "patterns": [
+    {
+     "kind": "periodic_tone",
+     "f_hz": 7757.8,
+     "period_s": 3.438,
+     "rate_hz": 0.291,
+     "period_cv": 0.077,
+     "pulse_duration_s": 0.05,
+     "duty_cycle": 0.01,
+     "count": 6,
+     "start": 3.62,
+     "end": 24.79,
+     "level_db": -116.1
+    }
+   ]
+  },
+  {
+   "title": "Mys\u0142owice Sacred Heart church ringing 2021.wav",
+   "category": "bells",
+   "duration_s": 61.57,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": true,
+   "top_labels": [
+    "Church bell",
+    "Siren-like tonal pattern",
+    "Spoken language: English",
+    "Bird vocalization",
+    "Spoken language: English",
+    "Church bell"
+   ],
+   "patterns": []
+  },
+  {
+   "title": "Siren loop (Carrai Pass).wav",
+   "category": "siren",
+   "duration_s": 12.49,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Air horn, truck horn",
+    "Siren",
+    "Mammal vocalization",
+    "Mammal vocalization",
+    "Mammal vocalization",
+    "Music"
+   ],
+   "patterns": []
+  },
+  {
+   "title": "Rajcza church ringing 2022.wav",
+   "category": "bells",
+   "duration_s": 34.51,
+   "periodic_detected": true,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Siren-like tonal pattern",
+    "Spoken language: English",
+    "Change ringing (campanology)",
+    "Bird vocalization",
+    "Mammal vocalization",
+    "Bird vocalization"
+   ],
+   "patterns": [
+    {
+     "kind": "periodic_tone",
+     "f_hz": 1562.5,
+     "period_s": 1.112,
+     "rate_hz": 0.9,
+     "period_cv": 0.068,
+     "pulse_duration_s": 0.19,
+     "duty_cycle": 0.17,
+     "count": 9,
+     "start": 25.84,
+     "end": 33.86,
+     "level_db": -30.3
+    }
+   ]
+  },
+  {
+   "title": "Sound Sirena of Ukraine.ogg",
+   "category": "siren",
+   "duration_s": 92.36,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Siren",
+    "Mammal vocalization",
+    "Spoken language: English",
+    "Mammal vocalization",
+    "Mammal vocalization",
+    "Mammal vocalization"
+   ],
+   "patterns": [
+    {
+     "kind": "click_train",
+     "start": 90.21,
+     "end": 90.54,
+     "period_s": 0.083,
+     "rate_hz": 12.121,
+     "period_cv": 0.052,
+     "count": 5
+    }
+   ]
+  },
+  {
+   "title": "Railroad crossing bell-Brylon Terry-1551570865.wav",
+   "category": "level crossing",
+   "duration_s": 45.11,
+   "periodic_detected": false,
+   "siren_detected": false,
+   "bell_detected": false,
+   "top_labels": [
+    "Bird vocalization",
+    "Bird vocalization"
+   ],
+   "patterns": [
+    {
+     "kind": "click_train",
+     "start": 1.96,
+     "end": 44.95,
+     "period_s": 0.409,
+     "rate_hz": 2.442,
+     "period_cv": 0.082,
+     "count": 106
+    }
+   ]
+  },
+  {
+   "title": "Ringing chest lock.flac",
+   "category": "bells",
+   "duration_s": 12.89,
+   "periodic_detected": false,
+   "siren_detected": false,
+   "bell_detected": true,
+   "top_labels": [
+    "Reverberation estimate",
+    "Bicycle bell",
+    "Bicycle bell",
+    "Wind gust (low-frequency microphone wind noise)"
+   ],
+   "patterns": []
+  },
+  {
+   "title": "4-sep-1944 BBC army crossing Dutch border.ogg",
+   "category": "level crossing",
+   "duration_s": 25.75,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Siren-like tonal pattern",
+    "Reverberation estimate",
+    "Spoken language: English"
+   ],
+   "patterns": []
+  },
+  {
+   "title": "Ringing cricket winding down.ogg",
+   "category": "bells",
+   "duration_s": 55.8,
+   "periodic_detected": false,
+   "siren_detected": false,
+   "bell_detected": false,
+   "top_labels": [
+    "Insect",
+    "Insect vocalization",
+    "Reverberation estimate",
+    "Bird vocalization",
+    "Bird vocalization",
+    "Bird vocalization"
+   ],
+   "patterns": []
+  },
+  {
+   "title": "Vietnamese siren Jammer.wav",
+   "category": "siren",
+   "duration_s": 71.21,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Siren-like tonal pattern",
+    "Mammal vocalization",
+    "Spoken language: Vietnamese",
+    "Music",
+    "Mammal vocalization",
+    "Mammal vocalization"
+   ],
+   "patterns": [
+    {
+     "kind": "click_train",
+     "start": 51.5,
+     "end": 52.33,
+     "period_s": 0.207,
+     "rate_hz": 4.819,
+     "period_cv": 0.099,
+     "count": 5
+    }
+   ]
+  },
+  {
+   "title": "Rybnik St Anthony basilica ringing 2022.wav",
+   "category": "bells",
+   "duration_s": 38.32,
+   "periodic_detected": true,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Change ringing (campanology)",
+    "Bird vocalization",
+    "Mammal vocalization",
+    "Bird vocalization",
+    "Bird vocalization",
+    "Siren-like tonal pattern"
+   ],
+   "patterns": [
+    {
+     "kind": "periodic_tone",
+     "f_hz": 1906.2,
+     "period_s": 0.293,
+     "rate_hz": 3.419,
+     "period_cv": 0.061,
+     "pulse_duration_s": 0.17,
+     "duty_cycle": 0.58,
+     "count": 6,
+     "start": 36.75,
+     "end": 38.26,
+     "level_db": -37.0
+    }
+   ]
+  },
+  {
+   "title": "Vietnamese siren jammer.wav",
+   "category": "siren",
+   "duration_s": 42.5,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Siren",
+    "Spoken language: English",
+    "Air horn, truck horn",
+    "Speech",
+    "Alarm",
+    "Siren-like tonal pattern"
+   ],
+   "patterns": [
+    {
+     "kind": "periodic_tone",
+     "f_hz": 6351.6,
+     "period_s": 7.912,
+     "rate_hz": 0.126,
+     "period_cv": 0.07,
+     "pulse_duration_s": 0.045,
+     "duty_cycle": 0.01,
+     "count": 6,
+     "start": 0.1,
+     "end": 41.915,
+     "level_db": -72.7
+    }
+   ]
+  },
+  {
+   "title": "Bumba Crossing (ISRC USUAN1500031).mp3",
+   "category": "level crossing",
+   "duration_s": 276.98,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Siren-like tonal pattern",
+    "Reverberation estimate",
+    "Music",
+    "Insect vocalization",
+    "Insect vocalization",
+    "Bird vocalization"
+   ],
+   "patterns": [
+    {
+     "kind": "click_train",
+     "start": 116.92,
+     "end": 117.79,
+     "period_s": 0.174,
+     "rate_hz": 5.747,
+     "period_cv": 0.078,
+     "count": 6
+    }
+   ]
+  },
+  {
+   "title": "Zkou\u0161ka sir\u00e9n.mp3",
+   "category": "siren",
+   "duration_s": 151.25,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Siren",
+    "Mammal vocalization",
+    "Mammal vocalization",
+    "Mammal vocalization",
+    "Siren-like tonal pattern",
+    "Mammal vocalization"
+   ],
+   "patterns": []
+  },
+  {
+   "title": "Crossing the Chasm (ISRC USUAN1700026).mp3",
+   "category": "level crossing",
+   "duration_s": 196.86,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Siren-like tonal pattern",
+    "Timpani",
+    "Wind gust (low-frequency microphone wind noise)",
+    "Wind gust (low-frequency microphone wind noise)",
+    "Wind gust (low-frequency microphone wind noise)",
+    "Wind gust (low-frequency microphone wind noise)"
+   ],
+   "patterns": [
+    {
+     "kind": "periodic_tone",
+     "f_hz": 406.2,
+     "period_s": 10.153,
+     "rate_hz": 0.098,
+     "period_cv": 0.078,
+     "pulse_duration_s": 0.065,
+     "duty_cycle": 0.01,
+     "count": 6,
+     "start": 138.64,
+     "end": 191.395,
+     "level_db": -19.1
+    }
+   ]
+  },
+  {
+   "title": "So\u015bnicowice St James church bell ringing 2022.wav",
+   "category": "bells",
+   "duration_s": 9.38,
+   "periodic_detected": true,
+   "siren_detected": true,
+   "bell_detected": true,
+   "top_labels": [
+    "Church bell",
+    "Siren-like tonal pattern",
+    "Repeating signal at ~1 s interval",
+    "Periodic signal"
+   ],
+   "patterns": [
+    {
+     "kind": "periodic_tone",
+     "f_hz": 5062.5,
+     "period_s": 0.863,
+     "rate_hz": 1.159,
+     "period_cv": 0.064,
+     "pulse_duration_s": 0.075,
+     "duty_cycle": 0.09,
+     "count": 6,
+     "start": 4.81,
+     "end": 8.575,
+     "level_db": -62.2
+    },
+    {
+     "kind": "periodic_tone",
+     "f_hz": 2031.2,
+     "period_s": 0.18,
+     "rate_hz": 5.556,
+     "period_cv": 0.068,
+     "pulse_duration_s": 0.12,
+     "duty_cycle": 0.67,
+     "count": 6,
+     "start": 7.37,
+     "end": 9.45,
+     "level_db": -38.4
+    }
+   ]
+  },
+  {
+   "title": "\u05d0\u05d6\u05e2\u05e7\u05d4.ogg",
+   "category": "siren",
+   "duration_s": 9.31,
+   "periodic_detected": false,
+   "siren_detected": false,
+   "bell_detected": false,
+   "top_labels": [
+    "Spoken language: Russian",
+    "Music",
+    "Hum",
+    "Mains hum"
+   ],
+   "patterns": []
+  },
+  {
+   "title": "Bigroom house drop loop 30 sec.ogg",
+   "category": "crossing signal",
+   "duration_s": 30.0,
+   "periodic_detected": false,
+   "siren_detected": false,
+   "bell_detected": false,
+   "top_labels": [
+    "Mammal vocalization",
+    "Music",
+    "Mammal vocalization",
+    "Mammal vocalization",
+    "Mammal vocalization",
+    "Bird vocalization"
+   ],
+   "patterns": [
+    {
+     "kind": "periodic_tone",
+     "f_hz": 5871.1,
+     "period_s": 1.798,
+     "rate_hz": 0.556,
+     "period_cv": 0.073,
+     "pulse_duration_s": 0.055,
+     "duty_cycle": 0.03,
+     "count": 6,
+     "start": 19.97,
+     "end": 27.515,
+     "level_db": -36.0
+    },
+    {
+     "kind": "click_train",
+     "start": 11.26,
+     "end": 12.19,
+     "period_s": 0.232,
+     "rate_hz": 4.301,
+     "period_cv": 0.036,
+     "count": 5
+    }
+   ]
+  },
+  {
+   "title": "Crossing the Divide (ISRC USUAN1400034).mp3",
+   "category": "level crossing",
+   "duration_s": 193.07,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Reverberation estimate",
+    "Trumpet",
+    "Siren-like tonal pattern",
+    "Mammal vocalization",
+    "Siren-like tonal pattern",
+    "Siren-like tonal pattern"
+   ],
+   "patterns": [
+    {
+     "kind": "click_train",
+     "start": 32.69,
+     "end": 33.05,
+     "period_s": 0.09,
+     "rate_hz": 11.111,
+     "period_cv": 0.0,
+     "count": 5
+    },
+    {
+     "kind": "click_train",
+     "start": 38.35,
+     "end": 47.8,
+     "period_s": 0.278,
+     "rate_hz": 3.598,
+     "period_cv": 0.075,
+     "count": 35
+    }
+   ]
+  },
+  {
+   "title": "The one ring.ogg",
+   "category": "bells",
+   "duration_s": 13.65,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Siren-like tonal pattern",
+    "Reverberation estimate",
+    "Spoken language: Mongolian"
+   ],
+   "patterns": []
+  },
+  {
+   "title": "DescenteInfinie.ogg",
+   "category": "crossing signal",
+   "duration_s": 65.5,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Siren-like tonal pattern",
+    "Music",
+    "Siren-like tonal pattern",
+    "Amphibian vocalization",
+    "Siren-like tonal pattern",
+    "Siren-like tonal pattern"
+   ],
+   "patterns": []
+  },
+  {
+   "title": "Excerpt of The 25th Hour - Schlatt Crossing.wav",
+   "category": "level crossing",
+   "duration_s": 18.11,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Siren-like tonal pattern",
+    "Mammal vocalization",
+    "Reverberation estimate",
+    "Music",
+    "Mammal vocalization",
+    "Mammal vocalization"
+   ],
+   "patterns": [
+    {
+     "kind": "click_train",
+     "start": 1.03,
+     "end": 2.81,
+     "period_s": 0.297,
+     "rate_hz": 3.371,
+     "period_cv": 0.069,
+     "count": 7
+    },
+    {
+     "kind": "click_train",
+     "start": 3.12,
+     "end": 4.22,
+     "period_s": 0.275,
+     "rate_hz": 3.636,
+     "period_cv": 0.055,
+     "count": 5
+    }
+   ]
+  },
+  {
+   "title": "Drum loop (Carrai Pass).wav",
+   "category": "crossing signal",
+   "duration_s": 12.4,
+   "periodic_detected": false,
+   "siren_detected": false,
+   "bell_detected": false,
+   "top_labels": [
+    "Mammal vocalization",
+    "Music"
+   ],
+   "patterns": [
+    {
+     "kind": "periodic_tone",
+     "f_hz": 765.6,
+     "period_s": 0.39,
+     "rate_hz": 2.562,
+     "period_cv": 0.005,
+     "pulse_duration_s": 0.26,
+     "duty_cycle": 0.67,
+     "count": 32,
+     "start": 0.08,
+     "end": 12.44,
+     "level_db": -76.0
+    },
+    {
+     "kind": "periodic_tone",
+     "f_hz": 1484.4,
+     "period_s": 0.39,
+     "rate_hz": 2.562,
+     "period_cv": 0.005,
+     "pulse_duration_s": 0.26,
+     "duty_cycle": 0.67,
+     "count": 32,
+     "start": 0.08,
+     "end": 12.44,
+     "level_db": -81.9
+    }
+   ]
+  },
+  {
+   "title": "Ghostpocalypse - 6 Crossing the Threshold (ISRC USUAN1100663).mp3",
+   "category": "level crossing",
+   "duration_s": 108.55,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Bird vocalization",
+    "Reverberation estimate",
+    "Music",
+    "Mammal vocalization",
+    "Amphibian vocalization",
+    "Mammal vocalization"
+   ],
+   "patterns": [
+    {
+     "kind": "click_train",
+     "start": 9.12,
+     "end": 10.48,
+     "period_s": 0.272,
+     "rate_hz": 3.676,
+     "period_cv": 0.082,
+     "count": 6
+    },
+    {
+     "kind": "click_train",
+     "start": 30.92,
+     "end": 31.33,
+     "period_s": 0.082,
+     "rate_hz": 12.195,
+     "period_cv": 0.049,
+     "count": 6
+    }
+   ]
+  },
+  {
+   "title": "Loop of \"hello\".ogg",
+   "category": "crossing signal",
+   "duration_s": 18.12,
+   "periodic_detected": false,
+   "siren_detected": false,
+   "bell_detected": false,
+   "top_labels": [
+    "Reverberation estimate",
+    "Spoken language: English",
+    "Bird vocalization",
+    "Bird vocalization",
+    "Bird vocalization"
+   ],
+   "patterns": []
+  },
+  {
+   "title": "Berlin Cathedral bells, 2016.wav",
+   "category": "bells",
+   "duration_s": 19.5,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": true,
+   "top_labels": [
+    "Church bell",
+    "Siren-like tonal pattern",
+    "Spoken language: English",
+    "Bird vocalization",
+    "Bird vocalization"
+   ],
+   "patterns": []
+  },
+  {
+   "title": "Kevin MacLeod - Crossing the Divide.ogg",
+   "category": "level crossing",
+   "duration_s": 193.07,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Reverberation estimate",
+    "Trumpet",
+    "Siren-like tonal pattern",
+    "Mammal vocalization",
+    "Siren-like tonal pattern",
+    "Siren-like tonal pattern"
+   ],
+   "patterns": [
+    {
+     "kind": "click_train",
+     "start": 32.69,
+     "end": 33.05,
+     "period_s": 0.09,
+     "rate_hz": 11.111,
+     "period_cv": 0.0,
+     "count": 5
+    },
+    {
+     "kind": "click_train",
+     "start": 38.35,
+     "end": 46.41,
+     "period_s": 0.278,
+     "rate_hz": 3.598,
+     "period_cv": 0.071,
+     "count": 30
+    }
+   ]
+  },
+  {
+   "title": "Rimshot loop 208bpm.ogg",
+   "category": "crossing signal",
+   "duration_s": 4.51,
+   "periodic_detected": true,
+   "siren_detected": false,
+   "bell_detected": false,
+   "top_labels": [
+    "Reverberation estimate",
+    "Periodic signal",
+    "Periodic signal",
+    "Periodic signal"
+   ],
+   "patterns": [
+    {
+     "kind": "periodic_tone",
+     "f_hz": 1156.2,
+     "period_s": 0.29,
+     "rate_hz": 3.448,
+     "period_cv": 0.034,
+     "pulse_duration_s": 0.17,
+     "duty_cycle": 0.59,
+     "count": 6,
+     "start": 0.09,
+     "end": 2.02,
+     "level_db": -99.3
+    },
+    {
+     "kind": "periodic_tone",
+     "f_hz": 828.1,
+     "period_s": 0.293,
+     "rate_hz": 3.419,
+     "period_cv": 0.051,
+     "pulse_duration_s": 0.05,
+     "duty_cycle": 0.17,
+     "count": 17,
+     "start": 0.23,
+     "end": 4.37,
+     "level_db": -33.2
+    }
+   ]
+  },
+  {
+   "title": "Komiku - 02 - The first person crossing the bridge since a century.ogg",
+   "category": "level crossing",
+   "duration_s": 210.0,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Siren-like tonal pattern",
+    "Bird vocalization",
+    "Heart sounds, heartbeat",
+    "Mammal vocalization",
+    "Mammal vocalization",
+    "Animal vocalization"
+   ],
+   "patterns": [
+    {
+     "kind": "click_train",
+     "start": 29.58,
+     "end": 30.33,
+     "period_s": 0.188,
+     "rate_hz": 5.333,
+     "period_cv": 0.044,
+     "count": 5
+    }
+   ]
+  },
+  {
+   "title": "Schalmei sound.ogg",
+   "category": "siren",
+   "duration_s": 74.98,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Siren-like tonal pattern",
+    "Mains hum (50 Hz electrical network)",
+    "Clarinet",
+    "Mammal vocalization",
+    "Siren-like tonal pattern",
+    "Bird vocalization"
+   ],
+   "patterns": [
+    {
+     "kind": "click_train",
+     "start": 11.24,
+     "end": 11.7,
+     "period_s": 0.115,
+     "rate_hz": 8.696,
+     "period_cv": 0.097,
+     "count": 5
+    },
+    {
+     "kind": "click_train",
+     "start": 31.6,
+     "end": 31.97,
+     "period_s": 0.092,
+     "rate_hz": 10.811,
+     "period_cv": 0.047,
+     "count": 5
+    }
+   ]
+  },
+  {
+   "title": "VOA Persian - Report on 2018 Marivan border crossing attack.ogg",
+   "category": "level crossing",
+   "duration_s": 112.31,
+   "periodic_detected": true,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Siren-like tonal pattern",
+    "Reverberation estimate",
+    "Spoken language: Persian",
+    "Music",
+    "Rapid repeating ticks",
+    "Bird vocalization"
+   ],
+   "patterns": [
+    {
+     "kind": "click_train",
+     "start": 29.78,
+     "end": 30.31,
+     "period_s": 0.132,
+     "rate_hz": 7.547,
+     "period_cv": 0.098,
+     "count": 5
+    },
+    {
+     "kind": "click_train",
+     "start": 44.34,
+     "end": 45.33,
+     "period_s": 0.198,
+     "rate_hz": 5.051,
+     "period_cv": 0.093,
+     "count": 6
+    }
+   ]
+  },
+  {
+   "title": "Church of Saint Mark (Litovel) ringing.ogg",
+   "category": "bells",
+   "duration_s": 183.02,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": true,
+   "top_labels": [
+    "Church bell",
+    "Siren-like tonal pattern",
+    "Reverberation estimate",
+    "Siren-like tonal pattern",
+    "Mammal vocalization",
+    "Mammal vocalization"
+   ],
+   "patterns": []
+  },
+  {
+   "title": "Cloche de l'Eglise de Sainte-Marie-des-Batignolles.ogg",
+   "category": "bells",
+   "duration_s": 94.92,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": true,
+   "top_labels": [
+    "Church bell",
+    "Reverberation estimate",
+    "Bird vocalization",
+    "Bird vocalization",
+    "Bird vocalization",
+    "Siren-like tonal pattern"
+   ],
+   "patterns": []
+  },
+  {
+   "title": "\u901a\u308a\u3083\u3093\u305b- Tooryanse -Let-Me-Pass-2.ogg",
+   "category": "crossing signal",
+   "duration_s": 27.97,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Siren-like tonal pattern",
+    "Music"
+   ],
+   "patterns": [
+    {
+     "kind": "periodic_tone",
+     "f_hz": 3156.2,
+     "period_s": 0.445,
+     "rate_hz": 2.247,
+     "period_cv": 0.065,
+     "pulse_duration_s": 0.135,
+     "duty_cycle": 0.3,
+     "count": 6,
+     "start": 24.73,
+     "end": 26.745,
+     "level_db": -34.4
+    },
+    {
+     "kind": "click_train",
+     "start": 20.6,
+     "end": 21.09,
+     "period_s": 0.122,
+     "rate_hz": 8.163,
+     "period_cv": 0.068,
+     "count": 5
+    }
+   ]
+  },
+  {
+   "title": "Verb\u00e1ln\u00ed informace - zkou\u0161ka sir\u00e9n.mp3",
+   "category": "siren",
+   "duration_s": 18.96,
+   "periodic_detected": true,
+   "siren_detected": false,
+   "bell_detected": false,
+   "top_labels": [
+    "Reverberation estimate",
+    "Spoken language: Slovak",
+    "Rapid repeating ticks"
+   ],
+   "patterns": [
+    {
+     "kind": "click_train",
+     "start": 12.31,
+     "end": 12.69,
+     "period_s": 0.095,
+     "rate_hz": 10.526,
+     "period_cv": 0.091,
+     "count": 5
+    }
+   ]
+  },
+  {
+   "title": "\u901a\u308a\u3083\u3093\u305b- Tooryanse -Let-Me-Pass.ogg",
+   "category": "crossing signal",
+   "duration_s": 47.93,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Siren-like tonal pattern",
+    "Music",
+    "Siren-like tonal pattern",
+    "Siren-like tonal pattern",
+    "Music",
+    "Buzzer"
+   ],
+   "patterns": [
+    {
+     "kind": "periodic_tone",
+     "f_hz": 1980.5,
+     "period_s": 0.998,
+     "rate_hz": 1.002,
+     "period_cv": 0.011,
+     "pulse_duration_s": 0.5,
+     "duty_cycle": 0.5,
+     "count": 9,
+     "start": 34.83,
+     "end": 42.34,
+     "level_db": -23.1
+    },
+    {
+     "kind": "click_train",
+     "start": 30.09,
+     "end": 31.08,
+     "period_s": 0.247,
+     "rate_hz": 4.04,
+     "period_cv": 0.017,
+     "count": 5
+    }
+   ]
+  },
+  {
+   "title": "Olsztyn St. John the Baptist church bell ringing 2021.ogg",
+   "category": "bells",
+   "duration_s": 48.92,
+   "periodic_detected": true,
+   "siren_detected": true,
+   "bell_detected": true,
+   "top_labels": [
+    "Church bell",
+    "Siren-like tonal pattern",
+    "Repeating tone/beep",
+    "Repeating tone/beep",
+    "Repeating tone/beep",
+    "Periodic signal"
+   ],
+   "patterns": [
+    {
+     "kind": "periodic_tone",
+     "f_hz": 6218.8,
+     "period_s": 0.725,
+     "rate_hz": 1.379,
+     "period_cv": 0.069,
+     "pulse_duration_s": 0.15,
+     "duty_cycle": 0.21,
+     "count": 29,
+     "start": 22.5,
+     "end": 46.79,
+     "level_db": -52.3
+    },
+    {
+     "kind": "periodic_tone",
+     "f_hz": 7265.6,
+     "period_s": 1.458,
+     "rate_hz": 0.686,
+     "period_cv": 0.036,
+     "pulse_duration_s": 0.08,
+     "duty_cycle": 0.05,
+     "count": 7,
+     "start": 34.92,
+     "end": 46.71,
+     "level_db": -54.6
+    }
+   ]
+  },
+  {
+   "title": "Prague st Vitus Easter ringing 2012.ogg",
+   "category": "bells",
+   "duration_s": 260.79,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": true,
+   "top_labels": [
+    "Church bell",
+    "Siren-like tonal pattern",
+    "Spoken language: English",
+    "Mammal vocalization",
+    "Mammal vocalization",
+    "Mammal vocalization"
+   ],
+   "patterns": []
+  },
+  {
+   "title": "SevenumBells.ogg",
+   "category": "bells",
+   "duration_s": 46.87,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Change ringing (campanology)",
+    "Mammal vocalization",
+    "Spoken language: English",
+    "Siren-like tonal pattern",
+    "Siren-like tonal pattern",
+    "Siren-like tonal pattern"
+   ],
+   "patterns": []
+  },
+  {
+   "title": "StLawrenceBells.ogg",
+   "category": "bells",
+   "duration_s": 40.0,
+   "periodic_detected": true,
+   "siren_detected": false,
+   "bell_detected": true,
+   "top_labels": [
+    "Church bell",
+    "Mammal vocalization",
+    "Mammal vocalization",
+    "Mammal vocalization",
+    "Church bell",
+    "Change ringing (campanology)"
+   ],
+   "patterns": [
+    {
+     "kind": "periodic_tone",
+     "f_hz": 921.9,
+     "period_s": 2.235,
+     "rate_hz": 0.447,
+     "period_cv": 0.077,
+     "pulse_duration_s": 0.09,
+     "duty_cycle": 0.04,
+     "count": 6,
+     "start": 28.88,
+     "end": 38.85,
+     "level_db": -53.3
+    }
+   ]
+  },
+  {
+   "title": "St George's church Dunster.ogg",
+   "category": "bells",
+   "duration_s": 21.32,
+   "periodic_detected": false,
+   "siren_detected": false,
+   "bell_detected": false,
+   "top_labels": [
+    "Change ringing (campanology)",
+    "Bird vocalization"
+   ],
+   "patterns": [
+    {
+     "kind": "periodic_tone",
+     "f_hz": 734.4,
+     "period_s": 1.932,
+     "rate_hz": 0.517,
+     "period_cv": 0.05,
+     "pulse_duration_s": 0.08,
+     "duty_cycle": 0.04,
+     "count": 6,
+     "start": 12.24,
+     "end": 20.39,
+     "level_db": -36.7
+    }
+   ]
+  },
+  {
+   "title": "AmbulanceSound1.wav",
+   "category": "siren",
+   "duration_s": 4.13,
+   "periodic_detected": false,
+   "siren_detected": true,
+   "bell_detected": false,
+   "top_labels": [
+    "Siren-like tonal pattern"
+   ],
+   "patterns": []
+  },
+  {
+   "title": "Ambulance Sounds2.wav",
+   "category": "siren",
+   "duration_s": 5.88,
+   "periodic_detected": false,
+   "siren_detected": false,
+   "bell_detected": false,
+   "top_labels": [
+    "Emergency vehicle",
+    "Mammal vocalization"
+   ],
+   "patterns": []
+  },
+  {
+   "title": "Het aankomen en stoppen van twee ambulances met sirenes - SoundCloud - Beeld en Geluid.ogg",
+   "category": "siren",
+   "duration_s": 52.05,
+   "periodic_detected": false,
+   "siren_detected": false,
+   "bell_detected": false,
+   "top_labels": [
+    "Mammal vocalization",
+    "Music",
+    "Mammal vocalization",
+    "Emergency vehicle",
+    "Mammal vocalization",
+    "Mammal vocalization"
+   ],
+   "patterns": [
+    {
+     "kind": "click_train",
+     "start": 38.37,
+     "end": 38.79,
+     "period_s": 0.084,
+     "rate_hz": 11.905,
+     "period_cv": 0.058,
+     "count": 6
+    }
+   ]
+  },
+  {
+   "title": "Het voorbijrijden van twee ambulances met sirenes - SoundCloud - Beeld en Geluid.ogg",
+   "category": "siren",
+   "duration_s": 62.03,
+   "periodic_detected": false,
+   "siren_detected": false,
+   "bell_detected": false,
+   "top_labels": [
+    "Mammal vocalization",
+    "Mammal vocalization",
+    "Emergency vehicle",
+    "Mammal vocalization",
+    "Mammal vocalization",
+    "Mammal vocalization"
+   ],
+   "patterns": [
+    {
+     "kind": "periodic_tone",
+     "f_hz": 296.9,
+     "period_s": 0.682,
+     "rate_hz": 1.465,
+     "period_cv": 0.012,
+     "pulse_duration_s": 0.05,
+     "duty_cycle": 0.07,
+     "count": 6,
+     "start": 25.79,
+     "end": 50.73,
+     "level_db": -29.9
+    },
+    {
+     "kind": "click_train",
+     "start": 24.56,
+     "end": 28.48,
+     "period_s": 0.653,
+     "rate_hz": 1.531,
+     "period_cv": 0.094,
+     "count": 7
+    }
+   ]
+  }
+ ],
+ "bells": [
+  {
+   "title": "Bell Ringing in Tower of P\u0159ibyslav.ogg",
+   "bells_reconstructed": 3,
+   "valid_strikes": 296,
+   "n_compatible": 29,
+   "place_words": [
+    "ibyslav"
+   ],
+   "place_rank_in_top15": null
+  },
+  {
+   "title": "Bells ringing in Tower of P\u0159ibyslav.ogg",
+   "bells_reconstructed": 5,
+   "valid_strikes": 213,
+   "n_compatible": 0,
+   "place_words": [
+    "ibyslav"
+   ],
+   "place_rank_in_top15": null
+  },
+  {
+   "title": "Bytom Assumption church bell ringing 2021.ogg",
+   "bells_reconstructed": 11,
+   "valid_strikes": 300,
+   "n_compatible": 0,
+   "place_words": [
+    "Bytom",
+    "Assumption"
+   ],
+   "place_rank_in_top15": null
+  },
+  {
+   "title": "Bytom St Anne church ringing 2022.wav",
+   "bells_reconstructed": null,
+   "valid_strikes": null,
+   "n_compatible": null,
+   "place_words": [
+    "Bytom",
+    "Anne"
+   ],
+   "place_rank_in_top15": null
+  },
+  {
+   "title": "Cathedral Fribourg bells ringing end 01.wav",
+   "bells_reconstructed": 8,
+   "valid_strikes": 129,
+   "n_compatible": 0,
+   "place_words": [
+    "Fribourg"
+   ],
+   "place_rank_in_top15": null
+  },
+  {
+   "title": "Cathedral Fribourg bells ringing start 01.wav",
+   "bells_reconstructed": 13,
+   "valid_strikes": 62,
+   "n_compatible": 0,
+   "place_words": [
+    "Fribourg",
+    "start"
+   ],
+   "place_rank_in_top15": null
+  },
+  {
+   "title": "Chorz\u00f3w Assumption church bell ringing 2022.wav",
+   "bells_reconstructed": 2,
+   "valid_strikes": 92,
+   "n_compatible": 2,
+   "place_words": [
+    "Chorz",
+    "Assumption"
+   ],
+   "place_rank_in_top15": null
+  },
+  {
+   "title": "Gliwice Assumption church ringing 2022.wav",
+   "bells_reconstructed": null,
+   "valid_strikes": null,
+   "n_compatible": null,
+   "place_words": [
+    "Gliwice",
+    "Assumption"
+   ],
+   "place_rank_in_top15": null
+  },
+  {
+   "title": "Jastarnia Visitation church ringing 2022.wav",
+   "bells_reconstructed": 2,
+   "valid_strikes": 12,
+   "n_compatible": 5,
+   "place_words": [
+    "Jastarnia",
+    "Visitation"
+   ],
+   "place_rank_in_top15": null
+  },
+  {
+   "title": "Jesen\u00edk Assumption church ringing 2021.wav",
+   "bells_reconstructed": 4,
+   "valid_strikes": 22,
+   "n_compatible": 0,
+   "place_words": [
+    "Jesen",
+    "Assumption"
+   ],
+   "place_rank_in_top15": null
+  },
+  {
+   "title": "Johnny Be Ringing (Antti Luode).mp3",
+   "bells_reconstructed": null,
+   "valid_strikes": null,
+   "n_compatible": null,
+   "place_words": [
+    "Johnny",
+    "Antti",
+    "Luode"
+   ],
+   "place_rank_in_top15": null
+  },
+  {
+   "title": "MY Ringing tone.ogg",
+   "bells_reconstructed": null,
+   "valid_strikes": null,
+   "n_compatible": null,
+   "place_words": [
+    "tone"
+   ],
+   "place_rank_in_top15": null
+  },
+  {
+   "title": "Mys\u0142owice Sacred Heart church ringing 2021.wav",
+   "bells_reconstructed": 3,
+   "valid_strikes": 31,
+   "n_compatible": 47,
+   "place_words": [
+    "owice",
+    "Sacred",
+    "Heart"
+   ],
+   "place_rank_in_top15": null
+  },
+  {
+   "title": "Rajcza church ringing 2022.wav",
+   "bells_reconstructed": 17,
+   "valid_strikes": 78,
+   "n_compatible": 0,
+   "place_words": [
+    "Rajcza"
+   ],
+   "place_rank_in_top15": null
+  },
+  {
+   "title": "Ringing chest lock.flac",
+   "bells_reconstructed": null,
+   "valid_strikes": null,
+   "n_compatible": null,
+   "place_words": [
+    "chest",
+    "lock",
+    "flac"
+   ],
+   "place_rank_in_top15": null
+  },
+  {
+   "title": "Ringing cricket winding down.ogg",
+   "bells_reconstructed": null,
+   "valid_strikes": null,
+   "n_compatible": null,
+   "place_words": [
+    "cricket",
+    "winding",
+    "down"
+   ],
+   "place_rank_in_top15": null
+  },
+  {
+   "title": "Rybnik St Anthony basilica ringing 2022.wav",
+   "bells_reconstructed": 5,
+   "valid_strikes": 100,
+   "n_compatible": 0,
+   "place_words": [
+    "Rybnik",
+    "Anthony",
+    "basilica"
+   ],
+   "place_rank_in_top15": null
+  },
+  {
+   "title": "So\u015bnicowice St James church bell ringing 2022.wav",
+   "bells_reconstructed": 2,
+   "valid_strikes": 33,
+   "n_compatible": 198,
+   "place_words": [
+    "nicowice",
+    "James"
+   ],
+   "place_rank_in_top15": null
+  },
+  {
+   "title": "The one ring.ogg",
+   "bells_reconstructed": null,
+   "valid_strikes": null,
+   "n_compatible": null,
+   "place_words": [],
+   "place_rank_in_top15": null
+  },
+  {
+   "title": "Berlin Cathedral bells, 2016.wav",
+   "bells_reconstructed": 2,
+   "valid_strikes": 28,
+   "n_compatible": 0,
+   "place_words": [
+    "Berlin"
+   ],
+   "place_rank_in_top15": null
+  },
+  {
+   "title": "Church of Saint Mark (Litovel) ringing.ogg",
+   "bells_reconstructed": 17,
+   "valid_strikes": 300,
+   "n_compatible": 0,
+   "place_words": [
+    "Saint",
+    "Mark",
+    "Litovel"
+   ],
+   "place_rank_in_top15": null
+  },
+  {
+   "title": "Cloche de l'Eglise de Sainte-Marie-des-Batignolles.ogg",
+   "bells_reconstructed": 4,
+   "valid_strikes": 238,
+   "n_compatible": 0,
+   "place_words": [
+    "Cloche",
+    "Eglise",
+    "Sainte",
+    "Marie",
+    "Batignolles"
+   ],
+   "place_rank_in_top15": null
+  },
+  {
+   "title": "Olsztyn St. John the Baptist church bell ringing 2021.ogg",
+   "bells_reconstructed": 9,
+   "valid_strikes": 123,
+   "n_compatible": 0,
+   "place_words": [
+    "Olsztyn",
+    "John",
+    "Baptist"
+   ],
+   "place_rank_in_top15": null
+  },
+  {
+   "title": "Prague st Vitus Easter ringing 2012.ogg",
+   "bells_reconstructed": 16,
+   "valid_strikes": 293,
+   "n_compatible": 0,
+   "place_words": [
+    "Prague",
+    "Vitus",
+    "Easter"
+   ],
+   "place_rank_in_top15": null
+  },
+  {
+   "title": "SevenumBells.ogg",
+   "bells_reconstructed": 4,
+   "valid_strikes": 107,
+   "n_compatible": 0,
+   "place_words": [
+    "SevenumBells"
+   ],
+   "place_rank_in_top15": null
+  },
+  {
+   "title": "StLawrenceBells.ogg",
+   "bells_reconstructed": 2,
+   "valid_strikes": 10,
+   "n_compatible": 0,
+   "place_words": [
+    "StLawrenceBells"
+   ],
+   "place_rank_in_top15": null
+  },
+  {
+   "title": "St George's church Dunster.ogg",
+   "bells_reconstructed": 9,
+   "valid_strikes": 89,
+   "n_compatible": 0,
+   "place_words": [
+    "George",
+    "Dunster"
+   ],
+   "place_rank_in_top15": null
+  }
+ ],
+ "unknown": [
+  {
+   "case": 0,
+   "kind": "FSK bursts",
+   "flagged_by_discovery": true,
+   "max_novelty": 0.904,
+   "high_confidence_model_labels": [],
+   "families": 1
+  },
+  {
+   "case": 1,
+   "kind": "random FM texture",
+   "flagged_by_discovery": true,
+   "max_novelty": 0.695,
+   "high_confidence_model_labels": [],
+   "families": 1
+  },
+  {
+   "case": 2,
+   "kind": "FSK bursts",
+   "flagged_by_discovery": true,
+   "max_novelty": 0.87,
+   "high_confidence_model_labels": [],
+   "families": 1
+  },
+  {
+   "case": 3,
+   "kind": "random FM texture",
+   "flagged_by_discovery": true,
+   "max_novelty": 0.883,
+   "high_confidence_model_labels": [],
+   "families": 1
+  },
+  {
+   "case": 4,
+   "kind": "FSK bursts",
+   "flagged_by_discovery": true,
+   "max_novelty": 0.9,
+   "high_confidence_model_labels": [],
+   "families": 1
+  },
+  {
+   "case": 5,
+   "kind": "random FM texture",
+   "flagged_by_discovery": true,
+   "max_novelty": 0.689,
+   "high_confidence_model_labels": [
+    "Bird vocalization"
+   ],
+   "families": 1
+  }
+ ],
+ "method": "Signal, bell and unknown-sound evaluations (CI only).\n\nsignals : reference-library crossing-signal / level-crossing / siren clips through the pipeline (Deep mode with the\n          reference search disabled to avoid leakage): which detectors fire, and periodic pattern statistics.\nbells   : bell clips whose title names a place. Is that place among the compatible Dove's Guide rings, and at what rank?\nunknown : synthetic out-of-ontology sounds (FSK modem bursts, random FM textures) mixed into park-like noise:\n          does discovery flag them, and does any model give them a high-confidence label?\nUsage: python tools/eval_misc.py <models_dir> <clips_dir> <out_json>"
+}
