@@ -79,6 +79,24 @@ def add_records(inv, sed: dict, bn: dict | None, profile_fn) -> int:
         return 0
     animal = set().union(*CLASS_TO_AUDIOSET.values())
     spans = [r for r in inv.records if r["category"] == "birds_wildlife" or set(r.get("_audioset_names", [])) & animal]
+    # background animals: every stretch of SED windows with some animal activity that no record covers yet
+    from ..detect.taxonomy import class_table
+    aidx = [c["idx"] for c in class_table() if c["name"] in animal]
+    if aidx and len(sed.get("scores", [])):
+        act = sed["scores"][:, aidx].max(axis=1) >= 0.08
+        i = 0
+        while i < len(act):
+            if act[i]:
+                j = i
+                while j + 1 < len(act) and act[j + 1]:
+                    j += 1
+                t0, t1 = float(sed["starts"][i]), float(sed["ends"][j])
+                if not any(r["start"] < t1 and r["end"] > t0 for r in spans):
+                    spans.append({"start": t0, "end": t1, "label": "Animal activity (background)", "category": "",
+                                  "id": None})
+                i = j + 1
+            else:
+                i += 1
     bn_E = bn.get("embeddings") if bn else None
     added = 0
     for r in list(spans):
@@ -86,7 +104,8 @@ def add_records(inv, sed: dict, bn: dict | None, profile_fn) -> int:
                        _seg(bn["starts"], bn["ends"], bn_E, r["start"], r["end"]) if bn_E is not None else None)
         if not res:
             continue
-        r.setdefault("evidence", {})["inat_head"] = res
+        if r.get("id"):
+            r.setdefault("evidence", {})["inat_head"] = res
         best = res["top"][0]
         if best["p"] < res["threshold"]:
             continue
@@ -104,7 +123,7 @@ def add_records(inv, sed: dict, bn: dict | None, profile_fn) -> int:
                 candidates=[{"label": f"{t['common'] or t['sci']} ({t['sci']})", "score": t["p"]} for t in res["top"][1:]],
                 start=r["start"], end=r["end"], confidence=best["p"], tier=tier_for(best["p"], True),
                 frequency=profile_fn(r["start"], r["end"], 100.0, 14000.0), model="iNatSounds species head (EchoMap)",
-                corroborated_by=[f"{r.get('id', '')} {r['label']}"],
+                corroborated_by=[f"{r['id']} {r['label']}"] if r.get("id") else [],
                 evidence={"inat_head": res},
                 limitations=(f"Model prediction from a head trained on iNatSounds (5,569 species). Validation top-1 "
                              f"accuracy {acc:.0%} over all species; " if acc else "Model prediction; ") +

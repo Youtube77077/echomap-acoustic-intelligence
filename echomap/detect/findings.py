@@ -35,6 +35,8 @@ def describe(r: dict) -> str:
         parts.append(f"species: {r['common_name']}" + (f" ({r['scientific_name']})" if r.get("scientific_name") else ""))
     elif spec and spec not in label:
         parts.append(spec)
+    if r.get("season_check"):
+        parts.append(r["season_check"])
     cands = [c["label"] for c in (r.get("candidates") or [])[:2] if c.get("label") and c["label"] != label]
     if cands and not vt and not r.get("common_name"):
         parts.append("or: " + ", ".join(cands))
