@@ -16,9 +16,18 @@ def acoustic_observations(records: list[dict], wind: dict) -> dict:
                         "confidence": r["confidence"], "tier": r["tier"]})
     rain = any("Rain" in o["label"] for o in obs)
     thunder = any("Thunder" in o["label"] for o in obs)
+    intensity = None
+    rr = [o for o in obs if "Rain" in o["label"]]
+    if rr:   # heuristic: how sure, how much of the time, and thunder
+        total = max((r["end"] for r in records), default=1.0) or 1.0
+        frac = min(1.0, sum(o["end"] - o["start"] for o in rr) / total)
+        conf = max(o["confidence"] for o in rr)
+        intensity = ("heavy" if thunder or (conf >= 0.6 and frac >= 0.6) else
+                     "light" if conf < 0.35 or frac < 0.2 else "moderate")
     gusts = len(wind.get("gusts", []))
     return {"observations": obs,
-            "summary": {"rain_detected": rain, "thunder_detected": thunder, "wind_gust_events": gusts,
+            "summary": {"rain_detected": rain, "rain_intensity_estimate": intensity, "thunder_detected": thunder,
+                        "wind_gust_events": gusts,
                         "lf_wind_noise_fraction": wind.get("fraction_frames_lf_dominant")},
             "not_determinable": "Wind speed, wind direction and temperature cannot be measured from ordinary audio. "
                                 "Rain intensity is relative only.",

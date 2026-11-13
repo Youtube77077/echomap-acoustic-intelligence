@@ -432,7 +432,17 @@ class GeoEngine:
                               "c": r["confidence"], "L": L, "fp": L >= 0.5, "shape": "countries", "source": "Dove's Guide tower distribution",
                               "precision": "country level", "note": "Change-ringing towers concentrated in England"})
             pat = (r.get("evidence", {}).get("siren_pattern") or {}).get("pattern", "")
-            if "two-tone" in pat:
+            # only sirens the sound model itself heard (DSP-only "siren-like" sweeps came from church bells)
+            real_siren = (not str(r["label"]).startswith("Siren-like") and r["confidence"] >= 0.3 and
+                          any("siren" in n.lower() for n in names))
+            if pat and real_siren and ("wail" in pat or "yelp" in pat) and "two-tone" not in pat:
+                am = np.array([countries().get(i, {}).get("continent") in ("NA", "SA", "OC") for i in pts.iso])
+                items.append({"group": "cultural", "label": "Wail / yelp emergency siren", "record": r["id"],
+                              "c": min(0.4, r["confidence"]), "L": np.where(am, 1.0, 0.5).astype(np.float32), "fp": am,
+                              "shape": "countries", "source": "Siren-pattern regional practice (heuristic)",
+                              "precision": "continental",
+                              "note": "Weak: wail/yelp sirens are standard in North America and Australia, common elsewhere"})
+            if "two-tone" in pat and real_siren:
                 eu = np.array([countries().get(i, {}).get("continent") == "EU" for i in pts.iso])
                 items.append({"group": "cultural", "label": "Two-tone emergency siren", "record": r["id"],
                               "c": min(0.6, r["confidence"]), "L": np.where(eu, 1.0, 0.45).astype(np.float32), "fp": eu, "shape": "countries",

@@ -137,6 +137,11 @@ def build(result: dict) -> dict:
     rv = (sig.get("reverb") or {})
     if rv.get("rt60_s"):
         facts.append(f"Reverberation RT60 ≈ {rv['rt60_s']} s")
+    ws = (result.get("acoustic_weather") or {}).get("summary") or {}
+    if ws.get("rain_detected"):
+        facts.append(f"Rain: {ws.get('rain_intensity_estimate') or 'yes'} (estimate)" + (", thunder" if ws.get("thunder_detected") else ""))
+    if ws.get("wind_gust_events"):
+        facts.append(f"Wind: {ws['wind_gust_events']} gust(s) on the microphone (direction and temperature are not audible)")
     sc = (result.get("scene") or {}).get("top") or []
     if sc:
         facts.append("Scene: " + ", ".join(f"{s['scene']} ({_pct(s['score'])})" for s in sc[:3]))
