@@ -161,6 +161,8 @@ def context_weeks(ctx: dict) -> tuple[list[int] | None, str]:
 
 MASKING_CATS = {"bells_alarms", "music", "vehicles", "engines_machinery", "railway", "public_transport", "industrial"}
 MASKED_MIN_CONF = 0.85
+MARINE = __import__("re").compile(r"whale|dolphin|porpoise|\bseal\b|sea lion|walrus|orca|Balaena|Megaptera|"
+                                  r"Leptonychotes|Balaenoptera|Physeter|Delphin|Phoca|Orcinus", __import__("re").I)
 
 
 def _species_usable(r: dict, records: list[dict]) -> bool:
@@ -169,15 +171,17 @@ def _species_usable(r: dict, records: list[dict]) -> bool:
     an AudioSet animal sound at the same time counts only when the model is very sure."""
     if r["confidence"] < SPECIES_MIN_CONF:
         return False
+    by_id = {o.get("id"): o for o in records}
+    strong = any((by_id.get(str(c).split(" ")[0]) or {}).get("confidence", 0) >= 0.5
+                 for c in r.get("corroborated_by") or [] if "(AudioSet)" in str(c))
+    if MARINE.search(f"{r.get('common_name', '')} {r.get('scientific_name', '')}") and not strong:
+        return False   # whales and seals "heard" in tram squeal / street recordings (soundscape benchmark)
     masked = any(o.get("category") in MASKING_CATS and o.get("start", 0) < r.get("end", 0) and o.get("end", 0) > r.get("start", 0)
                  and o.get("confidence", 0) >= 0.2 for o in records)
     if not masked:
         return bool(r.get("corroborated_by")) or r["confidence"] >= UNCORROBORATED_MIN_CONF
     # under bells / engines / music: the iNatSounds head reads the same embedding and a weak generic "Bird" tag is
     # often the bell itself, so only a clear AudioSet animal sound (>= 0.5) or a very sure model counts
-    by_id = {o.get("id"): o for o in records}
-    strong = any((by_id.get(str(c).split(" ")[0]) or {}).get("confidence", 0) >= 0.5
-                 for c in r.get("corroborated_by") or [] if "(AudioSet)" in str(c))
     return strong or r["confidence"] >= MASKED_MIN_CONF
 
 
