@@ -96,7 +96,7 @@ def build(result: dict) -> dict:
             continue
         seen.add(key)
         n_same = sum(1 for x in inv if x.get("label") == r.get("label"))
-        sounds.append({"id": r.get("id"), "category": r.get("category_title") or r.get("category"),
+        sounds.append({"id": r.get("id"), "image": r.get("image"), "category": r.get("category_title") or r.get("category"),
                        "text": describe(r), "start": r["start"], "end": r["end"], "confidence": r["confidence"],
                        "tier": r.get("tier"), "times": n_same,
                        "when": f"{_t(r['start'])}–{_t(r['end'])}" + (f" (+{n_same - 1} more)" if n_same > 1 else "")})

@@ -43,6 +43,20 @@ img{max-width:100%} code{font-size:12px}
 """
 
 
+def _thumb(case, im) -> str:
+    """Embedded picture (offline pack) with its credit; empty when no pack or no picture."""
+    if not im:
+        return ""
+    import base64
+    from .. import images
+    data = images.read(im["key"], case.settings.models_dir)
+    if not data:
+        return ""
+    credit = f"{im['title']} · {im.get('artist') or 'unknown author'} · {im['licence']} (Wikimedia Commons)"
+    return (f"<img src='data:image/webp;base64,{base64.b64encode(data).decode()}' title='{E(credit)}' "
+            f"style='width:44px;height:44px;object-fit:cover;border-radius:4px;vertical-align:middle;margin:2px 6px 2px 0'>")
+
+
 def render(case) -> str:
     r = case.result
     meta = case.meta or {}
@@ -68,11 +82,17 @@ def render(case) -> str:
                 ("Language", E(", ".join(f"{l['name']} ({l['code']}) {round(100 * l['confidence'])}%" for l in f.get("languages", [])) or "none identified")),
                 ("What was said", "<br>".join(f"[{fmt_t(l['start'])}] <i>{E(l.get('language') or '')}, {E(l['quality'])}</i>: {E(l['text'])}"
                                               for l in (f.get("speech") or {}).get("lines", [])) or "no intelligible speech"),
-                ("What the sounds are", "<br>".join(f"{E(x['text'])} <span class='muted'>({E(x['when'])}, {round(100 * x['confidence'])}% {E(x['tier'])})</span>"
+                ("What the sounds are", "<br>".join(_thumb(case, x.get("image")) + f"{E(x['text'])} <span class='muted'>({E(x['when'])}, {round(100 * x['confidence'])}% {E(x['tier'])})</span>"
                                                     for x in f.get("sounds", [])) or "-")]
         if f.get("facts"):
             rows.append(("Signal", E(" · ".join(f["facts"]))))
         out.append(_kv(rows))
+        used = {x["image"]["key"]: x["image"] for x in f.get("sounds", []) if x.get("image")}
+        if used:
+            out.append("<p class='muted'><b>Picture credits</b> (illustrations of the identified kind of source, not "
+                       "pictures from this recording): " + "; ".join(
+                           f"{E(i['title'])}, {E(i.get('artist') or 'unknown author')}, {E(i['licence'])}, "
+                           f"<a href='{E(i['source'])}'>Wikimedia Commons</a>" for i in used.values()) + "</p>")
     # 1-3
     out.append("<h2>1-3. File information, integrity and technical metadata</h2>")
     out.append(_kv([("File name", E(meta.get("file_name", ""))), ("SHA-256 (original)", f"<code>{E(case.sha256 or '')}</code>"),

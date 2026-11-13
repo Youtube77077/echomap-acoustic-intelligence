@@ -534,6 +534,9 @@ class Case:
                          footprints=len(geo.get("footprints", [])))
             self.result["capabilities"] = self.cap.to_json()
         self.result["geo"] = geo
+        from . import images
+        n_img = images.attach(records, s.models_dir)
+        self.result["images"] = {"pack": str(images.find_pack(s.models_dir) or ""), "attached": n_img}
         from .detect import findings
         self.result["findings"] = findings.build(self.result)
         self._p("report", 0.97, "Writing report")

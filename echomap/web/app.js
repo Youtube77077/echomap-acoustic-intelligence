@@ -97,7 +97,7 @@ function renderFindings(f) {
     ? sp.lines.map(l => `<p class="small"><span class="mono muted">${fmtT(l.start).slice(0, 8)}</span> <span class="badge">${esc(l.language || "")} · ${esc(l.quality)}</span> ${esc(l.text)}</p>`).join("")
     : `<p class="muted">${esc(sp.not_run_reason || "No intelligible speech found.")}</p>`;
   const sounds = f.sounds?.length
-    ? `<ul class="small">${f.sounds.map(x => `<li><a href="#" data-id="${esc(x.id)}" class="fsnd"><b>${esc(x.text)}</b></a> <span class="muted">· ${esc(x.category)} · ${esc(x.when)} · ${pct(x.confidence)} ${esc(x.tier)}</span></li>`).join("")}</ul>`
+    ? `<ul class="small fsl">${f.sounds.map(x => `<li>${imgTag(x.image, "fthumb")}<a href="#" data-id="${esc(x.id)}" class="fsnd"><b>${esc(x.text)}</b></a> <span class="muted">· ${esc(x.category)} · ${esc(x.when)} · ${pct(x.confidence)} ${esc(x.tier)}</span></li>`).join("")}</ul>`
     : `<p class="muted">No sound classified above the listing threshold.</p>`;
   el.innerHTML = `<div class="fgrid">
     <div class="fbox fwhere"><h3>Where</h3><p class="big">${esc(w.headline || "-")}</p>
@@ -295,6 +295,12 @@ function renderTimeline() {
 
 // ---------------------------------------------------------------- inventory
 function kv(obj) { return `<div class="kv">${Object.entries(obj).filter(([k, v]) => v !== undefined && v !== null && v !== "").map(([k, v]) => `<div>${esc(k)}</div><div>${typeof v === "object" ? esc(JSON.stringify(v)) : esc(v)}</div>`).join("")}</div>`; }
+// picture of what was identified (offline pack, credited; none for language, speech, mains hum)
+function imgTag(im, cls = "thumb") {
+  if (!im?.key) return "";
+  const credit = `${im.title} · ${im.artist || "unknown author"} · ${im.licence} (Wikimedia Commons)`;
+  return `<img class="${cls}" loading="lazy" alt="" src="/img?t=${encodeURIComponent(TOKEN)}&k=${encodeURIComponent(im.key)}" title="${esc(credit)}">`;
+}
 // vehicle-type estimate (car / bus / truck / tram / motorcycle) attached by the vehicle head
 function vehText(d) {
   const v = d.evidence?.vehicle_type; if (!v?.top) return "";
@@ -314,7 +320,7 @@ function renderInventory() {
   const order = Object.keys(summ).length ? Object.keys(summ) : Object.keys(cats);
   $("#inventory").innerHTML = order.filter(k => cats[k]).map(k => `<details class="cat" id="cat-${k}" open><summary><span class="dot" style="background:${catColor(k)}"></span>${esc(summ[k]?.title || k)}
       <span class="count">${cats[k].length} detection(s) · ${["confirmed","probable","possible","unclassified"].map(t => `${cats[k].filter(d => d.tier === t).length} ${t}`).join(" · ")}</span></summary>
-    ${cats[k].map(d => `<details class="det" data-id="${d.id}"><summary><span class="mono">${d.id}</span><span><b>${esc(d.label)}</b>${d.specific ? `<br><span class="muted">${esc(d.specific)}</span>` : ""}${vehText(d)}</span>
+    ${cats[k].map(d => `<details class="det" data-id="${d.id}"><summary><span class="mono">${d.id}</span><span>${imgTag(d.image)}<b>${esc(d.label)}</b>${d.specific ? `<br><span class="muted">${esc(d.specific)}</span>` : ""}${vehText(d)}</span>
       <span class="mono">${fmtT(d.start)} → ${fmtT(d.end)}</span><span>${d.duration.toFixed(2)} s · ${d.confidence.toFixed(2)}<div class="confbar"><i style="width:${d.confidence * 100}%"></i></div></span>
       <span class="tier ${d.tier}">${d.tier}</span><span class="muted small">${esc((d.model || "").split(" (")[0])}</span><button class="round play" title="Play this segment">▶</button></summary>
       <div class="body">

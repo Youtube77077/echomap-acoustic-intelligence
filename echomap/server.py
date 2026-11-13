@@ -113,6 +113,13 @@ def make_handler(state: AppState):
                 if not secrets.compare_digest(q.get("t", ""), state.token) or not state.case or state.case.x is None:
                     return self._send(403, b"", "text/plain")
                 return self._range(state.wav_bytes(), "audio/wav")
+            if u.path == "/img":
+                # <img> cannot send custom headers either: ?t= token, picture from the offline pack
+                if not secrets.compare_digest(q.get("t", ""), state.token):
+                    return self._send(403, b"", "text/plain")
+                from . import images
+                data = images.read(q.get("k", ""), state.settings.models_dir)
+                return self._send(200, data, "image/webp") if data else self._send(404, b"", "text/plain")
             if not u.path.startswith("/api/") or not self._auth():
                 return self._send(403, b"forbidden", "text/plain")
             try:
