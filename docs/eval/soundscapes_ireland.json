@@ -1,12 +1,12 @@
 {
- "generated": "2026-11-13 14:22",
+ "generated": "2026-11-13 22:42",
  "summary": {
   "recordings": 2,
-  "estimates": 2,
+  "estimates": 1,
   "median_error_km": 1367,
   "within_100km": 0,
   "within_500km": 0,
-  "inside_circle": 2
+  "inside_circle": 1
  },
  "rows": [
   {
@@ -22,9 +22,9 @@
    "country": "IE",
    "state": "complete",
    "error": null,
-   "analysis_s": 12.8,
+   "analysis_s": 13.0,
    "geo_status": "estimate",
-   "headline": "Most likely area: France, Germany, Spain region (within about 2000 km)",
+   "headline": "Somewhere in Europe (broad estimate, about 2000 km; centre near France, Germany, Spain)",
    "best": "France, Germany, Spain region",
    "best_error_km": 1367,
    "best_radius_km": 2000.0,
@@ -62,14 +62,14 @@
    "country": "IE",
    "state": "complete",
    "error": null,
-   "analysis_s": 13.9,
-   "geo_status": "estimate",
-   "headline": "Most likely area: Germany, Poland, Italy region (within about 1600 km)",
-   "best": "Germany, Poland, Italy region",
-   "best_error_km": 1266,
-   "best_radius_km": 1600.0,
-   "inside_best": true,
-   "min_error_top5_km": 1246,
+   "analysis_s": 10.7,
+   "geo_status": "no_estimate",
+   "headline": "No reliable location estimate",
+   "best": "China, South Korea, North Korea region",
+   "best_error_km": 8797,
+   "best_radius_km": 1800.0,
+   "inside_best": false,
+   "min_error_top5_km": 1846,
    "languages": [
     "English 22%"
    ],
@@ -78,14 +78,12 @@
     "Bird vocalization — species: European Robin (Erithacus rubecula)",
     "Bird vocalization — species: Common Cuckoo (Cuculus canorus)",
     "Bird vocalization — species: Great Tit (Parus major)",
+    "Bird vocalization — species: Western Capercaillie (Tetrao urogallus)",
+    "Bird vocalization — species: Red-flanked Bluetail (Tarsiger cyanurus)",
     "Bird vocalization — species: Black-throated Blue Warbler (Setophaga caerulescens)",
-    "Bird vocalization — species: Eurasian Chaffinch (Fringilla coelebs)",
-    "Bird vocalization — species: Common Linnet (Linaria cannabina)",
-    "Siren-like tonal pattern — Pitch pattern: fast sweep (yelp-like)"
+    "Bird vocalization — species: Eurasian Chaffinch (Fringilla coelebs)"
    ],
-   "clues": [
-    "European Robin (Erithacus rubecula)"
-   ],
+   "clues": [],
    "screenshots": [
     "docs/screenshots/bench_ireland/02_1_findings.png",
     "docs/screenshots/bench_ireland/02_2_analysis.png",
