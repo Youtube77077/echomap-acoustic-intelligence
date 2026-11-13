@@ -24,7 +24,6 @@ import numpy as np
 import requests
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from echomap.ingest.media import resample  # noqa: E402
 from echomap.models.frontends import efficientat_mel  # noqa: E402
 from echomap.models.runtime import session  # noqa: E402
 
@@ -59,7 +58,12 @@ def read_wav(data: bytes) -> np.ndarray | None:
         return None
     if ch > 1:
         x = x.reshape(-1, ch).mean(axis=1)
-    return resample(x, sr, SR) if sr != SR else x
+    if sr == SR:
+        return x
+    from math import gcd
+    from scipy.signal import resample_poly   # pure numpy/scipy: no per-file FFmpeg filter graphs (memory)
+    g = gcd(SR, sr)
+    return resample_poly(x, SR // g, sr // g).astype(np.float32)
 
 
 def windows(x: np.ndarray, k: int) -> list[np.ndarray]:
@@ -129,7 +133,11 @@ def main():
             if not info or info[1] is None:
                 skipped["no_annotation"] += 1
                 continue
-            x = read_wav(tf.extractfile(m).read())
+            try:
+                x = read_wav(tf.extractfile(m).read())
+            except Exception:  # noqa: BLE001  (one bad file must not end a multi-hour shard)
+                skipped["decode_error"] += 1
+                continue
             if x is None or len(x) < SR // 2:
                 skipped["unreadable_or_short"] += 1
                 continue

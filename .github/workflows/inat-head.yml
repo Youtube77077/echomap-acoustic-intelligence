@@ -49,9 +49,15 @@ jobs:
           path: /home/runner/appdata/EchoMap/models
           key: models-v1-birdnet31-geo304-asr1
       - run: python tools/fetch_models.py "$LOCALAPPDATA/EchoMap/models"
+      - name: Skip if this shard is already in the release
+        id: have
+        run: |
+          if gh release view inat-emb-v1 --json assets -q '.assets[].name' 2>/dev/null | grep -qx "${{ matrix.split }}_${{ matrix.shard }}.npz"; then echo "done=1" >> "$GITHUB_OUTPUT"; fi
       - name: Embed ${{ matrix.split }} shard ${{ matrix.shard }}/${{ matrix.n }}
+        if: steps.have.outputs.done != '1'
         run: python -u tools/inat_embed.py "$LOCALAPPDATA/EchoMap/models" ${{ matrix.split }} ${{ matrix.shard }} ${{ matrix.n }} ${{ matrix.split }}_${{ matrix.shard }}.npz ${{ matrix.k }}
-      - name: Upload embeddings (private release, not recordings)
+      - name: Upload embeddings (release, not recordings)
+        if: steps.have.outputs.done != '1'
         run: |
           gh release view inat-emb-v1 >/dev/null 2>&1 || gh release create inat-emb-v1 --prerelease --title "iNatSounds embeddings (EchoMap animal head)" --notes "Embeddings only (EfficientAT 960-d, BirdNET+ 1280-d) of iNatSounds 2024 recordings, for training EchoMap's animal-species head. No audio. iNatSounds terms: non-commercial research/education." || true
           for i in 1 2 3; do gh release upload inat-emb-v1 ${{ matrix.split }}_${{ matrix.shard }}.npz ${{ matrix.split }}_${{ matrix.shard }}.categories.json --clobber 2>/dev/null && break || gh release upload inat-emb-v1 ${{ matrix.split }}_${{ matrix.shard }}.npz --clobber && break; sleep 10; done
@@ -77,3 +83,4 @@ jobs:
           git add echomap/data/inat_head.npz docs/eval/inat_head.json
           git commit -m "Animal-species head trained on iNatSounds (see docs/eval/inat_head.json)" || exit 0
           for i in 1 2 3; do git pull --rebase origin ${{ github.ref_name }} && git push origin HEAD:${{ github.ref_name }} && break; sleep 5; done
+# rerun 2: skip finished shards, memory-safe resampling

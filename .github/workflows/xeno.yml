@@ -18,15 +18,33 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 340
     environment: Xeno
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7]
     env:
-      GH_TOKEN: ${{ github.token }}
       XC_KEY: ${{ secrets.XENO || vars.XENO }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: "3.14"}
       - run: pip install requests==2.34.2
-      - run: python -u tools/xc_harvest.py xc_meta.jsonl.gz echomap/data/xc_ranges.json.gz
+      - run: python -u tools/xc_harvest.py --harvest ${{ matrix.shard }} 8 xc_part_${{ matrix.shard }}.jsonl.gz
+      - uses: actions/upload-artifact@v4
+        with: {name: "xc-part-${{ matrix.shard }}", path: "xc_part_${{ matrix.shard }}.jsonl.gz", retention-days: 3}
+  merge:
+    needs: harvest
+    if: always() && needs.harvest.result != 'skipped'
+    runs-on: ubuntu-24.04
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.14"}
+      - uses: actions/download-artifact@v4
+        with: {pattern: "xc-part-*", merge-multiple: true}
+      - run: python -u tools/xc_harvest.py xc_meta.jsonl.gz echomap/data/xc_ranges.json.gz xc_part_*.jsonl.gz
       - run: |
           gh release view xc-meta-v1 >/dev/null 2>&1 || gh release create xc-meta-v1 --prerelease --title "Xeno-canto metadata" --notes "Recording metadata (species, coordinates, date, licence) from the Xeno-canto API v3. No audio."
           gh release upload xc-meta-v1 xc_meta.jsonl.gz echomap/data/xc_ranges.json.gz --clobber
@@ -36,8 +54,8 @@ jobs:
           git commit -m "Xeno-canto species ranges and seasons" || exit 0
           for i in 1 2 3; do git pull --rebase origin ${{ github.ref_name }} && git push origin HEAD:${{ github.ref_name }} && break; sleep 5; done
   embed:
-    needs: harvest
-    if: always() && (needs.harvest.result == 'success' || inputs.stage == 'embed')
+    needs: merge
+    if: always() && (needs.merge.result == 'success' || inputs.stage == 'embed')
     runs-on: ubuntu-24.04
     timeout-minutes: 350
     strategy:

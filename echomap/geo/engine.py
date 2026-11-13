@@ -159,6 +159,23 @@ def context_weeks(ctx: dict) -> tuple[list[int] | None, str]:
     return None, "date unknown, so species ranges use the maximum over the whole year"
 
 
+MASKING_CATS = {"bells_alarms", "music", "vehicles", "engines_machinery", "railway", "public_transport", "industrial"}
+MASKED_MIN_CONF = 0.85
+
+
+def _species_usable(r: dict, records: list[dict]) -> bool:
+    """Species detections during loud man-made sounds (bells, sirens, engines, trams, music) are often fake: church
+    bells became American birds and tram squeal became whales in the soundscape benchmark. Such a detection without
+    an AudioSet animal sound at the same time counts only when the model is very sure."""
+    if r["confidence"] < SPECIES_MIN_CONF:
+        return False
+    if r.get("corroborated_by"):
+        return True
+    masked = any(o.get("category") in MASKING_CATS and o.get("start", 0) < r.get("end", 0) and o.get("end", 0) > r.get("start", 0)
+                 and o.get("confidence", 0) >= 0.2 for o in records)
+    return r["confidence"] >= (MASKED_MIN_CONF if masked else UNCORROBORATED_MIN_CONF)
+
+
 def _language_backed(r: dict, code: str) -> bool:
     """A language counts for location only with a clear transcript in it, or very confident ID on clear speech
     (bells and engines were read as Korean / Nynorsk speakers in the soundscape benchmark)."""
@@ -300,7 +317,7 @@ class GeoEngine:
                         c_eff = r["confidence"] if corr else 0.5 * r["confidence"]
                         # v1.0.9: bells, trams and engines produce false "species"; without an AudioSet animal sound at
                         # the same time a species is only used when the model is very sure
-                        use = r["confidence"] >= SPECIES_MIN_CONF and (corr or r["confidence"] >= UNCORROBORATED_MIN_CONF)
+                        use = _species_usable(r, records)
                         items.append({"group": "biogeography", "label": f"{r['common_name']} ({r['scientific_name']})",
                                       "record": r["id"], "c": c_eff, "L": L, "fp": occ[:, j] >= 0.25,
                                       "used": use, "source": "BirdNET+ Geomodel V3.0.4",
@@ -324,7 +341,7 @@ class GeoEngine:
                     keyc = list(zip(np.floor(pts.lat).astype(int).tolist(), np.floor(pts.lon).astype(int).tolist()))
                     L = np.array([1.0 if kc in occ else OUT_OF_RANGE_FLOOR for kc in keyc], np.float32)
                     corr = bool(r.get("corroborated_by"))
-                    use = r["confidence"] >= SPECIES_MIN_CONF and (corr or r["confidence"] >= UNCORROBORATED_MIN_CONF)
+                    use = _species_usable(r, records)
                     frac = float((L >= 0.5).astype(float) @ w / w.sum())
                     items.append({"group": "biogeography", "label": f"{r.get('common_name') or xc.get('en') or k} "
                                   f"({r['scientific_name']})", "record": r["id"], "c": r["confidence"] if corr else
@@ -343,7 +360,7 @@ class GeoEngine:
                     continue
                 L = np.where(np.isin(pts.iso, list(present)), 1.0, OUT_OF_RANGE_FLOOR).astype(np.float32)
                 corr = bool(r.get("corroborated_by"))
-                use = r["confidence"] >= SPECIES_MIN_CONF and (corr or r["confidence"] >= UNCORROBORATED_MIN_CONF)
+                use = _species_usable(r, records)
                 frac = float((L >= 0.5).astype(float) @ w / w.sum())
                 items.append({"group": "biogeography", "label": f"{r.get('common_name') or k} ({r['scientific_name']})",
                               "record": r["id"], "c": r["confidence"] if corr else 0.5 * r["confidence"], "L": L,
