@@ -133,4 +133,6 @@ jobs:
           $assets = @("EchoMap-v$env:VER-win64.zip", "EchoMap-models-v2.zip")
           gh release download images-v1 -p "EchoMap-images-v1.zip" -D . 2>$null
           if (Test-Path "EchoMap-images-v1.zip") { $assets += "EchoMap-images-v1.zip" }
+          gh release download transit-lines-v1 -p "EchoMap-transit-rail-v1.sqlite.gz" -D . 2>$null
+          if (Test-Path "EchoMap-transit-rail-v1.sqlite.gz") { $assets += "EchoMap-transit-rail-v1.sqlite.gz" }
           gh release create $tag @assets --title "EchoMap $tag" --notes-file docs/RELEASE_NOTES.md --target $env:GITHUB_SHA

@@ -43,8 +43,9 @@ jobs:
         with:
           pattern: transit-part-*
           merge-multiple: true
-      - run: pip install requests==2.34.2
+      - run: pip install requests==2.34.2 numpy==2.5.4
       - run: python -u tools/build_transit_lines.py --merge EchoMap-transit-v1.json.gz part_*.json.gz
       - run: |
-          gh release view transit-lines-v1 >/dev/null 2>&1 || gh release create transit-lines-v1 --prerelease --title "EchoMap transit lines" --notes "Public-transport lines with their stops (GTFS feeds via the Mobility Database; feed licences listed inside). Put EchoMap-transit-v1.json.gz next to EchoMap.exe or in the models folder."
-          gh release upload transit-lines-v1 EchoMap-transit-v1.json.gz --clobber
+          gh release view transit-lines-v1 >/dev/null 2>&1 || gh release create transit-lines-v1 --prerelease --title "EchoMap transit lines" --notes "Public-transport lines with their stops (GTFS feeds via the Mobility Database; feed licences listed inside). rail = trams, metro, trains, ferries (small); full = also buses (large). Put one next to EchoMap.exe or in the models folder."
+          gh release upload transit-lines-v1 EchoMap-transit-rail-v1.sqlite.gz EchoMap-transit-full-v1.sqlite.gz --clobber
+          gh release delete-asset transit-lines-v1 EchoMap-transit-v1.json.gz -y || true

@@ -31,6 +31,7 @@ jobs:
           key: models-v1-birdnet31-geo304-asr1
       - run: python tools/fetch_models.py "$LOCALAPPDATA/EchoMap/models"
       - run: gh release download images-v1 -p "EchoMap-images-v1.zip" -D "$LOCALAPPDATA/EchoMap/models" --clobber || echo "no picture pack yet"
+      - run: gh release download transit-lines-v1 -p "EchoMap-transit-full-v1.sqlite.gz" -D "$LOCALAPPDATA/EchoMap/models" --clobber || echo "no transit pack yet"
       - run: python -u tools/soundscape_bench.py "$LOCALAPPDATA/EchoMap/models" /home/runner/bench
       - name: Commit results and screenshots
         if: always()

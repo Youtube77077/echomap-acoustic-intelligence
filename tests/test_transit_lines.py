@@ -1,7 +1,4 @@
 """Announced stops -> transit line + stop-level pin (v1.0.9), with a tiny synthetic GTFS-derived pack."""
-import gzip
-import json
-
 from echomap.geo import transit_lines as T
 
 
@@ -12,11 +9,10 @@ def _pack(tmp_path, monkeypatch):
     ops = [["GVB", "NL", "Amsterdam"], ["Connexxion", "NL", ""]]
     lines = [[0, "tram", "2", "Lijn 2", [0, 1, 2, 3, 4]], [0, "tram", "12", "Lijn 12", [3, 4]],
              [1, "bus", "N47", "Nachtlijn", [5, 6]]]
-    p = tmp_path / "EchoMap-transit-v1.json.gz"
-    with gzip.open(p, "wt", encoding="utf-8") as g:
-        json.dump({"stops": stops, "operators": ops, "lines": lines, "feeds": []}, g)
+    p = tmp_path / "EchoMap-transit-v1.sqlite"
+    T.build_sqlite({"stops": stops, "operators": ops, "lines": lines}, p)
     monkeypatch.setattr(T, "find_pack", lambda md=None: p)
-    T._load.cache_clear()
+    T._connect.cache_clear()
 
 
 def seg(text):
@@ -56,4 +52,11 @@ def test_geo_engine_pins_the_stop(tmp_path, monkeypatch):
     places = (g.get("likely_places") or {}).get("places") or []
     from echomap.geo.grid import haversine_km
     assert places and float(haversine_km(52.370, 4.889, places[0]["lat"], places[0]["lon"])) < 3.0
-    T._load.cache_clear()
+    T._connect.cache_clear()
+
+
+def test_tram_networks_derived(tmp_path, monkeypatch):
+    _pack(tmp_path, monkeypatch)
+    nets = T.tram_networks()
+    assert len(nets) == 1 and nets[0]["operator"] == "GVB" and abs(nets[0]["lat"] - 52.37) < 0.05
+    T._connect.cache_clear()

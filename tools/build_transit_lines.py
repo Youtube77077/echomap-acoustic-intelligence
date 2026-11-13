@@ -184,6 +184,20 @@ def merge(parts: list[Path], out: Path):
     with gzip.open(out, "wt", encoding="utf-8") as g:
         json.dump({"version": 1, "source": "Mobility Database GTFS feeds", "stops": stops, "operators": ops,
                    "lines": lines, "feeds": feeds}, g, ensure_ascii=False, separators=(",", ":"))
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    from echomap.geo.transit_lines import build_sqlite
+    import shutil
+    for tag, keep in (("full", None), ("rail", {"tram", "metro", "rail", "ferry", "funicular", "cable tram", "aerial lift",
+                                                 "monorail"})):
+        sel = [l for l in lines if keep is None or l[1] in keep]
+        used = sorted({sid for l in sel for sid in l[4]})
+        remap = {old: new for new, old in enumerate(used)}
+        db = out.with_name(f"EchoMap-transit-{tag}-v1.sqlite")
+        build_sqlite({"stops": [stops[i] for i in used], "operators": ops,
+                      "lines": [[l[0], l[1], l[2], l[3], [remap[x] for x in l[4]]] for l in sel]}, db)
+        with open(db, "rb") as src, gzip.open(str(db) + ".gz", "wb", compresslevel=6) as dst:
+            shutil.copyfileobj(src, dst, 1 << 20)
+        print(f"SQLITE {tag}: {len(sel)} lines, {db.stat().st_size / 1e6:.0f} MB, gz {Path(str(db) + '.gz').stat().st_size / 1e6:.0f} MB")
     print(f"MERGED {len(lines)} lines, {len(stops)} stops, {len(ops)} operators, "
           f"{sum(1 for f in feeds if 'lines' in f)} feeds, {out.stat().st_size / 1e6:.1f} MB")
 
