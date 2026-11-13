@@ -93,18 +93,25 @@ def train_softmax(Z, y, n_cls, epochs=30, bs=4096, lr=3e-3, wd=1e-5, rng=None):
 
 
 def evaluate(Zv, yv, aid, W, b, groups, names):
-    logits = Zv @ W + b
+    """Per-recording evaluation, in chunks of recordings (the full windows x species matrix does not fit in memory)."""
     rec = defaultdict(list)
     for i, a in enumerate(aid):
         rec[a].append(i)
-    L = np.stack([logits[ix].mean(0) for ix in rec.values()])
-    Y = np.array([yv[ix[0]] for ix in rec.values()])
-    L -= L.max(1, keepdims=True)
-    P = np.exp(L)
-    P /= P.sum(1, keepdims=True)
-    top5 = np.argsort(-P, axis=1)[:, :5]
+    groups_ix = list(rec.values())
+    Y = np.array([yv[ix[0]] for ix in groups_ix])
+    top5_l, pmax_l = [], []
+    for s in range(0, len(groups_ix), 1000):
+        chunk = groups_ix[s:s + 1000]
+        L = np.stack([(Zv[ix] @ W + b).mean(0) for ix in chunk])
+        L -= L.max(1, keepdims=True)
+        P = np.exp(L)
+        P /= P.sum(1, keepdims=True)
+        top5_l.append(np.argsort(-P, axis=1)[:, :5])
+        pmax_l.append(P.max(1))
+        del L, P
+    top5 = np.concatenate(top5_l)
     top1 = top5[:, 0]
-    pmax = P.max(1)
+    pmax = np.concatenate(pmax_l)
     res = {"recordings": int(len(Y)), "top1": round(float((top1 == Y).mean()), 4),
            "top5": round(float((top5 == Y[:, None]).any(1).mean()), 4), "by_group": {}, "precision_at": {}}
     for g in sorted(set(groups[y] for y in Y)):

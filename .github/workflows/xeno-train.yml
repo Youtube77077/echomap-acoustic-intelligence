@@ -1,0 +1,33 @@
+name: xeno-train
+# Retrain only (reuses the embeddings already uploaded to releases inat-emb-v1 and xc-emb-v1).
+on:
+  push:
+    branches: ["claude/**"]
+    paths: [".github/workflows/xeno-train.yml", "tools/train_inat_head.py"]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  train:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.14"}
+      - run: pip install numpy==2.5.4
+      - run: |
+          mkdir -p emb
+          gh release download inat-emb-v1 -D emb --clobber || echo "no iNatSounds embeddings"
+          gh release download xc-emb-v1 -D emb --clobber
+          gh release download xc-meta-v1 -p xc_ranges.json.gz -D emb --clobber
+          ls -la emb
+      - run: python -u tools/train_inat_head.py emb
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add echomap/data/inat_head.npz docs/eval/inat_head.json
+          git commit -m "Animal head retrained on iNatSounds + Xeno-canto (see docs/eval/inat_head.json)" || exit 0
+          for i in 1 2 3; do git pull --rebase origin ${{ github.ref_name }} && git push origin HEAD:${{ github.ref_name }} && break; sleep 5; done
