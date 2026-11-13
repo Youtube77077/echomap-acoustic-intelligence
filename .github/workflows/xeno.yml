@@ -31,6 +31,7 @@ jobs:
       - run: pip install requests==2.34.2
       - run: python -u tools/xc_harvest.py --harvest ${{ matrix.shard }} 8 xc_part_${{ matrix.shard }}.jsonl.gz
       - uses: actions/upload-artifact@v4
+        if: always()
         with: {name: "xc-part-${{ matrix.shard }}", path: "xc_part_${{ matrix.shard }}.jsonl.gz", retention-days: 3}
   merge:
     needs: harvest

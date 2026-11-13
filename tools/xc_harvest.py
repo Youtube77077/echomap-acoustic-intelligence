@@ -20,7 +20,7 @@ from collections import defaultdict
 import requests
 
 API = "https://xeno-canto.org/api/3/recordings"
-GROUPS = ["birds", "frogs", "grasshoppers", "bats", "'land mammals'"]
+GROUPS = ["birds", "frogs", "grasshoppers", "bats", '"land mammals"']
 S = requests.Session()
 S.headers["User-Agent"] = "EchoMap-xc-harvest/1.0 (offline species range statistics; 1 request/s)"
 
@@ -37,7 +37,8 @@ def page(query: str, n: int, key: str) -> dict:
             time.sleep(int(r.headers.get("Retry-After", 15 * (attempt + 1))))
             continue
         if r.status_code != 200:
-            raise SystemExit(f"Xeno-canto API HTTP {r.status_code}: {r.text[:300]}")
+            print(f"Xeno-canto API HTTP {r.status_code} for {query!r}: {r.text[:200]}", flush=True)
+            return {}
         return r.json()
     raise SystemExit("Xeno-canto API kept failing")
 
@@ -51,6 +52,9 @@ def harvest(shard: int, nsh: int, out_path: str):
     with gzip.open(out_path, "wt", encoding="utf-8") as out:
         for grp in GROUPS:
             first = page(f"grp:{grp}", 1, key)
+            if not first:
+                print(f"group {grp}: skipped (query rejected)", flush=True)
+                continue
             pages = int(first.get("numPages", 1))
             print(f"group {grp}: {first.get('numRecordings')} recordings, {pages} pages", flush=True)
             for p in range(1, pages + 1):
