@@ -77,7 +77,7 @@ def main():
         bg = np.convolve(rng.normal(0, 0.01, len(t)), np.ones(30) / 30, mode="same").astype(np.float32)
         x = bg.copy()
         if k % 2 == 0:  # FSK modem-like bursts
-            bits = rng.integers(0, 2, 400)
+            bits = rng.integers(0, 2, 4 * 300 + 10)   # 300 baud for 4 s (400 bits made only 1.3 s)
             f = np.repeat(np.where(bits, 2100, 1300), sr // 300)[: 4 * sr]
             sig = 0.2 * np.sin(2 * np.pi * np.cumsum(f) / sr)
         else:  # random FM texture
