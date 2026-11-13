@@ -43,6 +43,19 @@ def describe(r: dict) -> str:
     return " — ".join(parts)
 
 
+CONTINENT = {"EU": "Europe", "AS": "Asia", "AF": "Africa", "NA": "North America", "SA": "South America",
+             "OC": "Oceania"}
+
+
+def _continent(lat: float, lon: float) -> str | None:
+    try:
+        from ..geo.engine import countries
+        from ..geo.topo import country_at
+        return CONTINENT.get(countries().get(country_at(lat, lon), {}).get("continent"))
+    except Exception:  # noqa: BLE001
+        return None
+
+
 def build(result: dict) -> dict:
     inv = result.get("inventory") or []
     geo = result.get("geo") or {}
@@ -68,6 +81,11 @@ def build(result: dict) -> dict:
     if cands:
         c = cands[0]
         where["headline"] = f"Most likely area: {c['name']} (within about {c['uncertainty_radius_km']:g} km)"
+        if c["uncertainty_radius_km"] >= 1000:   # continental spread: name the continent, countries are only the centre
+            cont = _continent(c["centre"]["lat"], c["centre"]["lon"])
+            if cont:
+                where["headline"] = (f"Somewhere in {cont} (broad estimate, about {c['uncertainty_radius_km']:g} km; "
+                                     f"centre near {c['name'].replace(' region', '')})")
         where["alternatives"] = [f"{x['name']} (±{x['uncertainty_radius_km']:g} km)" for x in cands[1:4]]
     elif geo.get("status") == "no_estimate":
         weak = geo.get("weak_candidates") or []
