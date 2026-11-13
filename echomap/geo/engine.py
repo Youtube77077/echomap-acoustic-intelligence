@@ -27,6 +27,7 @@ from .gazetteer import cities_in_region, nearest_city
 from .grid import countries, grid, haversine_km, local_grid
 
 GROUP_CLIP = 6.0
+GROUP_DISCOUNT_EXP = 0.5       # n clues in one group count as n**(1-exp) independent clues (0.5 = sqrt(n) discount)
 OUT_OF_RANGE_FLOOR = 0.02      # captive / escaped / vagrant / transported animals
 LANGUAGE_FLOOR = 0.005         # tourists, migrants, broadcast media
 RESOLUTIONS_KM = [1, 5, 10, 25, 50, 100]
@@ -434,7 +435,7 @@ class GeoEngine:
         for g, its in groups.items():
             s = np.sum([it["llr"] for it in its], axis=0)
             if g != "user_context":
-                s = s / np.sqrt(len(its))
+                s = s / (len(its) ** GROUP_DISCOUNT_EXP)
                 s = np.clip(s, -GROUP_CLIP, GROUP_CLIP)
             gscore[g] = s
             total = s if total is None else total + s

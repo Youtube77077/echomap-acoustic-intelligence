@@ -6,6 +6,9 @@ on:
       which:
         description: "geo | lang | misc | all"
         default: "all"
+      per_region:
+        description: "iNaturalist recordings per region (geo)"
+        default: "6"
 permissions:
   contents: write
 jobs:
@@ -36,7 +39,9 @@ jobs:
           python tools/fetch_models.py /home/runner/models
           mkdir -p /home/runner/refs && gh release download references-v1 -p "references-v1-clips.zip" -D /home/runner/refs && (cd /home/runner/refs && unzip -q -o references-v1-clips.zip) || echo "no reference clips"
           case "${{ matrix.task }}" in
-            geo)  python -u tools/eval_geo.py /home/runner/models /home/runner/geo docs/eval/geo.json 6 ;;
+            geo)  python -u tools/eval_geo.py /home/runner/models /home/runner/geo docs/eval/geo.json ${{ inputs.per_region || 6 }}
+                  cp /home/runner/geo/geo_cases.json docs/eval/geo_cases.json
+                  timeout 3000 python -u tools/geo_tune.py /home/runner/models docs/eval/geo_cases.json docs/eval/geo_tune.json || echo "tuning incomplete" ;;
             lang) python -u tools/eval_lang.py /home/runner/models docs/eval/language.json 15 ;;
             misc) python -u tools/eval_misc.py /home/runner/models /home/runner/refs/clips docs/eval/signals_bells_unknown.json ;;
           esac

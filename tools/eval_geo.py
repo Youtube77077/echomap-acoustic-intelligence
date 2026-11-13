@@ -27,6 +27,7 @@ from echomap.pipeline import Case  # noqa: E402
 REGIONS = {"North America": (25, -125, 50, -70), "South America": (-35, -75, 5, -40), "Europe": (36, -10, 60, 30),
            "Africa": (-30, 15, 10, 40), "South Asia": (8, 70, 28, 90), "East Asia": (22, 100, 42, 140),
            "Australia": (-38, 115, -15, 153), "Middle East": (24, 34, 38, 55)}
+TUNING: list[dict] = []   # per-case detections for tools/geo_tune.py (no audio)
 S = requests.Session()
 S.headers["User-Agent"] = "EchoMap-evaluation/1.0 (private research tool; low volume)"
 
@@ -81,6 +82,10 @@ def evaluate(path, truth, models, cases_dir, date):
     if c.state != "complete":
         return {"error": c.error}
     g = c.result["geo"]
+    keep = ("id", "label", "category", "category_title", "confidence", "tier", "start", "end", "duration", "kind",
+            "scientific_name", "common_name", "taxon_class", "language_code", "language_name", "corroborated_by", "specific")
+    TUNING.append({"truth": truth, "date": date, "mains": c.result["signal"]["mains"],
+                   "records": [{k: r[k] for k in keep if k in r} | {"evidence": {}} for r in c.result["inventory"]]})
     res = {"status": g.get("status"), "n_footprints": len(g.get("footprints", [])),
            "species": [r["common_name"] for r in c.result["inventory"] if r.get("scientific_name") and r["confidence"] >= 0.4][:8]}
     cands = g.get("candidates", [])
@@ -154,6 +159,8 @@ def main():
     out.write_text(json.dumps({"generated": time.strftime("%Y-%m-%d"), "method": __doc__.strip(), "summary": summary,
                                "rows": rows}, indent=1), encoding="utf-8")
     print(json.dumps(summary, indent=1))
+    from echomap.pipeline import _jsonable
+    (work / "geo_cases.json").write_text(json.dumps(_jsonable(TUNING)), encoding="utf-8")
 
 
 if __name__ == "__main__":
