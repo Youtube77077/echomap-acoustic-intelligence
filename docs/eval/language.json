@@ -4,7 +4,7 @@
  "model": "Whisper base LID-only int8 (EchoMap)",
  "overall_top1": {
   "full": 0.98,
-  "3s": 0.703,
+  "3s": 0.7,
   "noisy_5dB": 0.767
  },
  "per_language": {
@@ -96,14 +96,14 @@
    "whisper_code": "ja",
    "n": 15,
    "full": 1.0,
-   "3s": 0.533,
+   "3s": 0.6,
    "noisy_5dB": 1.0
   },
   "cmn_hans_cn": {
    "whisper_code": "zh",
    "n": 15,
    "full": 1.0,
-   "3s": 0.867,
+   "3s": 0.8,
    "noisy_5dB": 1.0
   },
   "ko_kr": {
@@ -125,7 +125,7 @@
    "n": 15,
    "full": 1.0,
    "3s": 0.467,
-   "noisy_5dB": 0.867
+   "noisy_5dB": 0.933
   },
   "sv_se": {
    "whisper_code": "sv",
@@ -138,8 +138,8 @@
    "whisper_code": "uk",
    "n": 15,
    "full": 1.0,
-   "3s": 0.4,
-   "noisy_5dB": 0.133
+   "3s": 0.333,
+   "noisy_5dB": 0.067
   },
   "vi_vn": {
    "whisper_code": "vi",
@@ -159,7 +159,7 @@
    1
   ],
   [
-   "sw->en",
+   "sw->ja",
    1
   ],
   [
