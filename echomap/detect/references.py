@@ -73,6 +73,11 @@ def library() -> dict:
                 d = json.load(f)
             refs += d["refs"]
             meta[path.name] = d.get("meta", {})
+    # evaluation only: leave test recordings out of the library so they cannot match themselves
+    import os
+    excl = {u.strip() for u in os.environ.get("ECHOMAP_EXCLUDE_REFS", "").split("\n") if u.strip()}
+    if excl:
+        refs = [r for r in refs if r.get("source_url") not in excl and r.get("title") not in excl]
     if not refs:
         return {"refs": [], "E": np.zeros((0, 960), np.float32), "fp": {}, "meta": {}}
     E = np.array([np.frombuffer(base64.b64decode(r.pop("embedding")), np.float16).astype(np.float32) for r in refs])

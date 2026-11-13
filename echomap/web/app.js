@@ -84,6 +84,11 @@ async function loadResult() {
   if (r.result.geo) { Geo.render(r.result.geo); }
   if (r.result.report_html) loadReport();
 }
+// where in the world a detected species / language / sound occurs (its clue area), with a link to the map
+function whereLine(w) {
+  if (!w) return "";
+  return `<div class="small fwh">🌍 ${esc(w.text)}${w.footprint ? ` · <a href="#" class="fmap" data-f="${esc(w.footprint)}">show area on map</a>` : ""}</div>`;
+}
 // plain-language summary (v1.0.8): where, language, what was said, what each sound is
 function renderFindings(f) {
   const el = $("#findings");
@@ -91,13 +96,13 @@ function renderFindings(f) {
   const w = f.where || {}, pct = x => Math.round((x || 0) * 100) + "%";
   const sp = f.speech || {};
   const langs = f.languages?.length
-    ? `<ul>${f.languages.map(l => `<li><b>${esc(l.name)}</b> (${esc(l.code)}) · ${pct(l.confidence)} <span class="muted small">${esc(l.source)}</span></li>`).join("")}</ul>`
+    ? `<ul>${f.languages.map(l => `<li><b>${esc(l.name)}</b> (${esc(l.code)}) · ${pct(l.confidence)} <span class="muted small">${esc(l.source)}</span>${whereLine(l.where)}</li>`).join("")}</ul>`
     : `<p class="muted">No spoken language identified.</p>`;
   const lines = sp.lines?.length
     ? sp.lines.map(l => `<p class="small"><span class="mono muted">${fmtT(l.start).slice(0, 8)}</span> <span class="badge">${esc(l.language || "")} · ${esc(l.quality)}</span> ${esc(l.text)}</p>`).join("")
     : `<p class="muted">${esc(sp.not_run_reason || "No intelligible speech found.")}</p>`;
   const sounds = f.sounds?.length
-    ? `<ul class="small fsl">${f.sounds.map(x => `<li>${imgTag(x.image, "fthumb")}<a href="#" data-id="${esc(x.id)}" class="fsnd"><b>${esc(x.text)}</b></a> <span class="muted">· ${esc(x.category)} · ${esc(x.when)} · ${pct(x.confidence)} ${esc(x.tier)}</span></li>`).join("")}</ul>`
+    ? `<ul class="small fsl">${f.sounds.map(x => `<li>${imgTag(x.image, "fthumb")}<a href="#" data-id="${esc(x.id)}" class="fsnd"><b>${esc(x.text)}</b></a> <span class="muted">· ${esc(x.category)} · ${esc(x.when)} · ${pct(x.confidence)} ${esc(x.tier)}</span>${whereLine(x.where)}</li>`).join("")}</ul>`
     : `<p class="muted">No sound classified above the listing threshold.</p>`;
   el.innerHTML = `<div class="fgrid">
     <div class="fbox fwhere"><h3>Where</h3><p class="big">${esc(w.headline || "-")}</p>
@@ -114,6 +119,7 @@ function renderFindings(f) {
   </div>`;
   el.classList.remove("hidden");
   $("#fOpenMap").onclick = () => $('.tab[data-tab="geo"]').click();
+  $$("#findings .fmap").forEach(a => a.onclick = e => { e.preventDefault(); showFootprint(a.dataset.f); });
   $$("#findings .fsnd").forEach(a => a.onclick = e => { e.preventDefault(); const d = S.inventory.find(x => x.id === a.dataset.id); if (d) playSegment(d); });
 }
 function resetResultViews() {

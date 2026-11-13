@@ -274,7 +274,16 @@ const ClueMap = (() => {
   ["#clAgree", "#clProb", "#clCand", "#clLabels", "#clPlaces", "#clExact", "#clRings"].forEach(s => $(s).onchange = draw);
   $("#clFill").oninput = draw;
   $("#clLow").onchange = () => { Clues.showLow = $("#clLow").checked; renderClueList(); draw(); Map3D.refresh(); };
-  return {resize, draw, focus, focusPlace, best};
+  function fitRaster(raster) {   // zoom to the bounding box of a clue's 0.5-degree footprint
+    let r0 = GH, r1 = -1, c0 = GW, c1 = -1;
+    for (let i = 0; i < raster.length; i++) if (raster[i]) { const r = (i / GW) | 0, c = i % GW;
+      if (r < r0) r0 = r; if (r > r1) r1 = r; if (c < c0) c0 = c; if (c > c1) c1 = c; }
+    if (r1 < 0) return;
+    const lat = 90 - (r0 + r1 + 1) / 4, lon = -180 + (c0 + c1 + 1) / 4;
+    const rkm = Math.min(7000, Math.max(150, d3.geoDistance([-180 + c0 / 2, 90 - r0 / 2], [-180 + (c1 + 1) / 2, 90 - (r1 + 1) / 2]) * 6371 / 2));
+    fit([{lon, lat, r: rkm}]);
+  }
+  return {resize, draw, focus, focusPlace, best, fitRaster};
 })();
 
 function renderFilters() {
@@ -524,3 +533,12 @@ $("#btnAnalyse").onclick = async () => {
 $("#btnModels").addEventListener("click", async () => { const s = await api("settings"); $("#setMaps").checked = !!s.allow_online_maps; $("#setAsr").checked = s.transcribe_speech !== false; $("#selMode").value = s.analysis_mode || "deep"; });
 $("#modelsDlg").addEventListener("close", () => { if ($("#modelsDlg").returnValue === "close") api("settings", {method: "POST", body: {allow_online_maps: $("#setMaps").checked, transcribe_speech: $("#setAsr").checked}}); });
 api("settings").then(s => { if (s.analysis_mode) $("#selMode").value = s.analysis_mode; }).catch(() => {});
+
+// v1.0.9: "show on map" for one detection: only its clue, zoomed to where it occurs in the world
+function showFootprint(fid) {
+  const l = Clues.layers.find(x => x.id === fid); if (!l) return;
+  if (!l.used) { Clues.showLow = true; const c = $("#clLow"); if (c) c.checked = true; }
+  Clues.groupOff.delete(l.group); Clues.visible = new Set([fid]);
+  $('.tab[data-tab="geo"]').click();
+  setTimeout(() => { renderClueList(); ClueMap.resize(); ClueMap.fitRaster(l.raster); }, 60);
+}

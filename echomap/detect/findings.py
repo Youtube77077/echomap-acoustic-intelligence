@@ -45,6 +45,19 @@ def build(result: dict) -> dict:
     inv = result.get("inventory") or []
     geo = result.get("geo") or {}
     out: dict = {}
+    fps = {f.get("record"): f for f in geo.get("footprints") or [] if f.get("record")}
+    unloc = {u["record"]: u["reason"] for u in geo.get("unlocated") or []}
+
+    def where_found(rid):
+        """Where in the world this kind of sound/species/language occurs (its map clue), or why it has none."""
+        f = fps.get(rid)
+        if f:
+            names = [c["name"] for c in f.get("countries", [])[:6]]
+            return {"footprint": f["id"], "area_km2": f.get("area_km2"), "countries": names,
+                    "text": "Found in: " + ", ".join(names) + (" and more" if len(f.get("countries", [])) > 6 else "")}
+        if rid in unloc:
+            return {"footprint": None, "text": unloc[rid]}
+        return None
     # --- where
     cands = geo.get("candidates") or []
     places = (geo.get("likely_places") or {}).get("places") or []
@@ -73,7 +86,8 @@ def build(result: dict) -> dict:
             k = r["language_code"]
             if k not in langs or r["confidence"] > langs[k]["confidence"]:
                 langs[k] = {"name": r.get("language_name") or k, "code": k, "confidence": r["confidence"],
-                            "source": r.get("model", ""), "start": r["start"], "end": r["end"]}
+                            "source": r.get("model", ""), "start": r["start"], "end": r["end"],
+                            "where": where_found(r.get("id"))}
     out["languages"] = sorted(langs.values(), key=lambda d: -d["confidence"])
     # --- speech
     tr = result.get("transcripts") or {}
@@ -96,7 +110,7 @@ def build(result: dict) -> dict:
             continue
         seen.add(key)
         n_same = sum(1 for x in inv if x.get("label") == r.get("label"))
-        sounds.append({"id": r.get("id"), "image": r.get("image"), "category": r.get("category_title") or r.get("category"),
+        sounds.append({"id": r.get("id"), "image": r.get("image"), "where": where_found(r.get("id")), "category": r.get("category_title") or r.get("category"),
                        "text": describe(r), "start": r["start"], "end": r["end"], "confidence": r["confidence"],
                        "tier": r.get("tier"), "times": n_same,
                        "when": f"{_t(r['start'])}–{_t(r['end'])}" + (f" (+{n_same - 1} more)" if n_same > 1 else "")})
