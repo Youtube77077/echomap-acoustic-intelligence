@@ -6,6 +6,7 @@ def test_gbif_range_and_season(monkeypatch):
     rng = {"rana temporaria": {"k": 1, "n": 5000, "c": {"NL": 900, "DE": 2000, "GB": 1500, "US": 1},
                                "m": [10, 20, 300, 900, 900, 700, 500, 400, 200, 50, 10, 10]}}
     monkeypatch.setattr(E, "species_ranges", lambda: rng)
+    monkeypatch.setattr(E, "xc_ranges", lambda: {})   # GBIF path (the real Xeno-canto layer would take precedence)
     recs = [{"id": "D0001", "label": "Amphibian vocalization", "category": "birds_wildlife", "category_title": "Birds",
              "tier": "probable", "confidence": 0.9, "scientific_name": "Rana temporaria", "common_name": "Common frog",
              "corroborated_by": ["D0002 Frog"], "start": 0, "end": 5, "evidence": {}}]
