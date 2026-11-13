@@ -24,7 +24,10 @@ import requests
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-SETF = ROOT / "docs" / "eval" / "soundscape_set.json"
+TAG = os.environ.get("BENCH_NAME", "")          # e.g. "ireland": separate set, results and screenshots
+SUF = f"_{TAG}" if TAG else ""
+SETF = ROOT / "docs" / "eval" / f"soundscape_set{SUF}.json"
+SHOTS = ROOT / "docs" / "screenshots" / f"bench{SUF}"
 S = requests.Session()
 S.headers["User-Agent"] = (f"EchoMap-evaluation/1.0 (private research tool; low volume; "
                            f"contact: {os.environ.get('WIKIMEDIA_CONTACT', 'not set')})")
@@ -94,6 +97,45 @@ def inat_candidates(n: int) -> list[dict]:
     return out[:n]
 
 
+def near_place(name: str, lat: float, lon: float) -> dict | None:
+    """One free-licence recording made within ~10 km of a named place: Commons geosearch first, then iNaturalist."""
+    from echomap.geo.topo import country_at
+    pages = get({"action": "query", "generator": "geosearch", "ggscoord": f"{lat}|{lon}", "ggsradius": 10000,
+                 "ggsnamespace": 6, "ggslimit": 500, "prop": "coordinates|imageinfo",
+                 "iiprop": "url|size|mediatype|extmetadata"}).get("query", {}).get("pages", {})
+    best = None
+    for pg in pages.values():
+        ii = (pg.get("imageinfo") or [{}])[0]
+        co = (pg.get("coordinates") or [None])[0]
+        lic = ((ii.get("extmetadata") or {}).get("LicenseShortName") or {}).get("value", "")
+        dur = float(ii.get("duration") or 0)
+        if ii.get("mediatype") not in ("AUDIO", "VIDEO") or not co or not FREE.match(lic) or ii.get("size", 0) > 80e6:
+            continue
+        if dur and not 15 <= dur <= 1800:
+            continue
+        c = {"source": "Wikimedia Commons", "query": name, "title": pg["title"], "url": ii.get("url"),
+             "page": ii.get("descriptionurl"), "licence": lic, "lat": co["lat"], "lon": co["lon"], "duration_s": dur,
+             "country": country_at(co["lat"], co["lon"])}
+        if best is None or (ii.get("mediatype") == "AUDIO") > (best.get("_audio", False)):
+            best = {**c, "_audio": ii.get("mediatype") == "AUDIO"}
+    print(f"{name}: {len(pages)} geotagged Commons files nearby, chosen {best and best['title']}", flush=True)
+    if best:
+        best.pop("_audio", None)
+        return best
+    r = S.get("https://api.inaturalist.org/v1/observations", params={
+        "sounds": "true", "lat": lat, "lng": lon, "radius": 15, "sound_license": "cc0,cc-by,cc-by-sa,cc-by-nc,cc-by-nc-sa",
+        "per_page": 30, "geoprivacy": "open", "acc_below": 2000, "order_by": "observed_on"}, timeout=60).json()
+    for o in r.get("results", []):
+        snd = (o.get("sounds") or [{}])[0]
+        if snd.get("file_url") and o.get("geojson"):
+            lo, la = o["geojson"]["coordinates"]
+            print(f"{name}: iNaturalist recording {o.get('uri')}", flush=True)
+            return {"source": "iNaturalist", "query": name, "title": f"{name}: {(o.get('taxon') or {}).get('name')}",
+                    "url": snd["file_url"], "page": o.get("uri"), "licence": snd.get("license_code"), "lat": la,
+                    "lon": lo, "date": o.get("observed_on"), "country": country_at(la, lo)}
+    return None
+
+
 def choose(cands: list[dict], n: int = 10) -> list[dict]:
     chosen, seen_c, seen_q = [], set(), set()
     for c in cands:                       # one per query and per country first: as varied as possible
@@ -140,6 +182,17 @@ def main():
     work.mkdir(parents=True, exist_ok=True)
     if SETF.exists():
         items = json.loads(SETF.read_text(encoding="utf-8"))["items"]
+    elif os.environ.get("BENCH_PLACES"):    # "Derry:54.997,-7.309;Dublin:53.349,-6.260"
+        items = []
+        for spec in os.environ["BENCH_PLACES"].split(";"):
+            nm, ll = spec.split(":")
+            la, lo = map(float, ll.split(","))
+            it = near_place(nm.strip(), la, lo)
+            if it:
+                items.append(it)
+            time.sleep(1)
+        SETF.write_text(json.dumps({"created": time.strftime("%Y-%m-%d"), "items": items}, indent=1, ensure_ascii=False),
+                        encoding="utf-8")
     else:
         cands = commons_candidates()
         items = choose(cands)
@@ -188,28 +241,28 @@ def main():
         row["sounds"] = [x["text"] for x in f_.get("sounds", [])[:8]]
         row["clues"] = (f_.get("where") or {}).get("clues", [])
         try:
-            row["screenshots"] = [str(Path(p).relative_to(ROOT)) for p in shoot(c, ROOT / "docs" / "screenshots" / "bench", name)]
+            row["screenshots"] = [str(Path(p).relative_to(ROOT)) for p in shoot(c, SHOTS, name)]
         except Exception as e:  # noqa: BLE001
             row["screenshot_error"] = f"{type(e).__name__}: {e}"
         rows.append(row)
         print(json.dumps({k: row.get(k) for k in ("title", "country", "geo_status", "best", "best_error_km", "top_place",
-                                                  "top_place_error_km", "languages", "clues")}, ensure_ascii=False), flush=True)
+                                                  "top_place_error_km", "headline", "languages", "clues")}, ensure_ascii=False), flush=True)
     est = [r for r in rows if "best_error_km" in r and r.get("geo_status") == "estimate"]
     errs = sorted(r["best_error_km"] for r in est)
     summary = {"recordings": len(rows), "estimates": len(est),
                "median_error_km": errs[len(errs) // 2] if errs else None,
                "within_100km": sum(e <= 100 for e in errs), "within_500km": sum(e <= 500 for e in errs),
                "inside_circle": sum(bool(r.get("inside_best")) for r in est)}
-    (ROOT / "docs" / "eval" / "soundscapes.json").write_text(
+    (ROOT / "docs" / "eval" / f"soundscapes{SUF}.json").write_text(
         json.dumps({"generated": time.strftime("%Y-%m-%d %H:%M"), "summary": summary, "rows": rows}, indent=1,
                    ensure_ascii=False), encoding="utf-8")
-    md = ["# Soundscape benchmark (10 real recordings with known locations, Deep mode)", "",
+    md = [f"# Soundscape benchmark{(' (' + TAG + ')') if TAG else ''}: real recordings with known locations, Deep mode", "",
           f"Summary: {json.dumps(summary)}", "",
           "| # | Recording | True place | Estimate | Error | Clues used |", "|---|---|---|---|---|---|"]
     for k, r in enumerate(rows, 1):
         md.append(f"| {k} | {str(r.get('title'))[:50]} | {r.get('country')} ({r['lat']:.2f}, {r['lon']:.2f}) | "
                   f"{r.get('best') or r.get('geo_status')} | {r.get('best_error_km', '-')} km | {'; '.join(r.get('clues') or [])[:90]} |")
-    (ROOT / "docs" / "eval" / "SOUNDSCAPES.md").write_text("\n".join(md) + "\n", encoding="utf-8")
+    (ROOT / "docs" / "eval" / f"SOUNDSCAPES{SUF}.md").write_text("\n".join(md) + "\n", encoding="utf-8")
     print(json.dumps(summary))
 
 
