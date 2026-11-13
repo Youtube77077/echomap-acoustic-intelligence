@@ -42,3 +42,4 @@ jobs:
           git commit -m "Soundscape benchmark results and screenshots" || exit 0
           for i in 1 2 3; do git pull --rebase origin ${{ github.ref_name }} && git push origin HEAD:${{ github.ref_name }} && break; sleep 5; done
 # run 3: tuned location settings + picture and transit packs
+# run 4: animal head (iNatSounds) + GBIF ranges + masked-species rule
