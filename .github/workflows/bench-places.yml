@@ -44,3 +44,4 @@ jobs:
           git commit -m "Place test (Derry, Dublin): results and screenshots" || exit 0
           for i in 1 2 3; do git pull --rebase origin ${{ github.ref_name }} && git push origin HEAD:${{ github.ref_name }} && break; sleep 5; done
 # run 2: same fixes as bench run 6
+# run 3: same

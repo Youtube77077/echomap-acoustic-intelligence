@@ -46,3 +46,4 @@ jobs:
 # run 5: all fixes up to rain/siren rules
 # run 6: masked-species rule tightened, continent headline, animal head 13,786 species
 # run 7: marine-mammal rule
+# run 8: weak-species agreement, DSP siren no longer masks
