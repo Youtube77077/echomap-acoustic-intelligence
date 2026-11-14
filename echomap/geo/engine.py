@@ -193,7 +193,8 @@ def _rescue_coherent_species(items: list[dict], records: list[dict]) -> int:
     is not rescued when a clear man-made sound (>= 0.5) masks it, when it is a marine mammal, or when its range covers
     more than 15% of the land (common, widespread species carry no regional information)."""
     by_id = {r.get("id"): r for r in records}
-    bio = [it for it in items if it["group"] == "biogeography" and it.get("fp") is not None and it.get("record")]
+    bio = [it for it in items if it["group"] == "biogeography" and it.get("L") is not None and it.get("record")]
+    near = {id(it): np.asarray(it["L"]) >= 0.1 for it in bio}   # range edge: weak detections agree loosely
 
     def ok(it):
         r = by_id.get(it["record"]) or {}
@@ -207,7 +208,7 @@ def _rescue_coherent_species(items: list[dict], records: list[dict]) -> int:
     pool = cand + [it for it in bio if it["used"] and it.get("range_fraction", 1) <= 0.15]
     if len(cand) < 2 or len(pool) < 3:
         return 0
-    count = np.sum([it["fp"].astype(np.int16) for it in pool], axis=0)
+    count = np.sum([near[id(it)].astype(np.int16) for it in pool], axis=0)
     m = int(count.max())
     # most of the species must agree (many scattered fakes, e.g. seabirds "heard" in wind, agree in threes by chance)
     if m < max(3, int(np.ceil(0.6 * len(pool)))):
@@ -215,7 +216,7 @@ def _rescue_coherent_species(items: list[dict], records: list[dict]) -> int:
     core = count == m
     n = 0
     for it in cand:
-        if np.all(it["fp"][core]):
+        if np.all(near[id(it)][core]):
             it["used"] = True
             it["note"] = it.get("note", "") + f"; weak alone, but {m} species agree on the same area"
             n += 1
