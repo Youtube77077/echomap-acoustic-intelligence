@@ -211,10 +211,10 @@ def _rescue_coherent_species(items: list[dict], records: list[dict]) -> int:
             return False
         if MARINE.search(f"{r.get('common_name', '')} {r.get('scientific_name', '')}"):
             return False
-        return not any(_masks(o, r, 0.5) for o in records)
+        return not any(_masks(o, r) for o in records)
     cand = [it for it in bio if ok(it)]
-    pool = cand + [it for it in bio if it["used"] and it.get("range_fraction", 1) <= 0.15]
-    if len(cand) < 2 or len(pool) < 3:
+    pool = cand   # only the weak ones: a confident widespread species must not "agree" fakes into existence
+    if len(pool) < 3:
         return 0
     count = np.sum([near[id(it)].astype(np.int16) for it in pool], axis=0)
     m = int(count.max())
