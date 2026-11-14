@@ -209,12 +209,13 @@ def _rescue_coherent_species(items: list[dict], records: list[dict]) -> int:
         return 0
     count = np.sum([it["fp"].astype(np.int16) for it in pool], axis=0)
     m = int(count.max())
-    if m < 3:
+    # most of the species must agree (many scattered fakes, e.g. seabirds "heard" in wind, agree in threes by chance)
+    if m < max(3, int(np.ceil(0.6 * len(pool)))):
         return 0
     core = count == m
     n = 0
     for it in cand:
-        if np.any(it["fp"] & core):
+        if np.all(it["fp"][core]):
             it["used"] = True
             it["note"] = it.get("note", "") + f"; weak alone, but {m} species agree on the same area"
             n += 1
