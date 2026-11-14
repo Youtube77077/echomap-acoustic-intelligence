@@ -165,6 +165,16 @@ MARINE = __import__("re").compile(r"whale|dolphin|porpoise|\bseal\b|sea lion|wal
                                   r"Leptonychotes|Balaenoptera|Physeter|Delphin|Phoca|Orcinus", __import__("re").I)
 
 
+def _masks(o: dict, r: dict, min_conf: float = 0.2) -> bool:
+    """Does record o (a loud man-made sound) overlap species record r? The DSP "siren-like tonal pattern" alone does not
+    count: whistling birds and insects in a rainforest produce it for minutes (Amazon recording, v1.0.10)."""
+    if o.get("category") not in MASKING_CATS or o.get("confidence", 0) < min_conf:
+        return False
+    if str(o.get("label", "")).startswith("Siren-like"):   # DSP-only (a real siren is merged into the AudioSet record)
+        return False
+    return o.get("start", 0) < r.get("end", 0) and o.get("end", 0) > r.get("start", 0)
+
+
 def _species_usable(r: dict, records: list[dict]) -> bool:
     """Species detections during loud man-made sounds (bells, sirens, engines, trams, music) are often fake: church
     bells became American birds and tram squeal became whales in the soundscape benchmark. Such a detection without
@@ -176,8 +186,7 @@ def _species_usable(r: dict, records: list[dict]) -> bool:
                  for c in r.get("corroborated_by") or [] if "(AudioSet)" in str(c))
     if MARINE.search(f"{r.get('common_name', '')} {r.get('scientific_name', '')}") and not strong:
         return False   # whales and seals "heard" in tram squeal / street recordings (soundscape benchmark)
-    masked = any(o.get("category") in MASKING_CATS and o.get("start", 0) < r.get("end", 0) and o.get("end", 0) > r.get("start", 0)
-                 and o.get("confidence", 0) >= 0.2 for o in records)
+    masked = any(_masks(o, r) for o in records)
     if not masked:
         return bool(r.get("corroborated_by")) or r["confidence"] >= UNCORROBORATED_MIN_CONF
     # under bells / engines / music: the iNatSounds head reads the same embedding and a weak generic "Bird" tag is
@@ -202,8 +211,7 @@ def _rescue_coherent_species(items: list[dict], records: list[dict]) -> int:
             return False
         if MARINE.search(f"{r.get('common_name', '')} {r.get('scientific_name', '')}"):
             return False
-        return not any(o.get("category") in MASKING_CATS and o.get("confidence", 0) >= 0.5 and o.get("start", 0) < r.get("end", 0)
-                       and o.get("end", 0) > r.get("start", 0) for o in records)
+        return not any(_masks(o, r, 0.5) for o in records)
     cand = [it for it in bio if ok(it)]
     pool = cand + [it for it in bio if it["used"] and it.get("range_fraction", 1) <= 0.15]
     if len(cand) < 2 or len(pool) < 3:
