@@ -1,9 +1,9 @@
 {
- "generated": "2026-11-13 23:10",
+ "generated": "2026-11-14 01:39",
  "summary": {
   "recordings": 10,
-  "estimates": 4,
-  "median_error_km": 571,
+  "estimates": 5,
+  "median_error_km": 847,
   "within_100km": 0,
   "within_500km": 1,
   "inside_circle": 3
@@ -22,14 +22,14 @@
    "country": "GB",
    "state": "complete",
    "error": null,
-   "analysis_s": 51.5,
+   "analysis_s": 51.7,
    "geo_status": "estimate",
-   "headline": "Somewhere in Europe (broad estimate, about 1300 km; centre near Germany, United Kingdom, France)",
-   "best": "Germany, United Kingdom, France region",
-   "best_error_km": 602,
-   "best_radius_km": 1300.0,
+   "headline": "Somewhere in Europe (broad estimate, about 1600 km; centre near Germany, Poland, Italy)",
+   "best": "Germany, Poland, Italy region",
+   "best_error_km": 847,
+   "best_radius_km": 1600.0,
    "inside_best": true,
-   "min_error_top5_km": 602,
+   "min_error_top5_km": 847,
    "languages": [
     "English 60%",
     "Nynorsk 20%"
@@ -51,8 +51,8 @@
     "Great Tit (Parus major)",
     "Eurasian Wren (Troglodytes troglodytes)",
     "European Robin (Erithacus rubecula)",
-    "Short-toed Treecreeper (Certhia brachydactyla)",
-    "Brambling (Fringilla montifringilla)"
+    "Dunnock (Prunella modularis)",
+    "Short-toed Treecreeper (Certhia brachydactyla)"
    ],
    "screenshots": [
     "docs/screenshots/bench/01_1_findings.png",
@@ -75,14 +75,14 @@
    "country": "US",
    "state": "complete",
    "error": null,
-   "analysis_s": 17.2,
+   "analysis_s": 18.6,
    "geo_status": "estimate",
-   "headline": "Somewhere in North America (broad estimate, about 1500 km; centre near United States, Canada)",
+   "headline": "Somewhere in North America (broad estimate, about 1900 km; centre near United States, Canada)",
    "best": "United States, Canada region",
-   "best_error_km": 571,
-   "best_radius_km": 1500.0,
+   "best_error_km": 900,
+   "best_radius_km": 1900.0,
    "inside_best": true,
-   "min_error_top5_km": 571,
+   "min_error_top5_km": 900,
    "languages": [],
    "sounds": [
     "Bird vocalization — species: Eastern Phoebe (Sayornis phoebe)",
@@ -99,7 +99,10 @@
     "Carolina Wren (Thryothorus ludovicianus)",
     "Yellow-throated Vireo (Vireo flavifrons)",
     "Eastern Phoebe (Sayornis phoebe)",
-    "Carolina Chickadee (Poecile carolinensis)"
+    "American Crow (Corvus brachyrhynchos)",
+    "Carolina Chickadee (Poecile carolinensis)",
+    "Northern Cardinal (Cardinalis cardinalis)",
+    "Blue-headed Vireo (Vireo solitarius)"
    ],
    "screenshots": [
     "docs/screenshots/bench/02_1_findings.png",
@@ -122,7 +125,7 @@
    "country": "AU",
    "state": "complete",
    "error": null,
-   "analysis_s": 26.2,
+   "analysis_s": 26.0,
    "geo_status": "no_estimate",
    "headline": "No reliable location estimate",
    "best": "Germany, Poland, Ukraine region",
@@ -168,7 +171,7 @@
    "country": "CZ",
    "state": "complete",
    "error": null,
-   "analysis_s": 25.0,
+   "analysis_s": 25.3,
    "geo_status": "no_estimate",
    "headline": "No reliable location estimate",
    "best": "Poland, Czechia, Slovakia region",
@@ -257,7 +260,7 @@
    "country": "IN",
    "state": "complete",
    "error": null,
-   "analysis_s": 14.6,
+   "analysis_s": 15.0,
    "geo_status": "estimate",
    "headline": "Somewhere in Asia (broad estimate, about 1200 km; centre near India)",
    "best": "India region",
@@ -300,7 +303,7 @@
    "country": "PL",
    "state": "complete",
    "error": null,
-   "analysis_s": 13.9,
+   "analysis_s": 14.0,
    "geo_status": "no_estimate",
    "headline": "No reliable location estimate",
    "best": "Germany, France, United Kingdom region",
@@ -346,14 +349,14 @@
    "country": "FR",
    "state": "complete",
    "error": null,
-   "analysis_s": 7.7,
+   "analysis_s": 8.0,
    "geo_status": "no_estimate",
    "headline": "No reliable location estimate",
-   "best": "United States, Canada, Mexico region",
-   "best_error_km": 7369,
-   "best_radius_km": 2200.0,
+   "best": "Canada, United States region",
+   "best_error_km": 7370,
+   "best_radius_km": 1700.0,
    "inside_best": false,
-   "min_error_top5_km": 4719,
+   "min_error_top5_km": 6500,
    "languages": [],
    "sounds": [
     "Bird vocalization — species: House Sparrow (Passer domesticus)",
@@ -364,7 +367,10 @@
     "Bird vocalization — species: House Finch (Haemorhous mexicanus)"
    ],
    "clues": [
-    "House Sparrow (Passer domesticus)"
+    "Northern Saw-whet Owl (Aegolius acadicus)",
+    "House Sparrow (Passer domesticus)",
+    "Monk Parakeet (Myiopsitta monachus)",
+    "House Finch (Haemorhous mexicanus)"
    ],
    "screenshots": [
     "docs/screenshots/bench/08_1_findings.png",
@@ -387,14 +393,14 @@
    "country": "AT",
    "state": "complete",
    "error": null,
-   "analysis_s": 9.8,
-   "geo_status": "no_estimate",
-   "headline": "No reliable location estimate",
-   "best": "United States, Mexico region",
-   "best_error_km": 8529,
-   "best_radius_km": 1800.0,
+   "analysis_s": 13.3,
+   "geo_status": "estimate",
+   "headline": "Somewhere in North America (broad estimate, about 1000 km; centre near Mexico, United States)",
+   "best": "Mexico, United States region",
+   "best_error_km": 9310,
+   "best_radius_km": 1000.0,
    "inside_best": false,
-   "min_error_top5_km": 6649,
+   "min_error_top5_km": 6690,
    "languages": [],
    "sounds": [
     "Bird vocalization — species: Virginia Rail (Rallus limicola)",
@@ -407,7 +413,10 @@
     "Bird vocalization — species: American Dipper (Cinclus mexicanus)"
    ],
    "clues": [
-    "Yellow-billed Cuckoo (Coccyzus americanus)"
+    "Virginia Rail (Rallus limicola)",
+    "Lazuli Bunting (Passerina amoena)",
+    "Yellow-billed Cuckoo (Coccyzus americanus)",
+    "White-tailed Deer (Odocoileus virginianus)"
    ],
    "screenshots": [
     "docs/screenshots/bench/09_1_findings.png",
@@ -430,7 +439,7 @@
    "country": "DE",
    "state": "complete",
    "error": null,
-   "analysis_s": 81.7,
+   "analysis_s": 82.3,
    "geo_status": "estimate",
    "headline": "Most likely area: Czechia, Germany region (within about 200 km)",
    "best": "Czechia, Germany region",
