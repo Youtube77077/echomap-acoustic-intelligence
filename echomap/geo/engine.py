@@ -185,6 +185,41 @@ def _species_usable(r: dict, records: list[dict]) -> bool:
     return strong or r["confidence"] >= MASKED_MIN_CONF
 
 
+
+def _rescue_coherent_species(items: list[dict], records: list[dict]) -> int:
+    """Several weak species whose (restricted) ranges agree are real evidence even when each is below the threshold:
+    Capuchinbird + Oilbird + Thrush-like Antpitta + Grey-fronted Dove at 15-42% all point to the Guianas / Amazon.
+    Fake detections (bells, wind) scatter over unrelated continents, so they rarely agree in one small area. A species
+    is not rescued when a clear man-made sound (>= 0.5) masks it, when it is a marine mammal, or when its range covers
+    more than 15% of the land (common, widespread species carry no regional information)."""
+    by_id = {r.get("id"): r for r in records}
+    bio = [it for it in items if it["group"] == "biogeography" and it.get("fp") is not None and it.get("record")]
+
+    def ok(it):
+        r = by_id.get(it["record"]) or {}
+        if it["used"] or r.get("confidence", 0) < 0.15 or it.get("range_fraction", 1) > 0.15:
+            return False
+        if MARINE.search(f"{r.get('common_name', '')} {r.get('scientific_name', '')}"):
+            return False
+        return not any(o.get("category") in MASKING_CATS and o.get("confidence", 0) >= 0.5 and o.get("start", 0) < r.get("end", 0)
+                       and o.get("end", 0) > r.get("start", 0) for o in records)
+    cand = [it for it in bio if ok(it)]
+    pool = cand + [it for it in bio if it["used"] and it.get("range_fraction", 1) <= 0.15]
+    if len(cand) < 2 or len(pool) < 3:
+        return 0
+    count = np.sum([it["fp"].astype(np.int16) for it in pool], axis=0)
+    m = int(count.max())
+    if m < 3:
+        return 0
+    core = count == m
+    n = 0
+    for it in cand:
+        if np.any(it["fp"] & core):
+            it["used"] = True
+            it["note"] = it.get("note", "") + f"; weak alone, but {m} species agree on the same area"
+            n += 1
+    return n if n >= 2 else 0
+
 def _language_backed(r: dict, code: str) -> bool:
     """A language counts for location only with a clear transcript in it, or very confident ID on clear speech
     (bells and engines were read as Korean / Nynorsk speakers in the soundscape benchmark)."""
@@ -378,6 +413,7 @@ class GeoEngine:
                               "note": f"recorded in {len(present)} countries ({frac * 100:.1f}% of land area), "
                                       f"{g['n']:,} GBIF occurrences", "range_fraction": frac})
                 r["geographic_relevance"] = "Range from GBIF occurrence statistics (country level)."
+        _rescue_coherent_species(items, records)
         # --- season check for every species with a known date (GBIF monthly occurrence counts)
         month = (ctx or {}).get("date", {}).get("month")
         dv = (ctx or {}).get("date", {}).get("value")
