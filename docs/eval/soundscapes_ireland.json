@@ -1,9 +1,9 @@
 {
- "generated": "2026-11-13 22:42",
+ "generated": "2026-11-14 01:33",
  "summary": {
   "recordings": 2,
-  "estimates": 1,
-  "median_error_km": 1367,
+  "estimates": 2,
+  "median_error_km": 2316,
   "within_100km": 0,
   "within_500km": 0,
   "inside_circle": 1
@@ -22,11 +22,11 @@
    "country": "IE",
    "state": "complete",
    "error": null,
-   "analysis_s": 13.0,
+   "analysis_s": 10.7,
    "geo_status": "estimate",
    "headline": "Somewhere in Europe (broad estimate, about 2000 km; centre near France, Germany, Spain)",
    "best": "France, Germany, Spain region",
-   "best_error_km": 1367,
+   "best_error_km": 1323,
    "best_radius_km": 2000.0,
    "inside_best": true,
    "min_error_top5_km": 554,
@@ -62,16 +62,16 @@
    "country": "IE",
    "state": "complete",
    "error": null,
-   "analysis_s": 10.7,
-   "geo_status": "no_estimate",
-   "headline": "No reliable location estimate",
-   "best": "China, South Korea, North Korea region",
-   "best_error_km": 8797,
-   "best_radius_km": 1800.0,
+   "analysis_s": 12.7,
+   "geo_status": "estimate",
+   "headline": "Most likely area: Russia region (within about 150 km)",
+   "best": "Russia region",
+   "best_error_km": 2316,
+   "best_radius_km": 150.0,
    "inside_best": false,
-   "min_error_top5_km": 1846,
+   "min_error_top5_km": 1567,
    "languages": [
-    "English 22%"
+    "English 25%"
    ],
    "sounds": [
     "Bird vocalization — species: Barred Owl (Strix varia)",
@@ -83,7 +83,11 @@
     "Bird vocalization — species: Black-throated Blue Warbler (Setophaga caerulescens)",
     "Bird vocalization — species: Eurasian Chaffinch (Fringilla coelebs)"
    ],
-   "clues": [],
+   "clues": [
+    "European Robin (Erithacus rubecula)",
+    "Western Capercaillie (Tetrao urogallus)",
+    "Red-flanked Bluetail (Tarsiger cyanurus)"
+   ],
    "screenshots": [
     "docs/screenshots/bench_ireland/02_1_findings.png",
     "docs/screenshots/bench_ireland/02_2_analysis.png",
