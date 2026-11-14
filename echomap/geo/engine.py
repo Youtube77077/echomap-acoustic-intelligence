@@ -226,6 +226,7 @@ def _rescue_coherent_species(items: list[dict], records: list[dict]) -> int:
     for it in cand:
         if np.all(near[id(it)][core]):
             it["used"] = True
+            it["c"] = max(it["c"], SPECIES_MIN_CONF)   # agreement makes each one as credible as a threshold detection
             it["note"] = it.get("note", "") + f"; weak alone, but {m} species agree on the same area"
             n += 1
     return n if n >= 2 else 0
